@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
 import * as Joi from 'joi';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import * as winstonDaily from 'winston-daily-rotate-file';
+import { UsersModule } from '@src/users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
     imports: [
@@ -14,6 +17,23 @@ import * as winstonDaily from 'winston-daily-rotate-file';
             validationSchema: Joi.object({
                 NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
                 PORT: Joi.number().default(3000),
+            }),
+        }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+                type: 'mysql',
+                host: configService.get('DB_HOST'),
+                port: configService.get('DB_PORT'),
+                username: configService.get('DB_USERNAME'),
+                password: configService.get('DB_PASSWORD'),
+                database: configService.get('DB_NAME'),
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                synchronize: false,
+                autoLoadEntities: true,
+                logging: false,
+                namingStrategy: new SnakeNamingStrategy(),
             }),
         }),
         WinstonModule.forRoot({
@@ -42,6 +62,8 @@ import * as winstonDaily from 'winston-daily-rotate-file';
                 }),
             ],
         }),
+
+        UsersModule,
     ],
     controllers: [AppController],
     providers: [AppService],
