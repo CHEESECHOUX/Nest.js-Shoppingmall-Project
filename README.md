@@ -25,7 +25,10 @@
         $ npm i --save typeorm
 
     -   애플리케이션 코드 명명 규칙(Camelcase)과 Database 컬럼 명명 규칙 (snake) 불일치 해소 위한 패키지 설치
-        $ npm i typeorm-naming-strategies
+        $ npm i --save typeorm-naming-strategies
 
     -   MySQL 연동
-        $ npm i mysql --save
+        $ npm i --save mysql
+
+-   bcrypt
+    $ npm i --save bcrypt
