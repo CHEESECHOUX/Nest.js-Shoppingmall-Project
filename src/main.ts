@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@src/app.module';
 import { AllExceptionsFilter } from '@src/common/all-exceptions.filter';
@@ -8,6 +9,15 @@ async function bootstrap() {
     app.useGlobalFilters(new AllExceptionsFilter());
 
     app.useGlobalInterceptors(new HttpLoggingInterceptor());
+
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+            whitelist: true,
+            transformOptions: { enableImplicitConversion: true },
+            disableErrorMessages: true,
+        }),
+    );
 
     await app.listen(3000);
 }
