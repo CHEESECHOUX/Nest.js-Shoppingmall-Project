@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-@Unique(['loginId', 'email', 'phone'])
+@Unique(['loginId'])
 export class User {
     @PrimaryGeneratedColumn()
     userId: number;
@@ -13,9 +13,11 @@ export class User {
     password: string;
 
     @Column({ nullable: true })
+    @Unique(['email'])
     email: string;
 
     @Column()
+    @Unique(['phone'])
     phone: string;
 
     @Column()

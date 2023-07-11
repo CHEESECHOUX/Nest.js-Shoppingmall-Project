@@ -15,9 +15,20 @@ export class UsersService {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const existUser = await this.usersRepository.findOne({ where: { loginId } });
-        if (existUser) {
-            throw new ConflictException('이미 존재하는 이메일입니다');
+        const existingUser = await this.usersRepository.findOne({
+            where: [{ loginId }, { phone }, { email }],
+        });
+
+        if (existingUser) {
+            if (existingUser.loginId === loginId) {
+                throw new ConflictException('이미 존재하는 로그인 아이디입니다');
+            }
+            if (existingUser.phone === phone) {
+                throw new ConflictException('이미 존재하는 휴대폰 번호입니다');
+            }
+            if (existingUser.email === email) {
+                throw new ConflictException('이미 존재하는 이메일입니다');
+            }
         }
 
         const user = new User();
