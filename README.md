@@ -32,3 +32,10 @@
 
 -   bcrypt
     $ npm i --save bcrypt
+
+-   JWT
+    $ npm i --save @nestjs/jwt
+
+-   Passport
+    $ npm i --save @nestjs/passport
+    $ npm i --save passport-jwt
