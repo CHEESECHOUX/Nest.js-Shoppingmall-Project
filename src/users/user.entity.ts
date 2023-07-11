@@ -29,6 +29,10 @@ export class User {
     @Column({ nullable: true })
     address: string;
 
+    @Column({ default: 'CUSTOMER' })
+    role: string;
+    comment: 'ADMIN, MANAGER, CUSTOMER';
+
     @Column({ default: false })
     isDeleted: boolean;
 

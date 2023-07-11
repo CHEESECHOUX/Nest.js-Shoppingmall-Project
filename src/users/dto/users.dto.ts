@@ -1,4 +1,5 @@
 import { IsEmail, IsString, Length, Matches, MinLength } from 'class-validator';
+import { User } from '@src/users/user.entity';
 
 export class LogInDTO {
     @IsString()
@@ -33,4 +34,14 @@ export class CreateUserDTO extends LogInDTO {
 export class LogInResponseDTO {
     @IsString()
     accessToken: string;
+}
+
+export class UsersInfoDTO {
+    loginId: string;
+    name: string;
+
+    constructor(user: User) {
+        this.loginId = user.loginId;
+        this.name = user.name;
+    }
 }

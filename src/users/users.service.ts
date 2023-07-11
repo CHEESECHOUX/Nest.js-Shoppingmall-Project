@@ -4,11 +4,20 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/user.entity';
-import { CreateUserDTO, LogInDTO, LogInResponseDTO } from '@src/users/dto/users.dto';
+import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
+import { AuthUserType } from '@src/common/decorators/users.decorator';
 
 @Injectable()
 export class UsersService {
     constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) {}
+
+    async getUserInfo({ userId }: AuthUserType): Promise<UsersInfoDTO | null> {
+        const userInfo = await this.usersRepository.findOne({ where: { userId } });
+        if (!userInfo) {
+            throw new UnauthorizedException('사용자 정보를 찾을 수 없습니다');
+        }
+        return userInfo;
+    }
 
     async signUp(createUserDTO: CreateUserDTO): Promise<User> {
         const { loginId, password, name, phone, email, zipcode, address } = createUserDTO;
