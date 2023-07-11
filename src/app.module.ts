@@ -62,7 +62,6 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
                 }),
             ],
         }),
-
         UsersModule,
     ],
     controllers: [AppController],

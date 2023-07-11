@@ -1,12 +1,12 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-@Unique(['loginId'])
 export class User {
     @PrimaryGeneratedColumn()
     userId: number;
 
     @Column()
+    @Unique(['loginId'])
     loginId: string;
 
     @Column()
