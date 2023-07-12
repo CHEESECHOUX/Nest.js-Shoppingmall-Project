@@ -37,9 +37,9 @@ export class LogInResponseDTO {
 }
 
 export class UsersInfoDTO {
-    userId: number;
+    id: number;
 
     constructor(user: User) {
-        this.userId = user.userId;
+        this.id = user.id;
     }
 }

@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, Updat
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    userId: number;
+    id: number;
 
     @Column()
     @Unique(['loginId'])

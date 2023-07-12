@@ -11,8 +11,8 @@ import { AuthUserType } from '@src/common/decorators/users.decorator';
 export class UsersService {
     constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) {}
 
-    async getUserInfo({ userId }: AuthUserType): Promise<UsersInfoDTO | null> {
-        const userInfo = await this.usersRepository.findOne({ where: { userId } });
+    async getUserInfo({ id }: AuthUserType): Promise<UsersInfoDTO | null> {
+        const userInfo = await this.usersRepository.findOne({ where: { id } });
         if (!userInfo) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다');
         }
@@ -66,13 +66,13 @@ export class UsersService {
             throw new UnauthorizedException('비밀번호를 다시 확인해주세요');
         }
 
-        const payload = { userId: user.userId };
+        const payload = { id: user.id };
         const accessToken = await this.jwtService.signAsync(payload);
 
         return { accessToken };
     }
 
-    async updateUser(userId: number, createUserDTO: CreateUserDTO): Promise<User> {
+    async updateUser(id: number, createUserDTO: CreateUserDTO): Promise<User> {
         const { loginId, password, name, phone, email, zipcode, address } = createUserDTO;
 
         const salt = await bcrypt.genSalt();
@@ -95,7 +95,7 @@ export class UsersService {
         return existingUser;
     }
 
-    async softDeleteUser(userId: number): Promise<void> {
-        await this.usersRepository.update(userId, { isDeleted: true });
+    async softDeleteUser(id: number): Promise<void> {
+        await this.usersRepository.update(id, { isDeleted: true });
     }
 }

@@ -19,8 +19,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException('유효한 사용자 정보를 payload에서 찾을 수 없습니다');
         }
 
-        const { userId } = payload;
-        const user = await this.usersService.getUserInfo({ userId });
+        const { id } = payload;
+        const user = await this.usersService.getUserInfo({ id });
         if (!user) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다');
         }

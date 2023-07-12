@@ -30,13 +30,13 @@ export class UsersController {
 
     @Patch(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    async updateUser(@Param('id') userId: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
-        return this.usersService.updateUser(userId, createUserDTO);
+    async updateUser(@Param('id') id: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
+        return this.usersService.updateUser(id, createUserDTO);
     }
 
     @Post(':id/withdrawal')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    async withdrawal(@Param('id') userId: number): Promise<void> {
-        return this.usersService.softDeleteUser(userId);
+    async withdrawal(@Param('id') id: number): Promise<void> {
+        return this.usersService.softDeleteUser(id);
     }
 }

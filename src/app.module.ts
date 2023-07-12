@@ -30,7 +30,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
                 password: configService.get('DB_PASSWORD'),
                 database: configService.get('DB_NAME'),
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                synchronize: false,
+                synchronize: true,
                 autoLoadEntities: true,
                 logging: false,
                 namingStrategy: new SnakeNamingStrategy(),
