@@ -14,7 +14,7 @@ export class UsersService {
     async getUserInfo({ userId }: AuthUserType): Promise<UsersInfoDTO | null> {
         const userInfo = await this.usersRepository.findOne({ where: { userId } });
         if (!userInfo) {
-            throw new UnauthorizedException('사용자 정보를 찾을 수 없습니다');
+            throw new UnauthorizedException('사용자를 찾을 수 없습니다');
         }
         return userInfo;
     }
@@ -70,6 +70,26 @@ export class UsersService {
         const accessToken = await this.jwtService.signAsync(payload);
 
         return { accessToken };
+    }
+
+    async updateUser(userId: number, createUserDTO: CreateUserDTO): Promise<User> {
+        const { loginId, password, name, phone, email, zipcode, address } = createUserDTO;
+
+        const existingUser = await this.usersRepository.findOne({
+            where: [{ loginId }, { phone }, { email }],
+        });
+
+        existingUser.loginId = loginId;
+        existingUser.password = password;
+        existingUser.name = name;
+        existingUser.phone = phone;
+        existingUser.email = email;
+        existingUser.zipcode = zipcode;
+        existingUser.address = address;
+
+        await this.usersRepository.save(existingUser);
+
+        return existingUser;
     }
 
     async softDeleteUser(userId: number): Promise<void> {

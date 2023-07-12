@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/user.entity';
@@ -26,6 +26,12 @@ export class UsersController {
     @Post('/login')
     async login(@Body() logInDTO: LogInDTO): Promise<LogInResponseDTO> {
         return this.usersService.login(logInDTO);
+    }
+
+    @Patch(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    async updateUser(@Param('id') userId: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
+        return this.usersService.updateUser(userId, createUserDTO);
     }
 
     @Post(':id/withdrawal')
