@@ -97,7 +97,11 @@ export class UsersService {
         return existingUser;
     }
 
-    async softDeleteUser(id: number): Promise<void> {
+    async softDeleteParam(id: number): Promise<void> {
         await this.usersRepository.update(id, { isDeleted: true });
+    }
+
+    async softDeletePayload(payload: any): Promise<any> {
+        return await this.usersRepository.update(payload.id, { isDeleted: true });
     }
 }

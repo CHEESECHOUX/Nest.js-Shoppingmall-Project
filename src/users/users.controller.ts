@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/user.entity';
@@ -34,9 +34,15 @@ export class UsersController {
         return this.usersService.updateUser(id, createUserDTO);
     }
 
-    @Post(':id/withdrawal')
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     async withdrawal(@Param('id') id: number): Promise<void> {
-        return this.usersService.softDeleteUser(id);
+        return this.usersService.softDeleteParam(id);
+    }
+
+    @Delete('')
+    @UseGuards(JwtAuthGuard)
+    async remove(@Request() req) {
+        return this.usersService.softDeletePayload(req.user);
     }
 }
