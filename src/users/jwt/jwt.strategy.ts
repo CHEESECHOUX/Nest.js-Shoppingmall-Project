@@ -14,7 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        console.log('Payload:', payload);
         if (!payload) {
             throw new UnauthorizedException('유효한 사용자 정보를 payload에서 찾을 수 없습니다');
         }

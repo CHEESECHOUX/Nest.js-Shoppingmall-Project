@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -78,9 +78,11 @@ export class UsersService {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const existingUser = await this.usersRepository.findOne({
-            where: [{ loginId }, { phone }, { email }],
-        });
+        const existingUser = await this.usersRepository.findOne({ where: { id } });
+
+        if (!existingUser) {
+            throw new NotFoundException('사용자 정보를 찾을 수 없습니다');
+        }
 
         existingUser.loginId = loginId;
         existingUser.password = hashedPassword;

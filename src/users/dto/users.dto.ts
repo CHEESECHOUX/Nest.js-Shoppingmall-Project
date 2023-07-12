@@ -30,7 +30,6 @@ export class CreateUserDTO extends LogInDTO {
     @IsString()
     address: string;
 }
-
 export class LogInResponseDTO {
     @IsString()
     accessToken: string;
