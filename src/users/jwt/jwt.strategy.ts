@@ -1,19 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
+import { UsersService } from '@src/users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly configService: ConfigService) {
+    constructor(private readonly usersService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get('JWT_SECRET'),
+            secretOrKey: process.env.JWT_SECRET,
         });
     }
 
     async validate(payload: any) {
-        return { userId: payload.sub, name: payload.name };
+        console.log('Payload:', payload);
+        if (!payload) {
+            throw new UnauthorizedException('유효한 사용자 정보를 payload에서 찾을 수 없습니다');
+        }
+
+        const { userId } = payload;
+        const user = await this.usersService.getUserInfo({ userId });
+        if (!user) {
+            throw new UnauthorizedException('사용자를 찾을 수 없습니다');
+        }
+        return user;
     }
 }

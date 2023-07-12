@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, SetMetadata, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/user.entity';
@@ -13,7 +13,7 @@ export class UsersController {
     @Get('/myinfo')
     @UseGuards(JwtAuthGuard, RolesGuard)
     // @SetMetadata('roles', ['CUSTOMER'])
-    async getUserInfo(@AuthUser('id') authUserType: AuthUserType): Promise<UsersInfoDTO | null> {
+    async getUserInfo(@AuthUser() authUserType: AuthUserType): Promise<UsersInfoDTO | null> {
         const userInfo = await this.usersService.getUserInfo(authUserType);
         return userInfo;
     }

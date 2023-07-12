@@ -66,7 +66,7 @@ export class UsersService {
             throw new UnauthorizedException('비밀번호를 다시 확인해주세요');
         }
 
-        const payload = { loginId: user.loginId };
+        const payload = { userId: user.userId };
         const accessToken = await this.jwtService.signAsync(payload);
 
         return { accessToken };

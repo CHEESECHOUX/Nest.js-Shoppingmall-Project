@@ -38,4 +38,4 @@
 
 -   Passport
     $ npm i --save @nestjs/passport
-    $ npm i --save passport-jwt
+    $ npm i --save -dev @types/passport-jwt
