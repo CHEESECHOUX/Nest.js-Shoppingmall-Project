@@ -75,12 +75,15 @@ export class UsersService {
     async updateUser(userId: number, createUserDTO: CreateUserDTO): Promise<User> {
         const { loginId, password, name, phone, email, zipcode, address } = createUserDTO;
 
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         const existingUser = await this.usersRepository.findOne({
             where: [{ loginId }, { phone }, { email }],
         });
 
         existingUser.loginId = loginId;
-        existingUser.password = password;
+        existingUser.password = hashedPassword;
         existingUser.name = name;
         existingUser.phone = phone;
         existingUser.email = email;
