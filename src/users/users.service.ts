@@ -71,4 +71,8 @@ export class UsersService {
 
         return { accessToken };
     }
+
+    async softDeleteUser(userId: number): Promise<void> {
+        await this.usersRepository.update(userId, { isDeleted: true });
+    }
 }

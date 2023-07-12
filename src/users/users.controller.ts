@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/user.entity';
@@ -26,5 +26,11 @@ export class UsersController {
     @Post('/login')
     async login(@Body() logInDTO: LogInDTO): Promise<LogInResponseDTO> {
         return this.usersService.login(logInDTO);
+    }
+
+    @Post(':id/withdrawal')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    async withdrawal(@Param('id') userId: number): Promise<void> {
+        return this.usersService.softDeleteUser(userId);
     }
 }
