@@ -8,7 +8,7 @@ import { User } from '@src/users/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '@src/users/jwt/jwt.strategy';
-import { LoginLogger } from './login.logger';
+import { LoginLogger } from '@src/log/login.logger';
 
 @Module({
     imports: [
