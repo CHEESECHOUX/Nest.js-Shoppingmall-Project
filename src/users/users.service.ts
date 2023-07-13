@@ -90,23 +90,23 @@ export class UsersService {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const existingUser = await this.usersRepository.findOne({ where: { id } });
+        const updateUser = await this.usersRepository.findOne({ where: { id } });
 
-        if (!existingUser) {
+        if (!updateUser) {
             throw new NotFoundException('사용자 정보를 찾을 수 없습니다');
         }
 
-        existingUser.loginId = loginId;
-        existingUser.password = hashedPassword;
-        existingUser.name = name;
-        existingUser.phone = phone;
-        existingUser.email = email;
-        existingUser.zipcode = zipcode;
-        existingUser.address = address;
+        updateUser.loginId = loginId;
+        updateUser.password = hashedPassword;
+        updateUser.name = name;
+        updateUser.phone = phone;
+        updateUser.email = email;
+        updateUser.zipcode = zipcode;
+        updateUser.address = address;
 
-        await this.usersRepository.save(existingUser);
+        await this.usersRepository.save(updateUser);
 
-        return existingUser;
+        return updateUser;
     }
 
     async softDeleteParam(id: number): Promise<void> {
