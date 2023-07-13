@@ -1,5 +1,5 @@
 import { IsEmail, IsString, Length, Matches, MinLength } from 'class-validator';
-import { User } from '@src/users/user.entity';
+import { User } from '@src/users/entity/user.entity';
 
 export class LogInDTO {
     @IsString()

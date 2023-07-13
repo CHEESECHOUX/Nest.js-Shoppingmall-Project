@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
+import { Product } from '@src/products/entity/product.entity';
+import { Column, CreateDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -33,12 +34,18 @@ export class User {
     role: string;
     comment: 'ADMIN, MANAGER, CUSTOMER';
 
-    @Column({ default: false })
-    isDeleted: boolean;
-
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
 
     @UpdateDateColumn({ type: 'datetime' })
     updatedAt: Date;
+
+    @Column({ default: false })
+    isDeleted: boolean;
+
+    @OneToMany(() => Product, product => product.user, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    products: Product[];
 }

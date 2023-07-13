@@ -12,6 +12,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
 import { LoginLogger } from '@src/log/login.logger';
+import { ProductsController } from './products/products.controller';
+import { ProductsModule } from './products/products.module';
 
 @Module({
     imports: [
@@ -71,8 +73,9 @@ import { LoginLogger } from '@src/log/login.logger';
         }),
         ScheduleModule.forRoot(),
         UsersModule,
+        ProductsModule,
     ],
-    controllers: [AppController],
+    controllers: [AppController, ProductsController],
     providers: [AppService, LoginLogger, LogFileResetService],
 })
 export class AppModule {}
