@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '@src/users/jwt/jwt.strategy';
 import { LoginLogger } from '@src/log/login.logger';
+import { LogFileResetService } from '@src/log/log-file-reset.service';
 
 @Module({
     imports: [
@@ -26,7 +27,7 @@ import { LoginLogger } from '@src/log/login.logger';
         }),
         TypeOrmModule.forFeature([User]),
     ],
-    providers: [UsersService, UsersRepository, JwtStrategy, LoginLogger],
+    providers: [UsersService, UsersRepository, JwtStrategy, LoginLogger, LogFileResetService],
     controllers: [UsersController],
 })
 export class UsersModule {}

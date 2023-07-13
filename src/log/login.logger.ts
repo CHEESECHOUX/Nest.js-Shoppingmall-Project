@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { UsersInfoDTO } from '@src/users/dto/users.dto';
 import { Logger, createLogger, format, transports } from 'winston';
-
+import { LogFileResetService } from '@src/log/log-file-reset.service';
 @Injectable()
 export class LoginLogger {
-    private logger: Logger;
     private loginLogger: Logger;
     private userInfoLogger: Logger;
+    private logFileResetService: LogFileResetService;
+    private logFilePath: string;
 
-    constructor(private configService: ConfigService) {
-        const logFilePath = this.configService.get<string>('LOGIN_LOG_FILE_PATH');
+    constructor(private configService: ConfigService, logFileResetService: LogFileResetService) {
+        this.logFilePath = this.configService.get<string>('LOG_FILE_PATH');
 
-        if (!logFilePath) {
-            throw new Error('LOGIN_LOG_FILE_PATH 환경 변수가 설정되지 않았습니다');
+        if (!this.logFilePath) {
+            throw new Error('LOG_FILE_PATH 환경 변수가 설정되지 않았습니다');
         }
 
         const loginLogFileName = 'login.log';
-        const loginLogFilePath = logFilePath.replace(/([^\/]*)$/, loginLogFileName);
+        const loginLogFilePath = this.logFilePath.replace(/([^\/]*)$/, loginLogFileName);
         this.loginLogger = createLogger({
             level: 'info',
             format: format.combine(format.timestamp(), format.json()),
@@ -25,12 +27,13 @@ export class LoginLogger {
         });
 
         const userInfoLogFileName = 'userinfo.log';
-        const userInfoLogFilePath = logFilePath.replace(/([^\/]*)$/, userInfoLogFileName);
+        const userInfoLogFilePath = this.logFilePath.replace(/([^\/]*)$/, userInfoLogFileName);
         this.userInfoLogger = createLogger({
             level: 'info',
             format: format.combine(format.timestamp(), format.json()),
             transports: [new transports.File({ filename: userInfoLogFilePath })],
         });
+        this.logFileResetService = logFileResetService;
     }
 
     logLogin(userId: number): void {
@@ -39,5 +42,22 @@ export class LoginLogger {
 
     logUserInfo(userInfo: UsersInfoDTO): void {
         this.userInfoLogger.info(`사용자 정보 조회: ${JSON.stringify(userInfo)}`);
+    }
+
+    // 매일 자정 UserInfoLog 데이터 초기화
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async resetUserInfoLog(): Promise<void> {
+        const userInfoLogFileName = 'userinfo.log';
+        const userInfoLogFilePath = this.logFilePath.replace(/([^\/]*)$/, userInfoLogFileName);
+
+        const newUserInfoLogger = createLogger({
+            level: 'info',
+            format: format.combine(format.timestamp(), format.json()),
+            transports: [new transports.File({ filename: userInfoLogFilePath })],
+        });
+
+        await this.logFileResetService.resetLogFile();
+
+        this.userInfoLogger = newUserInfoLogger;
     }
 }

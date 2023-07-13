@@ -9,6 +9,9 @@ import * as winstonDaily from 'winston-daily-rotate-file';
 import { UsersModule } from '@src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { ScheduleModule } from '@nestjs/schedule';
+import { LogFileResetService } from '@src/log/log-file-reset.service';
+import { LoginLogger } from '@src/log/login.logger';
 
 @Module({
     imports: [
@@ -66,9 +69,10 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
                 }),
             ],
         }),
+        ScheduleModule.forRoot(),
         UsersModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, LoginLogger, LogFileResetService],
 })
 export class AppModule {}

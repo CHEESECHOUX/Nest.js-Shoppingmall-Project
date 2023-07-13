@@ -39,3 +39,6 @@
 -   Passport
     $ npm i --save @nestjs/passport
     $ npm i --save -dev @types/passport-jwt
+
+-   로그 파일 스케줄 관리
+    $ npm i --save @nestjs/schedule
