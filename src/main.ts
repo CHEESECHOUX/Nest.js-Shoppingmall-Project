@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@src/app.module';
 import { AllExceptionsFilter } from '@src/common/all-exceptions.filter';
 import { HttpLoggingInterceptor } from '@src/common/http-logging.interceptor';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 const corsOptions: CorsOptions = {
     origin: 'http://localhost:3000',
@@ -29,6 +30,8 @@ async function bootstrap() {
     );
 
     app.enableCors(corsOptions);
+
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
     await app.listen(3000);
 }

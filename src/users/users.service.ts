@@ -6,10 +6,16 @@ import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/user.entity';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
 import { AuthUserType } from '@src/common/decorators/users.decorator';
+import { LoginLogger } from '@src/users/login.logger';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) {}
+    constructor(
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
+        private jwtService: JwtService,
+        private loginLogger: LoginLogger,
+    ) {}
 
     async getUserInfo({ id }: AuthUserType): Promise<UsersInfoDTO | null> {
         const userInfo = await this.usersRepository.findOne({ where: { id } });
@@ -65,6 +71,8 @@ export class UsersService {
         if (user && !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('비밀번호를 다시 확인해주세요');
         }
+
+        await this.loginLogger.logLogin(user.id);
 
         const payload = { id: user.id };
         const accessToken = await this.jwtService.signAsync(payload);

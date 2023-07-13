@@ -29,6 +29,7 @@
 
     -   MySQL 연동
         $ npm i --save mysql
+        npm install mysql2 --save
 
 -   bcrypt
     $ npm i --save bcrypt

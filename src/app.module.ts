@@ -42,7 +42,11 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
                     level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
                     format: winston.format.combine(
                         winston.format.timestamp(),
-                        nestWinstonModuleUtilities.format.nestLike(process.env.APP_NAME, { prettyPrint: true }),
+                        winston.format.ms(),
+                        nestWinstonModuleUtilities.format.nestLike(process.env.APP_NAME, {
+                            colors: true,
+                            prettyPrint: true,
+                        }),
                     ),
                 }),
                 new winstonDaily({
