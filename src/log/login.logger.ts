@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { UsersInfoDTO } from '@src/users/dto/users.dto';
+import { UserInfoDTO } from '@src/users/dto/users.dto';
 import { Logger, createLogger, format, transports } from 'winston';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
 @Injectable()
@@ -40,7 +40,7 @@ export class LoginLogger {
         this.loginLogger.info(`사용자 id ${userId} 로그인 했습니다`);
     }
 
-    logUserInfo(userInfo: UsersInfoDTO): void {
+    logUserInfo(userInfo: UserInfoDTO): void {
         this.userInfoLogger.info(`사용자 정보 조회: ${JSON.stringify(userInfo)}`);
     }
 

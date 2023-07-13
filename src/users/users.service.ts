@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/entity/user.entity';
-import { CreateUserDTO, LogInDTO, LogInResponseDTO, UsersInfoDTO } from '@src/users/dto/users.dto';
+import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { AuthUserType } from '@src/common/decorators/users.decorator';
 import { LoginLogger } from '@src/log/login.logger';
 
@@ -18,7 +18,7 @@ export class UsersService {
         private userInfoLogger: LoginLogger,
     ) {}
 
-    async getUserInfo({ id }: AuthUserType): Promise<UsersInfoDTO | null> {
+    async getUserInfo({ id }: AuthUserType): Promise<UserInfoDTO | null> {
         const userInfo = await this.usersRepository.findOne({ where: { id } });
         if (!userInfo) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다');

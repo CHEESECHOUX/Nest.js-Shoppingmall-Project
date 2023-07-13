@@ -14,3 +14,8 @@ export class CreateProductDTO {
     @Min(0)
     price: number;
 }
+
+export class ProductInfoDTO extends CreateProductDTO {
+    @IsNumber()
+    id: number;
+}

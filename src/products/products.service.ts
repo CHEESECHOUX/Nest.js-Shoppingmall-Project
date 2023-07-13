@@ -1,8 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entity/product.entity';
 import { Repository } from 'typeorm';
-import { CreateProductDTO } from './dto/products.dto';
+import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -10,6 +10,15 @@ export class ProductsService {
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
     ) {}
+
+    async getProductInfo(id: number): Promise<ProductInfoDTO | null> {
+        const productInfo = await this.productsRepository.findOne({ where: { id } });
+        if (!productInfo) {
+            throw new UnauthorizedException('상품을 찾을 수 없습니다');
+        }
+
+        return productInfo;
+    }
 
     async createProduct(createProductDTO: CreateProductDTO): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;

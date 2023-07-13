@@ -35,7 +35,7 @@ export class LogInResponseDTO {
     accessToken: string;
 }
 
-export class UsersInfoDTO {
+export class UserInfoDTO {
     id: number;
 
     constructor(user: User) {
