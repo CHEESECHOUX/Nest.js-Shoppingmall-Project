@@ -11,7 +11,7 @@ export class ProductsService {
         private productsRepository: Repository<Product>,
     ) {}
 
-    async getProductInfo(id: number): Promise<ProductInfoDTO | null> {
+    async getProductById(id: number): Promise<ProductInfoDTO | null> {
         const productInfo = await this.productsRepository.findOne({ where: { id } });
         if (!productInfo) {
             throw new UnauthorizedException('상품을 찾을 수 없습니다');
@@ -57,5 +57,9 @@ export class ProductsService {
         await this.productsRepository.save(updateProduct);
 
         return updateProduct;
+    }
+
+    async softDeleteById(id: number): Promise<void> {
+        await this.productsRepository.update(id, { isDeleted: true });
     }
 }

@@ -36,13 +36,13 @@ export class UsersController {
 
     @Delete(':id')
     @UseGuards(JwtAuthGuard)
-    async withdrawal(@Param('id') id: number): Promise<void> {
-        return this.usersService.softDeleteParam(id);
+    async softDeleteParam(@Param('id') id: number): Promise<void> {
+        return this.usersService.softDeleteParamId(id);
     }
 
     @Delete('')
     @UseGuards(JwtAuthGuard)
-    async remove(@Request() req) {
-        return this.usersService.softDeletePayload(req.user);
+    async softDeletePayload(@Request() req) {
+        return this.usersService.softDeletePayloadId(req.user);
     }
 }
