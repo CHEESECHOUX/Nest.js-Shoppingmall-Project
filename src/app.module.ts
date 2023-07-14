@@ -14,6 +14,7 @@ import { LogFileResetService } from '@src/log/log-file-reset.service';
 import { LoginLogger } from '@src/log/login.logger';
 import { ProductsModule } from '@src/products/products.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { ImageurlsModule } from './imageurls/imageurls.module';
 
 @Module({
     imports: [
@@ -75,6 +76,7 @@ import { UploadsModule } from './uploads/uploads.module';
         UsersModule,
         ProductsModule,
         UploadsModule,
+        ImageurlsModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],

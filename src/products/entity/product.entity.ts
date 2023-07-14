@@ -1,5 +1,6 @@
+import { ImageUrl } from '@src/imageurls/entity/imageUrl.entity';
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -29,4 +30,10 @@ export class Product {
 
     @ManyToOne(() => User, user => user.products)
     user: User;
+
+    @OneToMany(() => ImageUrl, imageurl => imageurl.product, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    imageUrls: ImageUrl[];
 }

@@ -1,5 +1,5 @@
 import { Product } from '@src/products/entity/product.entity';
-import { Column, CreateDateColumn, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class User {
