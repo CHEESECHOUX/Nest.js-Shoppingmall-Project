@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from '@src/products/products.service';
 import { Product } from '@src/products/entity/product.entity';
 import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
@@ -14,9 +14,15 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Get(':id')
-    async getProduct(@Param('id') id: number): Promise<ProductInfoDTO | null> {
-        const productInfo = await this.productsService.getProductById(id);
+    async searchById(@Param('id') id: number): Promise<ProductInfoDTO | null> {
+        const productInfo = await this.productsService.searchById(id);
         return productInfo;
+    }
+
+    @Get('')
+    async searchByName(@Query('productName') productName: string): Promise<Product[]> {
+        const products = await this.productsService.searchByName(productName);
+        return products;
     }
 
     @Post()
