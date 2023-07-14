@@ -13,6 +13,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
 import { LoginLogger } from '@src/log/login.logger';
 import { ProductsModule } from '@src/products/products.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
     imports: [
@@ -73,6 +74,7 @@ import { ProductsModule } from '@src/products/products.module';
         ScheduleModule.forRoot(),
         UsersModule,
         ProductsModule,
+        UploadsModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],

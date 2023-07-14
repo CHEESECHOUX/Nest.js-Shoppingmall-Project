@@ -29,7 +29,7 @@ async function bootstrap() {
         }),
     );
 
-    app.enableCors(corsOptions);
+    app.enableCors();
 
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 

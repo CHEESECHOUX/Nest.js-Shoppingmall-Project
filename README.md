@@ -42,3 +42,7 @@
 
 -   로그 파일 스케줄 관리
     $ npm i --save @nestjs/schedule
+
+-   S3 파일 저장
+    $ npm i -D @types/multer
+    $ npm i --save aws-sdk
