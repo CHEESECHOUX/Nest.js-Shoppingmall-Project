@@ -3,7 +3,6 @@ import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/entity/user.entity';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
-import { RolesGuard } from '@src/guards/roles.guard';
 import { GetUserJWT, AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 
 @Controller('/users')
@@ -11,8 +10,7 @@ export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
     @Get('/myinfo')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    // @SetMetadata('roles', ['CUSTOMER'])
+    @UseGuards(JwtAuthGuard)
     async getUserInfo(@GetUserJWT() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
         const userInfo = await this.usersService.getUserInfo(authUserType);
         return userInfo;
@@ -29,7 +27,7 @@ export class UsersController {
     }
 
     @Patch(':id')
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard)
     async updateUser(@Param('id') id: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
         return this.usersService.updateUser(id, createUserDTO);
     }
