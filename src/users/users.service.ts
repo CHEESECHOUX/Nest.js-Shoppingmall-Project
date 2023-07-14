@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/entity/user.entity';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
-import { AuthUserType } from '@src/common/decorators/users.decorator';
+import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 import { LoginLogger } from '@src/log/login.logger';
 
 @Injectable()

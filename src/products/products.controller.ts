@@ -1,7 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './entity/product.entity';
 import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
+import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
+import { User } from '@src/users/entity/user.entity';
+import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
 
 @Controller('/products')
 export class ProductsController {
@@ -14,8 +17,9 @@ export class ProductsController {
     }
 
     @Post()
-    async createProduct(@Body() createProductDTO: CreateProductDTO): Promise<Product> {
-        return this.productsService.createProduct(createProductDTO);
+    @UseGuards(JwtAuthGuard)
+    async createProduct(@GetUserSession() user: User, @Body() createProductDTO: CreateProductDTO): Promise<Product> {
+        return this.productsService.createProduct(user, createProductDTO);
     }
 
     @Patch(':id')

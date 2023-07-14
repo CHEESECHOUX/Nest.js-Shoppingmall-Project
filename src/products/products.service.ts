@@ -1,8 +1,9 @@
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './entity/product.entity';
+import { Product } from '@src/products/entity/product.entity';
 import { Repository } from 'typeorm';
-import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
+import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto';
+import { User } from '@src/users/entity/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -20,7 +21,7 @@ export class ProductsService {
         return productInfo;
     }
 
-    async createProduct(createProductDTO: CreateProductDTO): Promise<Product> {
+    async createProduct(user: User, createProductDTO: CreateProductDTO): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
 
         const existingProduct = await this.productsRepository.findOne({
@@ -31,6 +32,7 @@ export class ProductsService {
         }
 
         const newProduct = new Product();
+        newProduct.user = user;
         newProduct.productName = productName;
         newProduct.brandName = brandName;
         newProduct.description = description;

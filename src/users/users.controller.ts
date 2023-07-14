@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/entity/user.entity';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { RolesGuard } from '@src/guards/roles.guard';
-import { AuthUser, AuthUserType } from '@src/common/decorators/users.decorator';
+import { GetUserJWT, AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 
 @Controller('/users')
 export class UsersController {
@@ -13,7 +13,7 @@ export class UsersController {
     @Get('/myinfo')
     @UseGuards(JwtAuthGuard, RolesGuard)
     // @SetMetadata('roles', ['CUSTOMER'])
-    async getUserInfo(@AuthUser() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
+    async getUserInfo(@GetUserJWT() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
         const userInfo = await this.usersService.getUserInfo(authUserType);
         return userInfo;
     }
