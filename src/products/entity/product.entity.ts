@@ -1,4 +1,4 @@
-import { ImageUrl } from '@src/imageurls/entity/imageUrl.entity';
+import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 

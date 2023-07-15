@@ -1,6 +1,6 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadsService } from './uploads.service';
+import { UploadsService } from '@src/uploads/uploads.service';
 
 @Controller('/uploads')
 export class UploadsController {
@@ -8,7 +8,7 @@ export class UploadsController {
 
     @Post()
     @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file) {
-        return this.uploadsService.uploadFile(file);
+    async uploadFile(@UploadedFile() file, @Body('productId') productId: number) {
+        return this.uploadsService.uploadFile(file, productId);
     }
 }
