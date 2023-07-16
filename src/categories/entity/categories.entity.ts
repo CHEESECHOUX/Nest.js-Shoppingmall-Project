@@ -7,7 +7,7 @@ export class Category {
     id: number;
 
     @Column()
-    category: string;
+    name: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
