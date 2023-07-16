@@ -1,10 +1,16 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CategoriesService } from '@src/categories/categories.service';
-import { CreateCategoryDTO } from '@src/categories/dto/categories.dto';
+import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
 
 @Controller('categories')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
+
+    @Get(':id')
+    async searchById(@Param('id') id: number): Promise<CategoryInfoDTO | null> {
+        const categoryInfo = await this.categoriesService.searchById(id);
+        return categoryInfo;
+    }
 
     @Post()
     async createCategory(@Body() createCategoryDTO: CreateCategoryDTO) {

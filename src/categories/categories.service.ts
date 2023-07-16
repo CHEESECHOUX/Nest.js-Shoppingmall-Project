@@ -1,8 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entity/categories.entity';
 import { Repository } from 'typeorm';
-import { CreateCategoryDTO } from '@src/categories/dto/categories.dto';
+import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -10,6 +10,15 @@ export class CategoriesService {
         @InjectRepository(Category)
         private categoriesRepository: Repository<Category>,
     ) {}
+
+    async searchById(id: number): Promise<CategoryInfoDTO | null> {
+        const categoryInfo = await this.categoriesRepository.findOne({ where: { id } });
+        if (!categoryInfo) {
+            throw new UnauthorizedException('카테고리를 찾을 수 없습니다');
+        }
+
+        return categoryInfo;
+    }
 
     async createCategory(createCategoryDTO: CreateCategoryDTO): Promise<Category> {
         const { name } = createCategoryDTO;
