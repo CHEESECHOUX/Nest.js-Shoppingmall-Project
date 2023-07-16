@@ -36,7 +36,6 @@ export class ProductsService {
 
     async createProductWithImage(user: User, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
-        console.log(createProductDTO);
 
         const existingProduct = await this.productsRepository.findOne({
             where: [{ productName, brandName }],
@@ -64,22 +63,29 @@ export class ProductsService {
         return createdProduct;
     }
 
-    async updateProduct(id: number, createProductDTO: CreateProductDTO): Promise<Product> {
+    async updateProduct(id: number, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
 
-        const updateProduct = await this.productsRepository.findOne({ where: { id } });
-        if (!updateProduct) {
+        const product = await this.productsRepository.findOne({ where: { id } });
+        if (!product) {
             throw new NotFoundException('상품 정보를 찾을 수 없습니다');
         }
 
-        updateProduct.productName = productName;
-        updateProduct.brandName = brandName;
-        updateProduct.description = description;
-        updateProduct.price = price;
+        product.productName = productName;
+        product.brandName = brandName;
+        product.description = description;
+        product.price = price;
+        const updatedProduct = await this.productsRepository.save(product);
 
-        await this.productsRepository.save(updateProduct);
+        const uploadedImageUrl = await this.uploadsService.uploadFile(imageFile, updatedProduct.id);
 
-        return updateProduct;
+        const imageUrl = new ImageUrl();
+        imageUrl.imageUrl = uploadedImageUrl;
+        imageUrl.product = updatedProduct;
+
+        await this.imageUrlsRepository.save(imageUrl);
+
+        return updatedProduct;
     }
 
     async softDeleteById(productId: number): Promise<void> {

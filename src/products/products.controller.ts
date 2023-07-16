@@ -31,16 +31,21 @@ export class ProductsController {
     @UseInterceptors(FileInterceptor('file'))
     async createProductWithImage(
         @GetUserSession() user: User,
-        @UploadedFile() file: Express.Multer.File,
+        @UploadedFile() imageFile: Express.Multer.File,
         @Body() createProductDTO: CreateProductDTO,
     ): Promise<Product> {
-        return this.productsService.createProductWithImage(user, createProductDTO, file);
+        return this.productsService.createProductWithImage(user, createProductDTO, imageFile);
     }
 
     @Roles('ADMIN', 'MANAGER')
+    @UseInterceptors(FileInterceptor('file'))
     @Patch(':id')
-    async updateProduct(@Param('id') id: number, @Body() createProductDTO: CreateProductDTO): Promise<Product> {
-        return this.productsService.updateProduct(id, createProductDTO);
+    async updateProduct(
+        @Param('id') id: number,
+        @UploadedFile() imageFile: Express.Multer.File,
+        @Body() createProductDTO: CreateProductDTO,
+    ): Promise<Product> {
+        return this.productsService.updateProduct(id, createProductDTO, imageFile);
     }
 
     @Roles('ADMIN', 'MANAGER')
