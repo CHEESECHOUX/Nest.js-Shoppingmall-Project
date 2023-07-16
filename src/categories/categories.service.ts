@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entity/categories.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
 
 @Injectable()
@@ -18,6 +18,14 @@ export class CategoriesService {
         }
 
         return categoryInfo;
+    }
+
+    async searchByName(name: string): Promise<Category[]> {
+        const categories = await this.categoriesRepository.find({
+            where: { name: ILike(`%${name}%`) },
+        });
+
+        return categories;
     }
 
     async createCategory(createCategoryDTO: CreateCategoryDTO): Promise<Category> {
