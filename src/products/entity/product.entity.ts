@@ -1,3 +1,4 @@
+import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
@@ -36,4 +37,10 @@ export class Product {
         onUpdate: 'NO ACTION',
     })
     imageUrls: ImageUrl[];
+
+    @OneToMany(() => Category, category => category.product, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    categories: Category[];
 }

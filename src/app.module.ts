@@ -13,8 +13,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
 import { LoginLogger } from '@src/log/login.logger';
 import { ProductsModule } from '@src/products/products.module';
-import { UploadsModule } from './uploads/uploads.module';
-import { ImageurlsModule } from './imageurls/imageurls.module';
+import { UploadsModule } from '@src/uploads/uploads.module';
+import { ImageurlsModule } from '@src/imageurls/imageurls.module';
+import { CategoriesModule } from '@src/categories/categories.module';
 
 @Module({
     imports: [
@@ -77,6 +78,7 @@ import { ImageurlsModule } from './imageurls/imageurls.module';
         ProductsModule,
         UploadsModule,
         ImageurlsModule,
+        CategoriesModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],
