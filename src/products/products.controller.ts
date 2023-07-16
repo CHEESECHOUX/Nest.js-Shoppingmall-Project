@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from '@src/products/products.service';
 import { Product } from '@src/products/entity/product.entity';
 import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
@@ -7,6 +7,7 @@ import { User } from '@src/users/entity/user.entity';
 import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
 import { RolesGuard } from '@src/guards/roles.guard';
 import { Roles } from '@src/common/decorators/role.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/products')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -27,8 +28,9 @@ export class ProductsController {
 
     @Post()
     @Roles('ADMIN', 'MANAGER')
-    async createProduct(@GetUserSession() user: User, @Body() createProductDTO: CreateProductDTO): Promise<Product> {
-        return this.productsService.createProduct(user, createProductDTO);
+    @UseInterceptors(FileInterceptor('file'))
+    async createProductWithImage(@GetUserSession() user: User, @UploadedFile() file, @Body() createProductDTO: CreateProductDTO): Promise<Product> {
+        return this.productsService.createProductWithImage(user, createProductDTO, file);
     }
 
     @Roles('ADMIN', 'MANAGER')

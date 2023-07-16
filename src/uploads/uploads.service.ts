@@ -3,7 +3,6 @@ import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
-import { ImageUrlRepository } from '@src/imageurls/imageurls.repository';
 import { Product } from '@src/products/entity/product.entity';
 
 const BUCKET_NAME = 'cheesechoux-bucket';
@@ -12,7 +11,7 @@ const BUCKET_NAME = 'cheesechoux-bucket';
 export class UploadsService {
     constructor(
         @InjectRepository(ImageUrl)
-        private readonly imageUrlRepository: Repository<ImageUrlRepository>,
+        private readonly imageUrlsRepository: Repository<ImageUrl>,
         @InjectRepository(Product)
         private readonly productsRepository: Repository<Product>,
     ) {}
@@ -48,7 +47,7 @@ export class UploadsService {
             const uploadedFile = new ImageUrl();
             uploadedFile.imageUrl = fileUrl;
             uploadedFile.product = product;
-            await this.imageUrlRepository.save(uploadedFile);
+            await this.imageUrlsRepository.save(uploadedFile);
 
             return fileUrl;
         } catch (error) {

@@ -4,12 +4,17 @@ import { Product } from '@src/products/entity/product.entity';
 import { ILike, Repository } from 'typeorm';
 import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto';
 import { User } from '@src/users/entity/user.entity';
+import { UploadsService } from '@src/uploads/uploads.service';
+import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
+        @InjectRepository(ImageUrl)
+        private imageUrlsRepository: Repository<ImageUrl>,
+        private uploadsService: UploadsService,
     ) {}
 
     async searchById(id: number): Promise<ProductInfoDTO | null> {
@@ -29,8 +34,9 @@ export class ProductsService {
         return products;
     }
 
-    async createProduct(user: User, createProductDTO: CreateProductDTO): Promise<Product> {
+    async createProductWithImage(user: User, createProductDTO: CreateProductDTO, file): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
+        console.log(createProductDTO);
 
         const existingProduct = await this.productsRepository.findOne({
             where: [{ productName, brandName }],
@@ -46,7 +52,18 @@ export class ProductsService {
         newProduct.description = description;
         newProduct.price = price;
 
-        await this.productsRepository.save(newProduct);
+        const savedProduct = await this.productsRepository.save(newProduct);
+
+        const fileUrl = await this.uploadsService.uploadFile(file, newProduct.id);
+
+        const imageUrl = new ImageUrl();
+        imageUrl.imageUrl = fileUrl;
+        imageUrl.product = newProduct;
+        await this.imageUrlsRepository.save(imageUrl);
+
+        newProduct.imageUrls = [imageUrl];
+
+        savedProduct.imageUrls = [imageUrl];
 
         return newProduct;
     }

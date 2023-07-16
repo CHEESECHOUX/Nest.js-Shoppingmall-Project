@@ -28,7 +28,6 @@ async function bootstrap() {
             disableErrorMessages: true,
         }),
     );
-
     app.enableCors();
 
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));

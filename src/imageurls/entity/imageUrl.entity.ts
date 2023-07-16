@@ -1,5 +1,5 @@
 import { Product } from '@src/products/entity/product.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class ImageUrl {
@@ -8,6 +8,15 @@ export class ImageUrl {
 
     @Column()
     imageUrl: string;
+
+    @CreateDateColumn({ type: 'datetime' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'datetime' })
+    updatedAt: Date;
+
+    @Column({ default: false })
+    isDeleted: boolean;
 
     @ManyToOne(() => Product, product => product.imageUrls)
     product: Product;
