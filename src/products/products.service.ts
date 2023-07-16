@@ -82,7 +82,14 @@ export class ProductsService {
         return updateProduct;
     }
 
-    async softDeleteById(id: number): Promise<void> {
-        await this.productsRepository.update(id, { isDeleted: true });
+    async softDeleteById(productId: number): Promise<void> {
+        await this.productsRepository.update({ id: productId }, { isDeleted: true });
+
+        await this.imageUrlsRepository
+            .createQueryBuilder()
+            .update(ImageUrl)
+            .set({ isDeleted: true })
+            .where('product = :productId', { productId })
+            .execute();
     }
 }

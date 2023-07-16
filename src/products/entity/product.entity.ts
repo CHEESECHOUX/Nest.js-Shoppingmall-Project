@@ -32,7 +32,6 @@ export class Product {
     user: User;
 
     @OneToMany(() => ImageUrl, imageurl => imageurl.product, {
-        cascade: true,
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION',
     })

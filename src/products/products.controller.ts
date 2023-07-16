@@ -45,7 +45,7 @@ export class ProductsController {
 
     @Roles('ADMIN', 'MANAGER')
     @Delete(':id')
-    async softDeleteProduct(@Param('id') id: number): Promise<void> {
-        return this.productsService.softDeleteById(id);
+    async softDeleteProduct(@Param('id') productId: number): Promise<void> {
+        return this.productsService.softDeleteById(productId);
     }
 }
