@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from '@src/products/products.service';
 import { Product } from '@src/products/entity/product.entity';
 import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
@@ -29,7 +29,11 @@ export class ProductsController {
     @Post()
     @Roles('ADMIN', 'MANAGER')
     @UseInterceptors(FileInterceptor('file'))
-    async createProductWithImage(@GetUserSession() user: User, @UploadedFile() file, @Body() createProductDTO: CreateProductDTO): Promise<Product> {
+    async createProductWithImage(
+        @GetUserSession() user: User,
+        @UploadedFile() file: Express.Multer.File,
+        @Body() createProductDTO: CreateProductDTO,
+    ): Promise<Product> {
         return this.productsService.createProductWithImage(user, createProductDTO, file);
     }
 

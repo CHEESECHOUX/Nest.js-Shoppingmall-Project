@@ -34,7 +34,7 @@ export class ProductsService {
         return products;
     }
 
-    async createProductWithImage(user: User, createProductDTO: CreateProductDTO, file): Promise<Product> {
+    async createProductWithImage(user: User, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
         console.log(createProductDTO);
 
@@ -45,27 +45,23 @@ export class ProductsService {
             throw new ConflictException('이미 동일한 상품이 존재합니다');
         }
 
-        const newProduct = new Product();
-        newProduct.user = user;
-        newProduct.productName = productName;
-        newProduct.brandName = brandName;
-        newProduct.description = description;
-        newProduct.price = price;
+        const product = new Product();
+        product.user = user;
+        product.productName = productName;
+        product.brandName = brandName;
+        product.description = description;
+        product.price = price;
+        const createdProduct = await this.productsRepository.save(product);
 
-        const savedProduct = await this.productsRepository.save(newProduct);
-
-        const fileUrl = await this.uploadsService.uploadFile(file, newProduct.id);
+        const uploadedImageUrl = await this.uploadsService.uploadFile(imageFile, createdProduct.id);
 
         const imageUrl = new ImageUrl();
-        imageUrl.imageUrl = fileUrl;
-        imageUrl.product = newProduct;
+        imageUrl.imageUrl = uploadedImageUrl;
+        imageUrl.product = createdProduct;
+
         await this.imageUrlsRepository.save(imageUrl);
 
-        newProduct.imageUrls = [imageUrl];
-
-        savedProduct.imageUrls = [imageUrl];
-
-        return newProduct;
+        return createdProduct;
     }
 
     async updateProduct(id: number, createProductDTO: CreateProductDTO): Promise<Product> {
