@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '@src/categories/entity/categories.entity';
-import { ILike, Repository } from 'typeorm';
+import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { CategoryInfoDTO, CreateCategoryDTO, CreateCategoryWithProductDTO } from '@src/categories/dto/categories.dto';
 import { Product } from '@src/products/entity/product.entity';
 
@@ -86,7 +86,21 @@ export class CategoriesService {
         return category;
     }
 
-    async softDeleteById(id: number): Promise<void> {
-        await this.categoriesRepository.update(id, { isDeleted: true });
+    async softDeleteByIdWithProduct(id: number): Promise<void> {
+        const category = await this.categoriesRepository.findOneOrFail({ where: { id } });
+
+        category.isDeleted = true;
+        await this.categoriesRepository.save(category);
+
+        // category와 연결된 product 모두 찾기
+        const products = await this.productsRepository.find({
+            where: { categories: { id: id } },
+        } as FindManyOptions<Product>);
+
+        // 찾은 product들 isDeleted true로 변경
+        for (const product of products) {
+            product.isDeleted = true;
+            await this.productsRepository.save(product);
+        }
     }
 }

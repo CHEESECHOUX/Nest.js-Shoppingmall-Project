@@ -29,7 +29,7 @@ export class CategoriesController {
         return this.categoriesService.createCategory(createCategoryDTO);
     }
 
-    @Post('/withproduct')
+    @Post('/product')
     @Roles('ADMIN', 'MANAGER')
     async createCategoryWithProduct(@Body() createCategoryWithProductDTO: CreateCategoryWithProductDTO) {
         return this.categoriesService.categoryWithProduct(createCategoryWithProductDTO);
@@ -43,7 +43,7 @@ export class CategoriesController {
 
     @Delete(':id')
     @Roles('ADMIN', 'MANAGER')
-    async softDeleteCategory(@Param('id') id: number): Promise<void> {
-        return this.categoriesService.softDeleteById(id);
+    async softDeleteCategoryWithProduct(@Param('id') id: number): Promise<void> {
+        return this.categoriesService.softDeleteByIdWithProduct(id);
     }
 }
