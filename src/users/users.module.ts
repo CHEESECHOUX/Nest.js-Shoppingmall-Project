@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '@src/users/jwt/jwt.strategy';
 import { LoginLogger } from '@src/log/login.logger';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
+import { Cart } from '@src/carts/entity/carts.entity';
 
 @Module({
     imports: [
@@ -25,7 +26,7 @@ import { LogFileResetService } from '@src/log/log-file-reset.service';
                 },
             }),
         }),
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User, Cart]),
     ],
     providers: [UsersService, UsersRepository, JwtStrategy, LoginLogger, LogFileResetService],
     controllers: [UsersController],
