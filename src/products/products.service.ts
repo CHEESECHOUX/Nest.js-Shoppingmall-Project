@@ -63,7 +63,7 @@ export class ProductsService {
         return createdProduct;
     }
 
-    async updateProduct(id: number, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
+    async updateProductWithImage(id: number, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
 
         const product = await this.productsRepository.findOne({ where: { id } });

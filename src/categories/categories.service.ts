@@ -2,13 +2,16 @@ import { ConflictException, Injectable, NotFoundException, UnauthorizedException
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ILike, Repository } from 'typeorm';
-import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
+import { CategoryInfoDTO, CreateCategoryDTO, CreateCategoryWithProductDTO } from '@src/categories/dto/categories.dto';
+import { Product } from '@src/products/entity/product.entity';
 
 @Injectable()
 export class CategoriesService {
     constructor(
         @InjectRepository(Category)
         private categoriesRepository: Repository<Category>,
+        @InjectRepository(Product)
+        private productsRepository: Repository<Product>,
     ) {}
 
     async searchById(id: number): Promise<CategoryInfoDTO | null> {
@@ -38,6 +41,30 @@ export class CategoriesService {
 
         const category = new Category();
         category.name = name;
+
+        await this.categoriesRepository.save(category);
+
+        return category;
+    }
+
+    async categoryWithProduct(createCategoryWithProductDTO: CreateCategoryWithProductDTO): Promise<Category> {
+        const { name, productId } = createCategoryWithProductDTO;
+
+        const existingCategory = await this.categoriesRepository.findOne({ where: { name } });
+        if (existingCategory) {
+            throw new ConflictException('이미 동일한 카테고리명이 존재합니다');
+        }
+
+        const product = await this.productsRepository.findOne({ where: { id: productId } });
+        if (!product) {
+            throw new NotFoundException('상품을 찾을 수 없습니다');
+        }
+
+        const category = new Category();
+        category.name = name;
+
+        category.product = new Product();
+        category.product.id = productId;
 
         await this.categoriesRepository.save(category);
 

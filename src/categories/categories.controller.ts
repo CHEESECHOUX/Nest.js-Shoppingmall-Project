@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CategoriesService } from '@src/categories/categories.service';
-import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
+import { CategoryInfoDTO, CreateCategoryDTO, CreateCategoryWithProductDTO } from '@src/categories/dto/categories.dto';
 import { Category } from '@src/categories/entity/categories.entity';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { RolesGuard } from '@src/guards/roles.guard';
@@ -23,20 +23,26 @@ export class CategoriesController {
         return categoriesInfo;
     }
 
-    @Roles('ADMIN', 'MANAGER')
     @Post()
+    @Roles('ADMIN', 'MANAGER')
     async createCategory(@Body() createCategoryDTO: CreateCategoryDTO) {
         return this.categoriesService.createCategory(createCategoryDTO);
     }
 
+    @Post('/withproduct')
     @Roles('ADMIN', 'MANAGER')
+    async createCategoryWithProduct(@Body() createCategoryWithProductDTO: CreateCategoryWithProductDTO) {
+        return this.categoriesService.categoryWithProduct(createCategoryWithProductDTO);
+    }
+
     @Patch(':id')
+    @Roles('ADMIN', 'MANAGER')
     async updateCategory(@Param('id') id: number, @Body() createCategoryDTO: CreateCategoryDTO) {
         return this.categoriesService.updateCategory(id, createCategoryDTO);
     }
 
-    @Roles('ADMIN', 'MANAGER')
     @Delete(':id')
+    @Roles('ADMIN', 'MANAGER')
     async softDeleteCategory(@Param('id') id: number): Promise<void> {
         return this.categoriesService.softDeleteById(id);
     }

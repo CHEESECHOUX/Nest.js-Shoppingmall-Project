@@ -40,12 +40,12 @@ export class ProductsController {
     @Roles('ADMIN', 'MANAGER')
     @UseInterceptors(FileInterceptor('file'))
     @Patch(':id')
-    async updateProduct(
+    async updateProductWithImage(
         @Param('id') id: number,
         @UploadedFile() imageFile: Express.Multer.File,
         @Body() createProductDTO: CreateProductDTO,
     ): Promise<Product> {
-        return this.productsService.updateProduct(id, createProductDTO, imageFile);
+        return this.productsService.updateProductWithImage(id, createProductDTO, imageFile);
     }
 
     @Roles('ADMIN', 'MANAGER')
