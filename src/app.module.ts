@@ -16,6 +16,7 @@ import { ProductsModule } from '@src/products/products.module';
 import { UploadsModule } from '@src/uploads/uploads.module';
 import { ImageurlsModule } from '@src/imageurls/imageurls.module';
 import { CategoriesModule } from '@src/categories/categories.module';
+import { CartsModule } from '@src/carts/carts.module';
 
 @Module({
     imports: [
@@ -79,6 +80,7 @@ import { CategoriesModule } from '@src/categories/categories.module';
         UploadsModule,
         ImageurlsModule,
         CategoriesModule,
+        CartsModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],

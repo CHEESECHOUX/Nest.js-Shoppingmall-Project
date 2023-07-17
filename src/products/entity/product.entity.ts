@@ -1,3 +1,4 @@
+import { Cart } from '@src/carts/entity/carts.entity';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { User } from '@src/users/entity/user.entity';
@@ -43,4 +44,10 @@ export class Product {
         onUpdate: 'NO ACTION',
     })
     categories: Category[];
+
+    @OneToMany(() => Cart, cart => cart.product, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    carts: Cart[];
 }

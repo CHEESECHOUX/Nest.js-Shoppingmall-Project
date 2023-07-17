@@ -1,3 +1,4 @@
+import { Cart } from '@src/carts/entity/carts.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
@@ -48,4 +49,10 @@ export class User {
         onUpdate: 'NO ACTION',
     })
     products: Product[];
+
+    @OneToMany(() => Cart, cart => cart.user, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    carts: Cart[];
 }
