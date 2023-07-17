@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from '@src/products/products.service';
 import { Product } from '@src/products/entity/product.entity';
-import { CreateProductDTO, ProductInfoDTO } from './dto/products.dto';
+import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { User } from '@src/users/entity/user.entity';
 import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
@@ -15,15 +15,20 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Get(':id')
-    async searchById(@Param('id') id: number): Promise<ProductInfoDTO | null> {
-        const productInfo = await this.productsService.searchById(id);
+    async getProductById(@Param('id') id: number): Promise<ProductInfoDTO | null> {
+        const productInfo = await this.productsService.getProductById(id);
         return productInfo;
     }
 
     @Get('')
-    async searchByName(@Query('productName') productName: string): Promise<Product[]> {
-        const products = await this.productsService.searchByName(productName);
+    async getProductsByName(@Query('productName') productName: string): Promise<Product[]> {
+        const products = await this.productsService.getProductsByName(productName);
         return products;
+    }
+
+    @Get('category/:categoryId')
+    async getProductsByCategory(@Param('categoryId') categoryId: number): Promise<Product[]> {
+        return this.productsService.getProductsByCategory(categoryId);
     }
 
     @Post()

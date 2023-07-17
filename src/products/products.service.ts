@@ -17,7 +17,7 @@ export class ProductsService {
         private uploadsService: UploadsService,
     ) {}
 
-    async searchById(id: number): Promise<ProductInfoDTO | null> {
+    async getProductById(id: number): Promise<ProductInfoDTO | null> {
         const productInfo = await this.productsRepository.findOne({ where: { id } });
         if (!productInfo) {
             throw new UnauthorizedException('상품을 찾을 수 없습니다');
@@ -26,10 +26,22 @@ export class ProductsService {
         return productInfo;
     }
 
-    async searchByName(productName: string): Promise<Product[]> {
+    async getProductsByName(productName: string): Promise<Product[]> {
         const products = await this.productsRepository.find({
             where: { productName: ILike(`%${productName}%`) },
         });
+
+        return products;
+    }
+
+    async getProductsByCategory(categoryId: number): Promise<Product[]> {
+        const products = await this.productsRepository
+            .createQueryBuilder('product')
+            .innerJoin('product.categories', 'category')
+            .where('category.id = :categoryId', { categoryId })
+            .orderBy('product.productName', 'ASC')
+            .take(20)
+            .getMany();
 
         return products;
     }
