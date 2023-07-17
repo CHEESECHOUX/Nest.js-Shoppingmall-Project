@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from './entity/categories.entity';
+import { Category } from '@src/categories/entity/categories.entity';
 import { ILike, Repository } from 'typeorm';
 import { CategoryInfoDTO, CreateCategoryDTO } from '@src/categories/dto/categories.dto';
 
@@ -57,5 +57,9 @@ export class CategoriesService {
         await this.categoriesRepository.save(category);
 
         return category;
+    }
+
+    async softDeleteById(id: number): Promise<void> {
+        await this.categoriesRepository.update(id, { isDeleted: true });
     }
 }
