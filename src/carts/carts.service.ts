@@ -18,28 +18,36 @@ export class CartsService {
     ) {}
 
     async addToCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
-        const { productId, quantity } = createCartDTO;
+        const { cartItems } = createCartDTO;
 
-        if (!productId || productId.length === 0) {
+        if (!cartItems || cartItems.length === 0) {
             throw new BadRequestException('상품을 찾을 수 없습니다');
         }
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
+        const productId = cartItems.map(product => product.productId);
+        const quantity = cartItems.map(product => product.quantity);
 
-        const products = await this.productsRepository
+        const foundProducts = await this.productsRepository
             .createQueryBuilder('product')
-            .where('product.id IN (:...productIds)', { productIds: productId })
+            .where('product.id IN (:...productId)', { productId: productId })
             .getMany();
 
-        if (products.length !== productId.length) {
+        if (foundProducts.length !== productId.length) {
             throw new NotFoundException('상품을 모두 가져오지 못했습니다');
         }
 
+        const totalQuantity = quantity.reduce((total, q) => total + q, 0);
+
         const cartItem = new Cart();
         cartItem.user = user;
-        cartItem.products = products;
-        cartItem.quantity = quantity;
-        cartItem.totalPrice = products.reduce((total, product) => total + product.price * quantity, 0);
+        cartItem.products = foundProducts;
+        cartItem.quantity = totalQuantity;
+
+        cartItem.totalPrice = foundProducts.reduce((total, product) => {
+            const productItem = cartItems.find(item => item.productId === product.id);
+            return total + product.price * productItem.quantity;
+        }, 0);
 
         return this.cartsRepository.save(cartItem);
     }

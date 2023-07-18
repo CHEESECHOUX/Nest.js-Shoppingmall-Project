@@ -1,9 +1,16 @@
-import { IsNumber, IsArray, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsArray, ValidateNested } from 'class-validator';
 
-export class CreateCartDTO {
+class CartItemDTO {
+    @IsNumber()
+    productId: number;
+
     @IsNumber()
     quantity: number;
-
+}
+export class CreateCartDTO {
     @IsArray()
-    productId: number[];
+    @ValidateNested({ each: true })
+    @Type(() => CartItemDTO)
+    cartItems: CartItemDTO[];
 }
