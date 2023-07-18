@@ -20,6 +20,7 @@ export class CartsService {
     async getCartByUserId(userId: number): Promise<Cart[]> {
         const carts = await this.cartsRepository
             .createQueryBuilder('cart')
+            .innerJoinAndSelect('cart.products', 'product')
             .innerJoin('cart.user', 'user')
             .where('user.id = :userId', { userId })
             .orderBy('cart.updatedAt', 'DESC')
