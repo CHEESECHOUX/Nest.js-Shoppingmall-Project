@@ -15,10 +15,11 @@ export class CreateCartDTO {
     cartItems: CartItemDTO[];
 }
 
-export class UpdateCartDTO {
+export class CartInfoDTO {
     @IsNumber()
     cartId: number;
-
+}
+export class UpdateCartDTO extends CartInfoDTO {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => CartItemDTO)

@@ -5,6 +5,7 @@ import { CreateCartDTO, UpdateCartDTO } from '@src/carts/dto/carts.dto';
 import { User } from '@src/users/entity/user.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Repository } from 'typeorm';
+import { CartInfoDTO } from '@src/carts/dto/carts.dto';
 
 @Injectable()
 export class CartsService {
@@ -95,7 +96,40 @@ export class CartsService {
         return this.cartsRepository.save(cartItem);
     }
 
-    async softDeleteById(cartId: number): Promise<void> {
+    async softDeleteCartItem(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
+        const { cartItems, cartId } = updateCartDTO;
+
+        const cart = await this.cartsRepository.findOne({ where: { id: cartId } });
+        if (!cart) {
+            throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
+        }
+
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+        const productIdList = cartItems.map(item => item.productId);
+        const quantityList = cartItems.map(item => item.quantity);
+
+        const products = await this.productsRepository
+            .createQueryBuilder('product')
+            .where('product.id IN (:...productId)', { productId: productIdList })
+            .getMany();
+
+        products.forEach(product => {
+            const itemIndex = productIdList.indexOf(product.id);
+            if (itemIndex !== -1) {
+                cart.totalQuantity -= quantityList[itemIndex]; // 총 수량 - 선택 수량
+                cart.totalPrice -= product.price * quantityList[itemIndex];
+
+                if (cart.totalQuantity <= 0) {
+                    cart.isDeleted = true; // 장바구니의 총 수량이 0 이하라면 softDelete
+                }
+            }
+        });
+
+        return this.cartsRepository.save(cart);
+    }
+
+    async softDeleteCart(userId: number, cartInfoDTO: CartInfoDTO): Promise<void> {
+        const { cartId } = cartInfoDTO;
         await this.cartsRepository.update({ id: cartId }, { isDeleted: true });
     }
 }

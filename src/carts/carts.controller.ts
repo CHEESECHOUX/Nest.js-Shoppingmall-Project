@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { CartsService } from '@src/carts/carts.service';
-import { CreateCartDTO, UpdateCartDTO } from '@src/carts/dto/carts.dto';
+import { CartInfoDTO, CreateCartDTO, UpdateCartDTO } from '@src/carts/dto/carts.dto';
 import { Cart } from '@src/carts/entity/carts.entity';
 
 @Controller('carts')
@@ -24,8 +24,14 @@ export class CartsController {
         return cartItem;
     }
 
-    @Delete(':cartId')
-    async softDeleteById(@Param('cartId') cartId: number): Promise<void> {
-        return this.cartsService.softDeleteById(cartId);
+    @Delete('/item/:userId')
+    async softDeleteCartItem(@Param('userId') userId: number, @Body() updateCartDTO: UpdateCartDTO): Promise<Cart> {
+        const cartItem = await this.cartsService.softDeleteCartItem(userId, updateCartDTO);
+        return cartItem;
+    }
+
+    @Delete(':userId')
+    async softDeleteCart(@Param('userId') userId: number, @Body() cartInfoDTO: CartInfoDTO): Promise<void> {
+        return this.cartsService.softDeleteCart(userId, cartInfoDTO);
     }
 }
