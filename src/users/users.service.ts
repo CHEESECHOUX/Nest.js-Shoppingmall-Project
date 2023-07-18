@@ -7,6 +7,7 @@ import { User } from '@src/users/entity/user.entity';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 import { LoginLogger } from '@src/log/login.logger';
+import { Cart } from '@src/carts/entity/carts.entity';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,8 @@ export class UsersService {
         private jwtService: JwtService,
         private loginLogger: LoginLogger,
         private userInfoLogger: LoginLogger,
+        @InjectRepository(Cart)
+        private cartsRepository: Repository<Cart>,
     ) {}
 
     async getUserInfo({ id }: AuthUserType): Promise<UserInfoDTO | null> {
@@ -111,9 +114,13 @@ export class UsersService {
 
     async softDeleteParamId(id: number): Promise<void> {
         await this.usersRepository.update(id, { isDeleted: true });
+
+        await this.cartsRepository.createQueryBuilder().update(Cart).set({ isDeleted: true }).where('user = :id', { id }).execute();
     }
 
     async softDeletePayloadId(payload: any): Promise<any> {
-        return await this.usersRepository.update(payload.id, { isDeleted: true });
+        await this.usersRepository.update(payload.id, { isDeleted: true });
+
+        await this.cartsRepository.createQueryBuilder().update(Cart).set({ isDeleted: true }).where('user = :id', { id: payload.id }).execute();
     }
 }
