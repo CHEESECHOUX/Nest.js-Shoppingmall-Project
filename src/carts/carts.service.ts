@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { CreateCartDTO, UpdateCartDTO } from '@src/carts/dto/carts.dto';
@@ -39,7 +39,6 @@ export class CartsService {
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
         const productId = cartItems.map(product => product.productId);
-        const quantity = cartItems.map(product => product.quantity);
 
         const foundProducts = await this.productsRepository
             .createQueryBuilder('product')
@@ -50,17 +49,18 @@ export class CartsService {
             throw new NotFoundException('상품정보를 DB에서 가져오지 못했습니다');
         }
 
-        const totalQuantity = quantity.reduce((total, q) => total + q, 0);
+        const totalQuantity = cartItems.reduce((total, { quantity }) => total + quantity, 0);
+
+        const totalPrice = foundProducts.reduce((total, product) => {
+            const productItem = cartItems.find(item => item.productId === product.id);
+            return total + product.price * productItem.quantity;
+        }, 0);
 
         const cartItem = new Cart();
         cartItem.user = user;
         cartItem.products = foundProducts;
         cartItem.totalQuantity = totalQuantity;
-
-        cartItem.totalPrice = foundProducts.reduce((total, product) => {
-            const productItem = cartItems.find(item => item.productId === product.id);
-            return total + product.price * productItem.quantity;
-        }, 0);
+        cartItem.totalPrice = totalPrice;
 
         return this.cartsRepository.save(cartItem);
     }
@@ -68,30 +68,38 @@ export class CartsService {
     async updateCart(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
         const { cartItems, cartId } = updateCartDTO;
 
-        const cartItem = await this.cartsRepository.findOne({ where: { id: cartId } });
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+        const cartItem = await this.cartsRepository.findOne({
+            where: { id: cartId },
+            relations: ['user'],
+        });
+
         if (!cartItem) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
+        if (cartItem.user?.id !== userId) {
+            throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 수정할 수 없습니다');
+        }
 
-        const user = await this.usersRepository.findOne({ where: { id: userId } });
         const productId = cartItems.map(product => product.productId);
-        const quantity = cartItems.map(product => product.quantity);
 
         const foundProducts = await this.productsRepository
             .createQueryBuilder('product')
             .where('product.id IN (:...productId)', { productId: productId })
             .getMany();
 
-        const totalQuantity = quantity.reduce((total, q) => total + q, 0);
+        const totalQuantity = cartItems.reduce((total, { quantity }) => total + quantity, 0);
+
+        const totalPrice = foundProducts.reduce((total, product) => {
+            const productItem = cartItems.find(item => item.productId === product.id);
+            return total + product.price * productItem.quantity;
+        }, 0);
 
         cartItem.user = user;
         cartItem.products = foundProducts;
         cartItem.totalQuantity = totalQuantity;
-
-        cartItem.totalPrice = foundProducts.reduce((total, product) => {
-            const productItem = cartItems.find(item => item.productId === product.id);
-            return total + product.price * productItem.quantity;
-        }, 0);
+        cartItem.totalPrice = totalPrice;
 
         return this.cartsRepository.save(cartItem);
     }

@@ -7,9 +7,9 @@ import { Cart } from '@src/carts/entity/carts.entity';
 export class CartsController {
     constructor(private readonly cartsService: CartsService) {}
 
-    @Get(':id')
-    async getCart(@Param('id') id: number) {
-        return this.cartsService.getCartByUserId(id);
+    @Get(':userId')
+    async getCart(@Param('userId') userId: number) {
+        return this.cartsService.getCartByUserId(userId);
     }
 
     @Post(':userId')
