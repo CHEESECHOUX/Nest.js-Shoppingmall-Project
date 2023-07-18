@@ -94,4 +94,8 @@ export class CartsService {
 
         return this.cartsRepository.save(cartItem);
     }
+
+    async softDeleteById(cartId: number): Promise<void> {
+        await this.cartsRepository.update({ id: cartId }, { isDeleted: true });
+    }
 }
