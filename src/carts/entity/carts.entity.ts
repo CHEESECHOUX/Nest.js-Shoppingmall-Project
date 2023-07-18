@@ -1,6 +1,6 @@
 import { Product } from '@src/products/entity/product.entity';
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Cart {
@@ -10,7 +10,7 @@ export class Cart {
     @Column()
     quantity: number;
 
-    @Column()
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
     totalPrice: number;
 
     @CreateDateColumn({ type: 'datetime' })
@@ -25,6 +25,11 @@ export class Cart {
     @ManyToOne(() => User, user => user.carts)
     user: User;
 
-    @ManyToOne(() => Product, product => product.carts)
-    product: Product;
+    @ManyToMany(() => Product, product => product.carts)
+    @JoinTable({
+        name: 'cart_product',
+        joinColumns: [{ name: 'cart_id' }],
+        inverseJoinColumns: [{ name: 'product_id' }],
+    })
+    products: Product[];
 }

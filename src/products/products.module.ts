@@ -6,9 +6,10 @@ import { Product } from '@src/products/entity/product.entity';
 import { ProductsRepository } from '@src/products/products.repository';
 import { UploadsService } from '@src/uploads/uploads.service';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { Cart } from '@src/carts/entity/carts.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Product, ImageUrl])],
+    imports: [TypeOrmModule.forFeature([Product, ImageUrl, Cart])],
     providers: [ProductsService, ProductsRepository, UploadsService],
     controllers: [ProductsController],
 })

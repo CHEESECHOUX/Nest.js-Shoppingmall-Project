@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { CreateCartDTO } from '@src/carts/dto/carts.dto';
@@ -17,23 +17,30 @@ export class CartsService {
         private productsRepository: Repository<Product>,
     ) {}
 
-    async createCart(createCartDTO: CreateCartDTO): Promise<Cart> {
-        const { userId, productId, quantity } = createCartDTO;
+    async addToCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
+        const { productId, quantity } = createCartDTO;
+
+        if (!productId || productId.length === 0) {
+            throw new BadRequestException('상품을 찾을 수 없습니다');
+        }
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
-        const product = await this.productsRepository.findOne({ where: { id: productId } });
-        const totalPrice = product.price * quantity;
 
-        const cart = new Cart();
-        cart.user = new User();
-        cart.user.id = userId;
-        cart.product = new Product();
-        cart.product.id = productId;
-        cart.quantity = quantity;
-        cart.totalPrice = totalPrice;
+        const products = await this.productsRepository
+            .createQueryBuilder('product')
+            .where('product.id IN (:...productIds)', { productIds: productId })
+            .getMany();
 
-        const createdCart = await this.cartsRepository.save(cart);
+        if (products.length !== productId.length) {
+            throw new NotFoundException('상품을 모두 가져오지 못했습니다');
+        }
 
-        return createdCart;
+        const cartItem = new Cart();
+        cartItem.user = user;
+        cartItem.products = products;
+        cartItem.quantity = quantity;
+        cartItem.totalPrice = products.reduce((total, product) => total + product.price * quantity, 0);
+
+        return this.cartsRepository.save(cartItem);
     }
 }
