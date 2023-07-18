@@ -17,6 +17,17 @@ export class CartsService {
         private productsRepository: Repository<Product>,
     ) {}
 
+    async getCartByUserId(userId: number): Promise<Cart[]> {
+        const carts = await this.cartsRepository
+            .createQueryBuilder('cart')
+            .innerJoin('cart.user', 'user')
+            .where('user.id = :userId', { userId })
+            .orderBy('cart.updatedAt', 'DESC')
+            .getMany();
+
+        return carts;
+    }
+
     async addToCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
         const { cartItems } = createCartDTO;
 
