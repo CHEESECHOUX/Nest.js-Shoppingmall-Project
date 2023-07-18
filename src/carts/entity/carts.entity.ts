@@ -8,7 +8,7 @@ export class Cart {
     id: number;
 
     @Column()
-    quantity: number;
+    totalQuantity: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
     totalPrice: number;

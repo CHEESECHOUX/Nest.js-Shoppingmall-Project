@@ -14,3 +14,13 @@ export class CreateCartDTO {
     @Type(() => CartItemDTO)
     cartItems: CartItemDTO[];
 }
+
+export class UpdateCartDTO {
+    @IsNumber()
+    cartId: number;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CartItemDTO)
+    cartItems: CartItemDTO[];
+}

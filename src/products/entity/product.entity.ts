@@ -2,7 +2,7 @@ import { Cart } from '@src/carts/entity/carts.entity';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Product {
