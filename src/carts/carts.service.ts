@@ -78,7 +78,7 @@ export class CartsService {
         if (!cartItem) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cartItem.user?.id !== userId) {
+        if (cartItem.user?.id !== userId && user.role !== 'ADMIN') {
             throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 수정할 수 없습니다');
         }
 
@@ -116,7 +116,7 @@ export class CartsService {
         if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cart.user?.id !== userId) {
+        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
             throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 삭제할 수 없습니다');
         }
 
@@ -146,6 +146,8 @@ export class CartsService {
     async softDeleteCart(userId: number, cartInfoDTO: CartInfoDTO): Promise<void> {
         const { cartId } = cartInfoDTO;
 
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+
         const cart = await this.cartsRepository.findOne({
             where: { id: cartId },
             relations: ['user'],
@@ -154,7 +156,7 @@ export class CartsService {
         if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cart.user?.id !== userId) {
+        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
             throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 삭제할 수 없습니다');
         }
 
