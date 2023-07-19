@@ -136,8 +136,13 @@ export class CartsService {
         products.forEach(product => {
             const itemIndex = productIdList.indexOf(product.id);
             if (itemIndex !== -1) {
-                cart.totalQuantity -= quantityList[itemIndex]; // 총 수량 - 선택 수량
-                cart.totalPrice -= product.price * quantityList[itemIndex];
+                const quantityToRemove = quantityList[itemIndex];
+                if (cart.totalQuantity < quantityToRemove) {
+                    throw new BadRequestException('상품을 제거할 수량이 없습니다');
+                }
+
+                cart.totalQuantity -= quantityToRemove; // 총 수량 - 선택 수량
+                cart.totalPrice -= product.price * quantityToRemove;
 
                 if (cart.totalQuantity <= 0) {
                     cart.isDeleted = true; // 장바구니의 총 수량이 0 이하라면 softDelete
