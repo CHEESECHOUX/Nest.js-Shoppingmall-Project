@@ -32,9 +32,13 @@ export class CartsService {
 
     async createCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
         const { cartItems } = createCartDTO;
-
         if (!cartItems || cartItems.length === 0) {
             throw new BadRequestException('상품을 찾을 수 없습니다');
+        }
+
+        const existingCart = await this.cartsRepository.findOne({ where: { id: userId } });
+        if (existingCart) {
+            throw new BadRequestException('이미 장바구니가 존재합니다. 장바구니는 한 개만 만들 수 있습니다');
         }
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
@@ -108,6 +112,7 @@ export class CartsService {
         const { cartItems, cartId } = updateCartDTO;
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
+
         const cart = await this.cartsRepository.findOne({
             where: { id: cartId },
             relations: ['user'],
