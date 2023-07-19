@@ -1,4 +1,5 @@
 import { Cart } from '@src/carts/entity/carts.entity';
+import { Order } from '@src/orders/entity/order.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
@@ -31,9 +32,8 @@ export class User {
     @Column({ nullable: true })
     address: string;
 
-    @Column({ default: 'CUSTOMER' })
+    @Column({ default: 'CUSTOMER', comment: 'ADMIN, MANAGER, CUSTOMER' })
     role: string;
-    comment: 'ADMIN, MANAGER, CUSTOMER';
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
@@ -55,4 +55,10 @@ export class User {
         onUpdate: 'NO ACTION',
     })
     carts: Cart[];
+
+    @OneToMany(() => Order, order => order.user, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    orders: Order[];
 }

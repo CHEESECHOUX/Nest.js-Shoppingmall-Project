@@ -1,6 +1,7 @@
 import { Cart } from '@src/carts/entity/carts.entity';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { OrderItem } from '@src/orders/entity/order-item.entity';
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
@@ -44,6 +45,12 @@ export class Product {
         onUpdate: 'NO ACTION',
     })
     categories: Category[];
+
+    @OneToMany(() => OrderItem, orderItem => orderItem.product, {
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+    })
+    orderItems: OrderItem[];
 
     @ManyToMany(() => Cart, cart => cart.products)
     carts: Cart[];
