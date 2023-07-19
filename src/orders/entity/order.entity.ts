@@ -1,6 +1,8 @@
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from '@src/orders/entity/order-item.entity';
+import { Payment } from '@src/orders/entity/payment.entity';
+import { PaymentCancel } from '@src/orders/entity/payment-cancel.entity';
 
 export type OrderStatus = 'PENDING' | 'DELIVER' | 'COMPLETED' | 'CANCELED';
 
@@ -31,10 +33,10 @@ export class Order {
     status: OrderStatus;
 
     @Column({ nullable: true })
-    iamportIssuedId: string;
+    portOneIssuedId: string;
 
     @Column({ nullable: true })
-    imaportOrderId: string;
+    portOneOrderId: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
@@ -45,10 +47,13 @@ export class Order {
     @Column({ default: false })
     isDeleted: boolean;
 
-    @OneToMany(() => OrderItem, orderItem => orderItem.order, {
-        onDelete: 'NO ACTION',
-        onUpdate: 'NO ACTION',
-    })
+    @OneToOne(() => Payment, payment => payment.order)
+    payment: Payment;
+
+    @OneToMany(() => PaymentCancel, paymentCancel => paymentCancel.order, {})
+    paymentCancels: PaymentCancel[];
+
+    @OneToMany(() => OrderItem, orderItem => orderItem.order, {})
     orderItems: OrderItem[];
 
     @ManyToOne(() => User, user => user.orders)
