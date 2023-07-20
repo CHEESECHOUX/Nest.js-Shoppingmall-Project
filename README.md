@@ -46,3 +46,9 @@
 -   S3 파일 저장
     $ npm i -D @types/multer
     $ npm i --save aws-sdk
+
+-   아임포트(포트원) 결제
+    npm i --save iamport
+    npm i --save @portone/browser-sdk
+
+    npm i --save axios

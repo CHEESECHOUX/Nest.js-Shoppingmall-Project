@@ -1,8 +1,8 @@
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from '@src/orders/entity/order-item.entity';
-import { Payment } from '@src/orders/entity/payment.entity';
-import { PaymentCancel } from '@src/orders/entity/payment-cancel.entity';
+import { Payment } from '@src/payments/entity/payment.entity';
+import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 
 export type OrderStatus = 'PENDING' | 'DELIVER' | 'COMPLETED' | 'CANCELED';
 
@@ -32,10 +32,10 @@ export class Order {
     @Column({ default: 'PENDING' })
     status: OrderStatus;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, comment: '포트원 발급 ID' })
     portOneIssuedId: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, comment: '포트원 주문 ID' })
     portOneOrderId: string;
 
     @CreateDateColumn({ type: 'datetime' })

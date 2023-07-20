@@ -2,12 +2,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@src/app.module';
+import * as express from 'express';
+import { join } from 'path';
 import { AllExceptionsFilter } from '@src/common/all-exceptions.filter';
 import { HttpLoggingInterceptor } from '@src/common/http-logging.interceptor';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 const corsOptions: CorsOptions = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://api.tosspayments.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
@@ -28,9 +30,11 @@ async function bootstrap() {
             disableErrorMessages: true,
         }),
     );
-    app.enableCors();
+    app.enableCors(corsOptions);
 
     app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
+    app.use(express.static(join(__dirname, '..', 'public')));
 
     await app.listen(3000);
 }
