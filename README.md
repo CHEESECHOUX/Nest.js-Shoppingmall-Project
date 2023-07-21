@@ -51,4 +51,5 @@
     npm i --save iamport
     npm i --save @portone/browser-sdk
 
-    npm i --save axios
+-   토스페이먼츠 결제
+    npm i --save @nestjs/axios

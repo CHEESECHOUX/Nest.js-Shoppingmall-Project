@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import * as path from 'path';
-import { PaymentsService } from './payments.service';
-import { TossPaymentDTO } from './dto/payment.dto';
+import { PaymentsService } from '@src/payments/payments.service';
+import { TossPaymentDTO } from '@src/payments/dto/payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -15,7 +15,6 @@ export class PaymentsController {
 
     @Post('/toss')
     tossPayment(@Body() tossPaymentDTO: TossPaymentDTO) {
-        console.log(tossPaymentDTO);
         return this.paymentsService.tossPayment(tossPaymentDTO);
     }
 }
