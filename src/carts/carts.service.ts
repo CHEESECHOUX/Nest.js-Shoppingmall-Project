@@ -55,7 +55,7 @@ export class CartsService {
 
         const totalQuantity = cartItems.reduce((total, { quantity }) => total + quantity, 0);
 
-        const totalPrice = foundProducts.reduce((total, product) => {
+        const totalAmount = foundProducts.reduce((total, product) => {
             const productItem = cartItems.find(item => item.productId === product.id);
             return total + product.price * productItem.quantity;
         }, 0);
@@ -64,7 +64,7 @@ export class CartsService {
         cartItem.user = user;
         cartItem.products = foundProducts;
         cartItem.totalQuantity = totalQuantity;
-        cartItem.totalPrice = totalPrice;
+        cartItem.totalAmount = totalAmount;
 
         return this.cartsRepository.save(cartItem);
     }
@@ -95,7 +95,7 @@ export class CartsService {
 
         const totalQuantity = cartItems.reduce((total, { quantity }) => total + quantity, 0);
 
-        const totalPrice = foundProducts.reduce((total, product) => {
+        const totalAmount = foundProducts.reduce((total, product) => {
             const productItem = cartItems.find(item => item.productId === product.id);
             return total + product.price * productItem.quantity;
         }, 0);
@@ -103,7 +103,7 @@ export class CartsService {
         cartItem.user = user;
         cartItem.products = foundProducts;
         cartItem.totalQuantity = totalQuantity;
-        cartItem.totalPrice = totalPrice;
+        cartItem.totalAmount = totalAmount;
 
         return this.cartsRepository.save(cartItem);
     }
@@ -142,7 +142,7 @@ export class CartsService {
                 }
 
                 cart.totalQuantity -= quantityToRemove; // 총 수량 - 선택 수량
-                cart.totalPrice -= product.price * quantityToRemove;
+                cart.totalAmount -= product.price * quantityToRemove;
 
                 if (cart.totalQuantity <= 0) {
                     cart.isDeleted = true; // 장바구니의 총 수량이 0 이하라면 softDelete

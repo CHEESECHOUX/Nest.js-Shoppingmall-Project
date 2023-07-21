@@ -27,16 +27,16 @@ export class Order {
     requirement: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-    totalPrice: number;
+    totalAmount: number;
 
     @Column({ default: 'PENDING' })
     status: OrderStatus;
 
-    @Column({ nullable: true, comment: '포트원 발급 ID' })
-    portOneIssuedId: string;
+    @Column({ nullable: true, comment: '토스페이먼츠 paymentKey' })
+    paymentKey: string;
 
-    @Column({ nullable: true, comment: '포트원 주문 ID' })
-    portOneOrderId: string;
+    @Column({ nullable: true, comment: '토스페이먼츠 orderId' })
+    orderId: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;

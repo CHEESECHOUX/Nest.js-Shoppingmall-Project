@@ -11,7 +11,7 @@ export class Cart {
     totalQuantity: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-    totalPrice: number;
+    totalAmount: number;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
