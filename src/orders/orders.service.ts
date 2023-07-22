@@ -100,17 +100,6 @@ export class OrdersService {
                 order.status = 'CANCELED';
 
                 // toss 결제 취소
-                const cancelTossPaymentDTO: CancelTossPaymentDTO = {
-                    paymentKey: paymentKey,
-                    orderId: orderId,
-                    method: method,
-                    cancelAmount: cancelAmount,
-                    cancelReason: cancelReason,
-                    bank: bank,
-                    accountNumber: accountNumber,
-                    holderName: holderName,
-                    refundableAmount: refundableAmount,
-                };
                 await this.paymentsService.cancelTossPayment(cancelTossPaymentDTO);
 
                 // 결제 테이블 취소 처리
