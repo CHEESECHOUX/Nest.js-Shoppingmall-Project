@@ -7,6 +7,9 @@ export class PaymentCancel {
     id: number;
 
     @Column()
+    tossOrderId: string;
+
+    @Column()
     cancelReason: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0, comment: '결제 취소 금액' })

@@ -21,6 +21,14 @@ export class CancelTossPaymentDTO {
 
     @IsNotEmpty()
     @IsString()
+    orderId: string;
+
+    @IsNotEmpty()
+    @IsString()
+    method: string;
+
+    @IsNotEmpty()
+    @IsString()
     cancelReason: string;
 
     @IsNotEmpty()

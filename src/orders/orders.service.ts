@@ -5,8 +5,9 @@ import { Payment, PaymentStatusEnum } from '@src/payments/entity/payment.entity'
 import { EntityManager, Repository } from 'typeorm';
 import { CreateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentsService } from '@src/payments/payments.service';
-import { CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
+import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
+import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 
 @Injectable()
 export class OrdersService {
@@ -39,7 +40,7 @@ export class OrdersService {
                 // 주문 저장
                 const savedOrder = await transactionalEntityManager.save(order);
 
-                // toss 결제 처리
+                // toss 결제
                 const createTossPaymentDTO: CreateTossPaymentDTO = {
                     paymentKey: paymentKey,
                     orderId: orderId,
@@ -82,5 +83,69 @@ export class OrdersService {
         const updatedOrder = await this.ordersRepository.save(order);
 
         return updatedOrder;
+    }
+
+    async cancelOrder(cancelTossPaymentDTO: CancelTossPaymentDTO): Promise<Order> {
+        const { paymentKey, orderId, method, cancelReason, cancelAmount, bank, accountNumber, holderName, refundableAmount } = cancelTossPaymentDTO;
+
+        return this.ordersRepository.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+            try {
+                // 주문 조회
+                const order = await transactionalEntityManager.findOne(Order, { where: { tossOrderId: orderId } });
+                if (!order) {
+                    throw new Error('주문 내역을 찾을 수 없습니다');
+                }
+
+                // 주문 상태 취소로 변경
+                order.status = 'CANCELED';
+
+                // toss 결제 취소
+                const cancelTossPaymentDTO: CancelTossPaymentDTO = {
+                    paymentKey: paymentKey,
+                    orderId: orderId,
+                    method: method,
+                    cancelAmount: cancelAmount,
+                    cancelReason: cancelReason,
+                    bank: bank,
+                    accountNumber: accountNumber,
+                    holderName: holderName,
+                    refundableAmount: refundableAmount,
+                };
+                await this.paymentsService.cancelTossPayment(cancelTossPaymentDTO);
+
+                // 결제 테이블 취소 처리
+                const payment = new Payment();
+                payment.method = method;
+                payment.amount = cancelAmount;
+                payment.status = PaymentStatusEnum.CANCELED;
+
+                await transactionalEntityManager.save(payment);
+
+                // 결제 취소 테이블 취소 처리
+                const paymentCancel = new PaymentCancel();
+                paymentCancel.tossOrderId = order.tossOrderId;
+                paymentCancel.cancelReason = cancelReason;
+                paymentCancel.cancelAmount = cancelAmount;
+                paymentCancel.bank = bank;
+                paymentCancel.accountNumber = accountNumber;
+                paymentCancel.holderName = holderName;
+                paymentCancel.refundableAmount = refundableAmount;
+                paymentCancel.cancelTime = new Date();
+
+                await transactionalEntityManager.save(paymentCancel);
+
+                // 토스 페이먼츠 키, 주문 ID 초기화
+                order.tossPaymentKey = '';
+                order.tossOrderId = '';
+
+                // 주문 취소 정보 저장
+                await transactionalEntityManager.save(order);
+
+                return order;
+            } catch (e) {
+                console.error('주문 및 결제 취소 처리 중 에러:', e);
+                throw new Error('주문 및 결제 취소 처리 중 에러가 발생했습니다');
+            }
+        });
     }
 }
