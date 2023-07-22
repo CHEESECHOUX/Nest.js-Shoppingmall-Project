@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import * as path from 'path';
 import { PaymentsService } from '@src/payments/payments.service';
-import { TossPaymentDTO } from '@src/payments/dto/payment.dto';
+import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 
 @Controller('payments')
 export class PaymentsController {
@@ -14,7 +14,12 @@ export class PaymentsController {
     }
 
     @Post('/toss')
-    tossPayment(@Body() tossPaymentDTO: TossPaymentDTO) {
-        return this.paymentsService.tossPayment(tossPaymentDTO);
+    tossPaymentKey(@Body() createTossPaymentDTO: CreateTossPaymentDTO) {
+        return this.paymentsService.tossPaymentKey(createTossPaymentDTO);
+    }
+
+    @Post('/cancel')
+    cancel(@Body() cancelTossPaymentDTO: CancelTossPaymentDTO) {
+        return this.paymentsService.cancelTossPayment(cancelTossPaymentDTO);
     }
 }

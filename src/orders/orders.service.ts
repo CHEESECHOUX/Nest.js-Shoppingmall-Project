@@ -5,7 +5,7 @@ import { Payment, PaymentStatus } from '@src/payments/entity/payment.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentsService } from '@src/payments/payments.service';
-import { TossPaymentDTO } from '@src/payments/dto/payment.dto';
+import { CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class OrdersService {
     ) {}
 
     async createOrder(createOrderDTO: CreateOrderDTO): Promise<any> {
-        const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, tossPaymentKey, tossOrderId, amount } = createOrderDTO;
+        const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
 
         // 주문 생성
         const order = new Order();
@@ -36,24 +36,24 @@ export class OrdersService {
 
         try {
             // toss 결제 처리
-            const tossPaymentDTO: TossPaymentDTO = {
-                tossPaymentKey: tossPaymentKey,
-                tossOrderId: tossOrderId,
+            const createTossPaymentDTO: CreateTossPaymentDTO = {
+                paymentKey: paymentKey,
+                orderId: orderId,
                 amount: amount, // 장바구니 총 주문금액이랑 같아야함
             };
-            await this.paymentsService.tossPayment(tossPaymentDTO);
+            await this.paymentsService.tossPaymentKey(createTossPaymentDTO);
 
             // 결제 저장
             const payment = new Payment();
             payment.method = method;
-            payment.amount = tossPaymentDTO.amount;
+            payment.amount = createTossPaymentDTO.amount;
             payment.status = PaymentStatus.COMPLETED;
 
             await this.paymentsRepository.save(payment);
 
             // 주문 업데이트
-            savedOrder.tossPaymentKey = tossPaymentDTO.tossPaymentKey;
-            savedOrder.tossOrderId = tossPaymentDTO.tossOrderId;
+            savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
+            savedOrder.tossOrderId = createTossPaymentDTO.orderId;
 
             // 업데이트된 주문 저장
             await this.ordersRepository.save(savedOrder);
@@ -61,7 +61,7 @@ export class OrdersService {
             return savedOrder;
         } catch (e) {
             console.error('토스 결제 처리 중 에러:', e);
-            throw new Error('주문과 결제 처리 중 에러가 발생했습니다');
+            throw new Error('주문 및 결제 처리 중 에러가 발생했습니다');
         }
     }
 
