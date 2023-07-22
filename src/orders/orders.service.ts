@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderStatus } from '@src/orders/entity/order.entity';
 import { Payment, PaymentStatusEnum } from '@src/payments/entity/payment.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentsService } from '@src/payments/payments.service';
 import { CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
@@ -33,38 +33,41 @@ export class OrdersService {
         order.tossOrderId = orderId;
         order.tossPaymentKey = paymentKey;
 
-        // 주문 저장
-        const savedOrder = await this.ordersRepository.save(order);
+        // 트랜잭션 시작
+        return this.ordersRepository.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+            try {
+                // 주문 저장
+                const savedOrder = await transactionalEntityManager.save(order);
 
-        try {
-            // toss 결제 처리
-            const createTossPaymentDTO: CreateTossPaymentDTO = {
-                paymentKey: paymentKey,
-                orderId: orderId,
-                amount: amount, // 장바구니 총 주문금액이랑 같아야함
-            };
-            await this.paymentsService.tossPaymentKey(createTossPaymentDTO);
+                // toss 결제 처리
+                const createTossPaymentDTO: CreateTossPaymentDTO = {
+                    paymentKey: paymentKey,
+                    orderId: orderId,
+                    amount: amount, // 장바구니 총 주문금액이랑 같아야함
+                };
+                await this.paymentsService.tossPaymentKey(createTossPaymentDTO);
 
-            // 결제 저장
-            const payment = new Payment();
-            payment.method = method;
-            payment.amount = createTossPaymentDTO.amount;
-            payment.status = PaymentStatusEnum.COMPLETED;
+                // 결제 저장
+                const payment = new Payment();
+                payment.method = method;
+                payment.amount = createTossPaymentDTO.amount;
+                payment.status = PaymentStatusEnum.COMPLETED;
 
-            await this.paymentsRepository.save(payment);
+                await transactionalEntityManager.save(payment);
 
-            // 주문 업데이트
-            savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
-            savedOrder.tossOrderId = createTossPaymentDTO.orderId;
+                // 주문 업데이트
+                savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
+                savedOrder.tossOrderId = createTossPaymentDTO.orderId;
 
-            // 업데이트된 주문 저장
-            await this.ordersRepository.save(savedOrder);
+                // 업데이트된 주문 저장
+                await transactionalEntityManager.save(savedOrder);
 
-            return savedOrder;
-        } catch (e) {
-            console.error('토스 결제 처리 중 에러:', e);
-            throw new Error('주문 및 결제 처리 중 에러가 발생했습니다');
-        }
+                return savedOrder;
+            } catch (e) {
+                console.error('토스 결제 처리 중 에러:', e);
+                throw new Error('주문 및 결제 처리 중 에러가 발생했습니다');
+            }
+        });
     }
 
     async updateOrderAddress(orderId: number, updateOrderDTO: UpdateOrderDTO): Promise<Order> {
