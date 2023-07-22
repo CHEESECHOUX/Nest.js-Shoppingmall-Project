@@ -1,7 +1,12 @@
-import { TossPaymentDTO } from '@src/payments/dto/payment.dto';
+import { CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { IsNumber, IsString } from 'class-validator';
 
-export class CreateOrderDTO extends TossPaymentDTO {
+export class OrderInfoDTO {
+    @IsNumber()
+    id: number;
+}
+
+export class CreateOrderDTO extends CreateTossPaymentDTO {
     @IsString()
     addressee: string;
 
@@ -25,6 +30,11 @@ export class CreateOrderDTO extends TossPaymentDTO {
 
     @IsString()
     method: string;
+}
+
+export class UpdateOrderDTO {
+    @IsString()
+    address: string;
 }
 
 export class CreateOrderItemDTO {

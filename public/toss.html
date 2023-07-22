@@ -11,7 +11,7 @@
     <button id="payment-button">결제하기</button>
     <script>
         const clientKey = 'test_ck_YZ1aOwX7K8m29JWqKLP3yQxzvNPG';
-        const customerKey = 'G2MD0ghzwL7EwQH01EOS1'; // 내 상점에서 고객을 구분하기 위해 발급한 고객의 고유 ID // 주문 건마다 새로 생성
+        const customerKey = 'G2MD0ghzwL7EwQH01EOS18'; // 내 상점에서 고객을 구분하기 위해 발급한 고객의 고유 ID // 주문 건마다 새로 생성
         const button = document.getElementById('payment-button');
         // ------  결제위젯 초기화 ------
         // 비회원 결제에는 customerKey 대신 ANONYMOUS를 사용하세요.
@@ -31,7 +31,7 @@
         // https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
         button.addEventListener('click', function () {
             paymentWidget.requestPayment({
-                orderId: '4TITFDV0Qqs0xzmtqqtjS1', // 주문 ID(직접 만들어주세요) // 주문 건마다 새로 생성
+                orderId: '4TITFDV0Qqs0xzmtqqtjS18', // 주문 ID(직접 만들어주세요) // 주문 건마다 새로 생성
                 orderName: '토스 티셔츠 외 2건', // 주문명
                 successUrl: 'http://localhost:3000/payments/success', // 결제에 성공하면 이동하는 페이지(직접 만들어주세요)
                 failUrl: 'http://localhost:3000/fail', // 결제에 실패하면 이동하는 페이지(직접 만들어주세요)

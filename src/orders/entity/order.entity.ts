@@ -1,5 +1,5 @@
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from '@src/orders/entity/order-item.entity';
 import { Payment } from '@src/payments/entity/payment.entity';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
@@ -32,11 +32,12 @@ export class Order {
     @Column({ default: 'PENDING' })
     status: OrderStatus;
 
-    @Column({ nullable: true, comment: '토스페이먼츠 paymentKey' })
-    paymentKey: string;
+    @Column({ comment: '토스페이먼츠 paymentKey', nullable: true })
+    tossPaymentKey: string;
 
-    @Column({ nullable: true, comment: '토스페이먼츠 orderId' })
-    orderId: string;
+    @Column({ comment: '토스 페이먼츠 orderId', nullable: true })
+    @Generated('uuid')
+    tossOrderId: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
