@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Order } from '@src/orders/entity/order.entity';
 
-export enum PaymentStatus {
+export enum PaymentStatusEnum {
     COMPLETED = 'COMPLETED',
     CANCELED = 'CANCELED',
 }
@@ -17,7 +17,7 @@ export class Payment {
     amount: number;
 
     @Column()
-    status: PaymentStatus;
+    status: PaymentStatusEnum;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;

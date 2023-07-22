@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderStatus } from '@src/orders/entity/order.entity';
-import { Payment, PaymentStatus } from '@src/payments/entity/payment.entity';
+import { Payment, PaymentStatusEnum } from '@src/payments/entity/payment.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentsService } from '@src/payments/payments.service';
@@ -30,6 +30,8 @@ export class OrdersService {
         order.requirement = requirement;
         order.totalAmount = totalAmount; // 장바구니랑 연결할 때 계산
         order.status = status as OrderStatus;
+        order.tossOrderId = orderId;
+        order.tossPaymentKey = paymentKey;
 
         // 주문 저장
         const savedOrder = await this.ordersRepository.save(order);
@@ -47,7 +49,7 @@ export class OrdersService {
             const payment = new Payment();
             payment.method = method;
             payment.amount = createTossPaymentDTO.amount;
-            payment.status = PaymentStatus.COMPLETED;
+            payment.status = PaymentStatusEnum.COMPLETED;
 
             await this.paymentsRepository.save(payment);
 
