@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderStatus } from '@src/orders/entity/order.entity';
 import { Payment, PaymentStatusEnum } from '@src/payments/entity/payment.entity';
 import { EntityManager, Repository } from 'typeorm';
-import { CreateOrderDTO } from '@src/orders/dto/orders.dto';
+import { CreateOrderDTO, OrderInfoDTO } from '@src/orders/dto/orders.dto';
 import { PaymentsService } from '@src/payments/payments.service';
 import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
@@ -18,6 +18,15 @@ export class OrdersService {
         private paymentsRepository: Repository<Payment>,
         private paymentsService: PaymentsService,
     ) {}
+
+    async getOrderById(id: number): Promise<OrderInfoDTO | null> {
+        const orderInfo = await this.ordersRepository.findOne({ where: { id } });
+        if (!orderInfo) {
+            throw new UnauthorizedException('주문 내역을 찾을 수 없습니다');
+        }
+
+        return orderInfo;
+    }
 
     async createOrder(createOrderDTO: CreateOrderDTO): Promise<any> {
         const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
