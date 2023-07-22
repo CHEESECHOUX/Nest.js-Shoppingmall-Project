@@ -2,10 +2,10 @@ import { IsNotEmpty } from 'class-validator';
 
 export class TossPaymentDTO {
     @IsNotEmpty()
-    paymentKey: string;
+    tossPaymentKey: string;
 
     @IsNotEmpty()
-    orderId: string;
+    tossOrderId: string;
 
     @IsNotEmpty()
     amount: number;

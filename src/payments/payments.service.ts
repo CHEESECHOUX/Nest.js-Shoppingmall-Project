@@ -8,13 +8,13 @@ export class PaymentsService {
     private readonly secretKey = process.env.TOSS_TEST_SECRET_KEY;
 
     async tossPayment(tossPaymentDTO: TossPaymentDTO) {
-        const { orderId, amount, paymentKey } = tossPaymentDTO;
+        const { tossOrderId, amount, tossPaymentKey } = tossPaymentDTO;
 
         try {
             const response = await axios.post(
-                `${this.tossUrl}/${paymentKey}`,
+                `${this.tossUrl}/${tossPaymentKey}`,
                 {
-                    orderId,
+                    tossOrderId,
                     amount,
                 },
                 {

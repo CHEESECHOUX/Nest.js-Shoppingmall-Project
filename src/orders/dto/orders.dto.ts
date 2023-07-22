@@ -27,6 +27,11 @@ export class CreateOrderDTO extends TossPaymentDTO {
     method: string;
 }
 
+export class UpdateOrderDTO {
+    @IsString()
+    address: string;
+}
+
 export class CreateOrderItemDTO {
     @IsString()
     orderProductName: string;

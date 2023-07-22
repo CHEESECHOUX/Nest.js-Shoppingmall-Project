@@ -33,10 +33,10 @@ export class Order {
     status: OrderStatus;
 
     @Column({ nullable: true, comment: '토스페이먼츠 paymentKey' })
-    paymentKey: string;
+    tossPaymentKey: string;
 
     @Column({ nullable: true, comment: '토스페이먼츠 orderId' })
-    orderId: string;
+    tossOrderId: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;
