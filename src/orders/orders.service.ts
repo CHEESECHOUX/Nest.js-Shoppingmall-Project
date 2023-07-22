@@ -8,6 +8,7 @@ import { PaymentsService } from '@src/payments/payments.service';
 import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
+import { User } from '../users/entity/user.entity';
 
 @Injectable()
 export class OrdersService {
@@ -28,11 +29,12 @@ export class OrdersService {
         return orderInfo;
     }
 
-    async createOrder(createOrderDTO: CreateOrderDTO): Promise<any> {
+    async createOrder(user: User, createOrderDTO: CreateOrderDTO): Promise<any> {
         const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
 
         // 주문 생성
         const order = new Order();
+        order.user = user;
         order.addressee = addressee;
         order.address = address;
         order.zipcode = zipcode;
