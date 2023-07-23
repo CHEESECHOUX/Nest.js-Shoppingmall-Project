@@ -31,7 +31,11 @@ export class OrdersController {
     }
 
     @Patch(':orderId')
-    async updateOrderAddress(@Param('orderId') orderId: number, @Body() updateOrderDTO: UpdateOrderDTO): Promise<Order> {
-        return this.ordersService.updateOrderAddress(orderId, updateOrderDTO);
+    async updateOrderAddress(
+        @GetUserSession() user: User,
+        @Param('orderId') orderId: number,
+        @Body() updateOrderDTO: UpdateOrderDTO,
+    ): Promise<Order> {
+        return this.ordersService.updateOrderAddress(user, orderId, updateOrderDTO);
     }
 }

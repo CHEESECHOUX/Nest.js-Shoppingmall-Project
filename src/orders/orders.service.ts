@@ -18,6 +18,8 @@ export class OrdersService {
         @InjectRepository(Payment)
         private paymentsRepository: Repository<Payment>,
         private paymentsService: PaymentsService,
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
     ) {}
 
     async getOrderById(id: number): Promise<OrderInfoDTO | null> {
@@ -83,12 +85,18 @@ export class OrdersService {
         });
     }
 
-    async updateOrderAddress(orderId: number, updateOrderDTO: UpdateOrderDTO): Promise<Order> {
+    async updateOrderAddress(user: User, orderId: number, updateOrderDTO: UpdateOrderDTO): Promise<Order> {
         const { address } = updateOrderDTO;
 
-        const order = await this.ordersRepository.findOne({ where: { id: orderId } });
+        const order = await this.ordersRepository.findOne({
+            where: { id: orderId },
+            relations: ['user'],
+        });
         if (!order) {
             throw new NotFoundException('주문 내역을 찾을 수 없습니다');
+        }
+        if (order.user.id !== user.id) {
+            throw new UnauthorizedException('사용자의 주문 내역이 아닙니다');
         }
 
         order.address = address;
