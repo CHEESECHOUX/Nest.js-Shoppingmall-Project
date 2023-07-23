@@ -21,16 +21,18 @@ export class CartsService {
         private productsRepository: Repository<Product>,
     ) {}
 
-    async getCartByUserId(userId: number): Promise<Cart[]> {
-        const carts = await this.cartsRepository
+    async getCartByUser(user: User): Promise<Cart | null> {
+        const cart = await this.cartsRepository
             .createQueryBuilder('cart')
-            .innerJoinAndSelect('cart.products', 'product')
-            .innerJoin('cart.user', 'user')
-            .where('user.id = :userId', { userId })
-            .orderBy('cart.updatedAt', 'DESC')
-            .getMany();
+            .innerJoinAndSelect('cart.user', 'user')
+            .where('user.id = :userId', { userId: user.id })
+            .getOne();
 
-        return carts;
+        if (!cart) {
+            throw new NotFoundException('장바구니를 찾을 수 없습니다');
+        }
+
+        return cart;
     }
 
     async createCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
