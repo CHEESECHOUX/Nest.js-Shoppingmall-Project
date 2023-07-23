@@ -6,12 +6,15 @@ import { User } from '@src/users/entity/user.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Repository } from 'typeorm';
 import { CartInfoDTO } from '@src/carts/dto/carts.dto';
+import { CartItem } from '@src/carts/entity/cart-items.entity';
 
 @Injectable()
 export class CartsService {
     constructor(
         @InjectRepository(Cart)
         private cartsRepository: Repository<Cart>,
+        @InjectRepository(CartItem)
+        private cartItemsRepository: Repository<CartItem>,
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         @InjectRepository(Product)
@@ -60,15 +63,27 @@ export class CartsService {
             return total + product.price * productItem.quantity;
         }, 0);
 
-        const cartItem = new Cart();
-        cartItem.user = user;
-        cartItem.products = foundProducts;
-        cartItem.totalQuantity = totalQuantity;
-        cartItem.totalAmount = totalAmount;
+        const cart = new Cart();
+        cart.user = user;
+        cart.totalQuantity = totalQuantity;
+        cart.totalAmount = totalAmount;
 
-        return this.cartsRepository.save(cartItem);
+        const savedCart = await this.cartsRepository.save(cart);
+
+        const cartItem = cartItems.map(cartItemDTO => {
+            const foundProduct = foundProducts.find(product => product.id === cartItemDTO.productId);
+            if (!foundProduct) {
+                throw new NotFoundException(`상품 ID ${cartItemDTO.productId}에 해당하는 상품을 찾을 수 없습니다`);
+            }
+            const cartItem = new CartItem();
+            cartItem.product = foundProduct;
+            cartItem.quantity = cartItemDTO.quantity;
+            cartItem.cart = savedCart;
+            return this.cartItemsRepository.save(cartItem);
+        });
+
+        return savedCart;
     }
-
     async updateCart(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
         const { cartItems, cartId } = updateCartDTO;
 

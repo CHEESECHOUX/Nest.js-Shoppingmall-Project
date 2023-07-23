@@ -1,9 +1,8 @@
-import { CartItem } from '@src/carts/entity/cart-item.entity';
-import { Cart } from '@src/carts/entity/carts.entity';
+import { CartItem } from '@src/carts/entity/cart-items.entity';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -51,7 +50,4 @@ export class Product {
         onUpdate: 'NO ACTION',
     })
     cartItems: CartItem[];
-
-    @ManyToMany(() => Cart, cart => cart.products)
-    carts: Cart[];
 }

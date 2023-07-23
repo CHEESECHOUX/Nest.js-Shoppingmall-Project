@@ -10,9 +10,6 @@ export class CartItem {
     @Column()
     quantity: number;
 
-    @Column()
-    totalAmount: number;
-
     @ManyToOne(() => Cart, cart => cart.cartItems)
     cart: Cart;
 
