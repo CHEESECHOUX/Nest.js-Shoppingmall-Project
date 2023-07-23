@@ -14,14 +14,19 @@ import { User } from '@src/users/entity/user.entity';
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {}
 
-    @Get(':orderId')
+    @Get('/:orderId')
     @Roles('ADMIN', 'MANAGER')
     async getOrderById(@Param('orderId') orderId: number): Promise<OrderInfoDTO | null> {
         return this.ordersService.getOrderById(orderId);
     }
 
+    @Get('/:orderId')
+    async getOrderByUser(@GetUserSession() user: User, @Param('orderId') orderId: number): Promise<OrderInfoDTO | null> {
+        return this.ordersService.getOrderByUser(user, orderId);
+    }
+
     @Post()
-    async createOrder(@GetUserSession() user: User, @Body() createOrderDTO: CreateOrderDTO): Promise<any> {
+    async createOrder(@GetUserSession() user: User, @Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
         return this.ordersService.createOrder(user, createOrderDTO);
     }
 

@@ -22,16 +22,30 @@ export class OrdersService {
         private usersRepository: Repository<User>,
     ) {}
 
-    async getOrderById(id: number): Promise<OrderInfoDTO | null> {
-        const orderInfo = await this.ordersRepository.findOne({ where: { id } });
-        if (!orderInfo) {
-            throw new UnauthorizedException('주문 내역을 찾을 수 없습니다');
+    async getOrderById(orderId: number): Promise<OrderInfoDTO> {
+        const order = await this.ordersRepository.findOne({ where: { id: orderId } });
+        if (!order) {
+            throw new UnauthorizedException('id에 해당하는 주문 내역을 찾을 수 없습니다');
         }
 
-        return orderInfo;
+        return order;
     }
 
-    async createOrder(user: User, createOrderDTO: CreateOrderDTO): Promise<any> {
+    async getOrderByUser(user: User, orderId: number): Promise<OrderInfoDTO | null> {
+        const order = await this.ordersRepository.findOne({
+            where: { id: orderId },
+            relations: ['user'],
+        });
+        if (!order) {
+            throw new NotFoundException('주문 내역을 찾을 수 없습니다');
+        }
+        if (order.user.id !== user.id) {
+            throw new UnauthorizedException('사용자의 주문 내역이 아닙니다');
+        }
+        return order;
+    }
+
+    async createOrder(user: User, createOrderDTO: CreateOrderDTO): Promise<Order> {
         const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
 
         // 주문 생성
