@@ -45,14 +45,14 @@ export class CartsService {
         }
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
-        const productId = cartItems.map(product => product.productId);
+        const productIds = cartItems.map(product => product.productId);
 
         const foundProducts = await this.productsRepository
             .createQueryBuilder('product')
-            .where('product.id IN (:...productId)', { productId: productId })
+            .where('product.id IN (:...productIds)', { productIds: productIds })
             .getMany();
 
-        if (foundProducts.length !== productId.length) {
+        if (foundProducts.length !== productIds.length) {
             throw new NotFoundException('상품정보를 DB에서 가져오지 못했습니다');
         }
 
@@ -70,7 +70,7 @@ export class CartsService {
 
         const savedCart = await this.cartsRepository.save(cart);
 
-        const cartItem = cartItems.map(cartItemDTO => {
+        const cartItemsToSave = cartItems.map(cartItemDTO => {
             const foundProduct = foundProducts.find(product => product.id === cartItemDTO.productId);
             if (!foundProduct) {
                 throw new NotFoundException(`상품 ID ${cartItemDTO.productId}에 해당하는 상품을 찾을 수 없습니다`);
@@ -84,21 +84,22 @@ export class CartsService {
 
         return savedCart;
     }
+
     async updateCart(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
         const { cartItems, cartId } = updateCartDTO;
 
         const user = await this.usersRepository.findOne({ where: { id: userId } });
 
-        const cartItem = await this.cartsRepository.findOne({
+        const cart = await this.cartsRepository.findOne({
             where: { id: cartId },
             relations: ['user'],
         });
 
-        if (!cartItem) {
+        if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cartItem.user?.id !== userId && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 수정할 수 없습니다');
+        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
+            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 수정할 수 없습니다');
         }
 
         const productId = cartItems.map(product => product.productId);
@@ -115,12 +116,26 @@ export class CartsService {
             return total + product.price * productItem.quantity;
         }, 0);
 
-        cartItem.user = user;
-        cartItem.products = foundProducts;
-        cartItem.totalQuantity = totalQuantity;
-        cartItem.totalAmount = totalAmount;
+        const updatedCart = new Cart();
+        updatedCart.user = user;
+        updatedCart.totalQuantity = totalQuantity;
+        updatedCart.totalAmount = totalAmount;
 
-        return this.cartsRepository.save(cartItem);
+        const savedCart = await this.cartsRepository.save(updatedCart);
+
+        const updatedCartItem = cartItems.map(cartItemDTO => {
+            const foundProduct = foundProducts.find(product => product.id === cartItemDTO.productId);
+            if (!foundProduct) {
+                throw new NotFoundException(`상품 ID ${cartItemDTO.productId}에 해당하는 상품을 찾을 수 없습니다`);
+            }
+            const cartItem = new CartItem();
+            cartItem.product = foundProduct;
+            cartItem.quantity = cartItemDTO.quantity;
+            cartItem.cart = savedCart;
+            return this.cartItemsRepository.save(cartItem);
+        });
+
+        return savedCart;
     }
 
     async softDeleteCartItem(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
@@ -137,7 +152,7 @@ export class CartsService {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
         if (cart.user?.id !== userId && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 삭제할 수 없습니다');
+            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 수정할 수 없습니다');
         }
 
         const productIdList = cartItems.map(item => item.productId);
