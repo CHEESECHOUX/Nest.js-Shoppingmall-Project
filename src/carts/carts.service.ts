@@ -166,8 +166,8 @@ export class CartsService {
         if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니가 아니므로 삭제할 수 없습니다');
+        if (cart.user?.id !== user.id && user.role !== 'ADMIN') {
+            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 삭제할 수 없습니다');
         }
 
         await this.cartsRepository.update({ id: cartId }, { isDeleted: true });

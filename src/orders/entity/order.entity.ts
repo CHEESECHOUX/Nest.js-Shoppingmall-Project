@@ -1,8 +1,9 @@
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from '@src/orders/entity/order-item.entity';
 import { Payment } from '@src/payments/entity/payment.entity';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
+import { Cart } from '@src/carts/entity/carts.entity';
 
 export type OrderStatus = 'PENDING' | 'DELIVER' | 'COMPLETED' | 'CANCELED';
 
@@ -59,4 +60,7 @@ export class Order {
 
     @ManyToOne(() => User, user => user.orders)
     user: User;
+
+    @ManyToOne(() => Cart, cart => cart.orders)
+    cart: Cart;
 }
