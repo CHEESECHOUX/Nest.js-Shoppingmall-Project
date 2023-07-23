@@ -28,12 +28,6 @@ export class CartsController {
         return cartItem;
     }
 
-    @Delete('/item/:userId')
-    async softDeleteCartItem(@Param('userId') userId: number, @Body() updateCartDTO: UpdateCartDTO): Promise<Cart> {
-        const cartItem = await this.cartsService.softDeleteCartItem(userId, updateCartDTO);
-        return cartItem;
-    }
-
     @Delete(':userId')
     async softDeleteCart(@Param('userId') userId: number, @Body() cartInfoDTO: CartInfoDTO): Promise<void> {
         return this.cartsService.softDeleteCart(userId, cartInfoDTO);

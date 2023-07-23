@@ -140,51 +140,6 @@ export class CartsService {
         return savedCart;
     }
 
-    async softDeleteCartItem(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
-        const { cartItems, cartId } = updateCartDTO;
-
-        const user = await this.usersRepository.findOne({ where: { id: userId } });
-
-        const cart = await this.cartsRepository.findOne({
-            where: { id: cartId },
-            relations: ['user'],
-        });
-
-        if (!cart) {
-            throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
-        }
-        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 수정할 수 없습니다');
-        }
-
-        const productIdList = cartItems.map(item => item.productId);
-        const quantityList = cartItems.map(item => item.quantity);
-
-        const products = await this.productsRepository
-            .createQueryBuilder('product')
-            .where('product.id IN (:...productId)', { productId: productIdList })
-            .getMany();
-
-        products.forEach(product => {
-            const itemIndex = productIdList.indexOf(product.id);
-            if (itemIndex !== -1) {
-                const quantityToRemove = quantityList[itemIndex];
-                if (cart.totalQuantity < quantityToRemove) {
-                    throw new BadRequestException('상품을 제거할 수량이 없습니다');
-                }
-
-                cart.totalQuantity -= quantityToRemove; // 총 수량 - 선택 수량
-                cart.totalAmount -= product.price * quantityToRemove;
-
-                if (cart.totalQuantity <= 0) {
-                    cart.isDeleted = true; // 장바구니의 총 수량이 0 이하라면 softDelete
-                }
-            }
-        });
-
-        return this.cartsRepository.save(cart);
-    }
-
     async softDeleteCart(userId: number, cartInfoDTO: CartInfoDTO): Promise<void> {
         const { cartId } = cartInfoDTO;
 
