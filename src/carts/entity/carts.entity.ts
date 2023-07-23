@@ -2,6 +2,7 @@ import { Order } from '@src/orders/entity/order.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CartItem } from '@src/carts/entity/cart-item.entity';
 
 @Entity()
 export class Cart {
@@ -22,6 +23,9 @@ export class Cart {
 
     @Column({ default: false })
     isDeleted: boolean;
+
+    @OneToMany(() => CartItem, cartItem => cartItem.cart, {})
+    cartItems: CartItem[];
 
     @OneToMany(() => Order, Order => Order.createdAt, {})
     orders: Order[];

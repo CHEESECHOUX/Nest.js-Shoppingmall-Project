@@ -1,14 +1,11 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from '@src/orders/entity/order.entity';
 import { Product } from '@src/products/entity/product.entity';
+import { Cart } from '@src/carts/entity/carts.entity';
 
 @Entity()
-export class OrderItem {
+export class CartItem {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ comment: '주문 상품명' })
-    orderProductName: string;
 
     @Column()
     quantity: number;
@@ -16,9 +13,9 @@ export class OrderItem {
     @Column()
     totalAmount: number;
 
-    @ManyToOne(() => Order, order => order.orderItems)
-    order: Order;
+    @ManyToOne(() => Cart, cart => cart.cartItems)
+    cart: Cart;
 
-    @ManyToOne(() => Product, product => product.orderItems)
+    @ManyToOne(() => Product, product => product.cartItems)
     product: Product;
 }
