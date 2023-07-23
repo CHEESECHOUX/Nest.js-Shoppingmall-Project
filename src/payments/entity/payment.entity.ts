@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Order } from '@src/orders/entity/order.entity';
 
 export enum PaymentStatusEnum {
@@ -25,6 +25,8 @@ export class Payment {
     @UpdateDateColumn({ type: 'datetime' })
     updatedAt: Date;
 
-    @OneToOne(() => Order, order => order.payment)
+    @ManyToOne(() => Order, order => order.payments, {
+        onDelete: 'CASCADE',
+    })
     order: Order;
 }

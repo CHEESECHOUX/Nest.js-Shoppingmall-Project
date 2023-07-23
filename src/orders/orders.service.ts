@@ -8,7 +8,7 @@ import { PaymentsService } from '@src/payments/payments.service';
 import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
-import { User } from '../users/entity/user.entity';
+import { User } from '@src/users/entity/user.entity';
 
 @Injectable()
 export class OrdersService {
@@ -64,6 +64,7 @@ export class OrdersService {
                 payment.method = method;
                 payment.amount = createTossPaymentDTO.amount;
                 payment.status = PaymentStatusEnum.COMPLETED;
+                payment.order = savedOrder;
 
                 await transactionalEntityManager.save(payment);
 

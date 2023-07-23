@@ -1,5 +1,5 @@
 import { User } from '@src/users/entity/user.entity';
-import { Column, CreateDateColumn, Entity, Generated, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Generated, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OrderItem } from '@src/orders/entity/order-item.entity';
 import { Payment } from '@src/payments/entity/payment.entity';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
@@ -48,8 +48,8 @@ export class Order {
     @Column({ default: false })
     isDeleted: boolean;
 
-    @OneToOne(() => Payment, payment => payment.order)
-    payment: Payment;
+    @OneToMany(() => Payment, Payment => Payment.order, {})
+    payments: Payment[];
 
     @OneToMany(() => PaymentCancel, paymentCancel => paymentCancel.order, {})
     paymentCancels: PaymentCancel[];
