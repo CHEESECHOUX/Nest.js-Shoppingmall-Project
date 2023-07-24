@@ -6,7 +6,6 @@ import { Cart } from '@src/carts/entity/carts.entity';
 
 export enum OrderStatusEnum {
     PENDING = 'PENDING',
-    COMPLETE_PAYMENT = 'COMPLETE_PAYMENT',
     PREPARE_DELIVER = 'PREPARE_DELIVER',
     DELIVER = 'DELIVER',
     COMPLETE_DELIVER = 'COMPLETE_DELIVER',
