@@ -9,6 +9,8 @@ import { CancelTossPaymentDTO, CreateTossPaymentDTO } from '@src/payments/dto/pa
 import { UpdateOrderDTO } from '@src/orders/dto/orders.dto';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 import { User } from '@src/users/entity/user.entity';
+import { CartItem } from '@src/carts/entity/cart-items.entity';
+import { Product } from '@src/products/entity/product.entity';
 
 @Injectable()
 export class OrdersService {
@@ -20,6 +22,10 @@ export class OrdersService {
         private paymentsService: PaymentsService,
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        @InjectRepository(CartItem)
+        private cartItemsRepository: Repository<CartItem>,
+        @InjectRepository(Product)
+        private productsRepository: Repository<Product>,
     ) {}
 
     async getOrderById(orderId: number): Promise<OrderInfoDTO> {
@@ -48,55 +54,90 @@ export class OrdersService {
     async createOrder(user: User, createOrderDTO: CreateOrderDTO): Promise<Order> {
         const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
 
-        // 주문 생성
-        const order = new Order();
-        order.user = user;
-        order.addressee = addressee;
-        order.address = address;
-        order.zipcode = zipcode;
-        order.phone = phone;
-        order.requirement = requirement;
-        order.totalAmount = totalAmount; // 장바구니랑 연결할 때 계산
-        order.status = status as OrderStatus;
-        order.tossOrderId = orderId;
-        order.tossPaymentKey = paymentKey;
+        try {
+            // 장바구니에 담긴 상품 가져오기
+            const cartItems = await this.cartItemsRepository
+                .createQueryBuilder('cartItem')
+                .innerJoinAndSelect('cartItem.cart', 'cart')
+                .innerJoinAndSelect('cartItem.product', 'product')
+                .where('cart.user.id = :userId', { userId: user.id })
+                .getMany();
 
-        // 트랜잭션 시작
-        return this.ordersRepository.manager.transaction(async (transactionalEntityManager: EntityManager) => {
-            try {
-                // 주문 저장
-                const savedOrder = await transactionalEntityManager.save(order);
+            // 장바구니에 담긴 상품들의 ID 배열 추출
+            const productId = cartItems.map(cartItem => cartItem.product.id);
 
-                // toss 결제
-                const createTossPaymentDTO: CreateTossPaymentDTO = {
-                    paymentKey: paymentKey,
-                    orderId: orderId,
-                    amount: amount, // 장바구니 총 주문금액이랑 같아야함
-                };
-                await this.paymentsService.tossPaymentKey(createTossPaymentDTO);
+            // 상품 ID 배열을 기반으로 데이터베이스에서 해당 상품들 가져오기
+            const retrievedProducts = await this.productsRepository
+                .createQueryBuilder('product')
+                .where('product.id IN (:...productId)', { productId: productId })
+                .getMany();
 
-                // 결제 저장
-                const payment = new Payment();
-                payment.method = method;
-                payment.amount = createTossPaymentDTO.amount;
-                payment.status = PaymentStatusEnum.COMPLETED;
-                payment.order = savedOrder;
-
-                await transactionalEntityManager.save(payment);
-
-                // 주문 업데이트
-                savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
-                savedOrder.tossOrderId = createTossPaymentDTO.orderId;
-
-                // 업데이트된 주문 저장
-                await transactionalEntityManager.save(savedOrder);
-
-                return savedOrder;
-            } catch (e) {
-                console.error('토스 결제 처리 중 에러:', e);
-                throw new Error('주문 및 결제 처리 중 에러가 발생했습니다');
+            if (retrievedProducts.length !== productId.length) {
+                throw new NotFoundException('상품정보를 DB에서 가져오지 못했습니다');
             }
-        });
+
+            // 장바구니에 담긴 상품 가격을 기반으로 주문 총 금액 업데이트
+            const updatedTotalAmount = cartItems.reduce((total, cartItem) => {
+                const product = retrievedProducts.find(p => p.id === cartItem.product.id);
+                if (!product) {
+                    throw new NotFoundException(`상품 ID ${cartItem.product.id}에 해당하는 상품을 찾을 수 없습니다`);
+                }
+                return total + product.price * cartItem.quantity;
+            }, 0);
+
+            // 주문 생성
+            const order = new Order();
+            order.user = user;
+            order.addressee = addressee;
+            order.address = address;
+            order.zipcode = zipcode;
+            order.phone = phone;
+            order.requirement = requirement;
+            order.totalAmount = updatedTotalAmount;
+            order.status = status as OrderStatus;
+            order.tossOrderId = orderId;
+            order.tossPaymentKey = paymentKey;
+
+            // 트랜잭션 시작
+            return this.ordersRepository.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+                try {
+                    // 주문 저장
+                    const savedOrder = await transactionalEntityManager.save(order);
+
+                    // toss 결제
+                    const createTossPaymentDTO: CreateTossPaymentDTO = {
+                        paymentKey: paymentKey,
+                        orderId: orderId,
+                        amount: amount, // 장바구니 총 주문금액이랑 같아야함
+                    };
+                    await this.paymentsService.tossPaymentKey(createTossPaymentDTO);
+
+                    // 결제 저장
+                    const payment = new Payment();
+                    payment.method = method;
+                    payment.amount = createTossPaymentDTO.amount;
+                    payment.status = PaymentStatusEnum.COMPLETED;
+                    payment.order = savedOrder;
+
+                    await transactionalEntityManager.save(payment);
+
+                    // 주문 업데이트
+                    savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
+                    savedOrder.tossOrderId = createTossPaymentDTO.orderId;
+
+                    // 업데이트된 주문 저장
+                    await transactionalEntityManager.save(savedOrder);
+
+                    return savedOrder;
+                } catch (e) {
+                    console.error('토스 결제 처리 중 에러:', e);
+                    throw new Error('토스 결제 처리 중 에러가 발생했습니다');
+                }
+            });
+        } catch (e) {
+            console.error('주문 생성 중 에러:', e);
+            throw new Error('주문 처리 중 에러가 발생했습니다');
+        }
     }
 
     async updateOrderAddress(user: User, orderId: number, updateOrderDTO: UpdateOrderDTO): Promise<Order> {
