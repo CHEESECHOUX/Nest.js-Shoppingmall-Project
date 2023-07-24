@@ -4,7 +4,15 @@ import { Payment } from '@src/payments/entity/payment.entity';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 import { Cart } from '@src/carts/entity/carts.entity';
 
-export type OrderStatus = 'PENDING' | 'DELIVER' | 'COMPLETED' | 'CANCELED';
+export enum OrderStatusEnum {
+    PENDING = 'PENDING',
+    COMPLETE_PAYMENT = 'COMPLETE_PAYMENT',
+    PREPARE_DELIVER = 'PREPARE_DELIVER',
+    DELIVER = 'DELIVER',
+    COMPLETE_DELIVER = 'COMPLETE_DELIVER',
+    CONFIRM_PURCHASE = 'CONFIRM_PURCHASE',
+    CANCELED = 'CANCELED',
+}
 
 @Entity()
 export class Order {
@@ -30,7 +38,7 @@ export class Order {
     totalAmount: number;
 
     @Column({ default: 'PENDING' })
-    status: OrderStatus;
+    status: OrderStatusEnum;
 
     @Column({ comment: '토스페이먼츠 paymentKey', nullable: true })
     tossPaymentKey: string;

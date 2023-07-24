@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateOrderDTO, OrderInfoDTO, UpdateOrderDTO } from '@src/orders/dto/orders.dto';
 import { OrdersService } from '@src/orders/orders.service';
-import { Order } from '@src/orders/entity/order.entity';
+import { Order, OrderStatusEnum } from '@src/orders/entity/order.entity';
 import { CancelTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { RolesGuard } from '@src/guards/roles.guard';
@@ -21,7 +21,7 @@ export class OrdersController {
     }
 
     @Get('/:orderId')
-    async getOrderByUser(@GetUserSession() user: User, @Param('orderId') orderId: number): Promise<OrderInfoDTO | null> {
+    async getOrderByUser(@GetUserSession() user: User, @Param('orderId', ParseIntPipe) orderId: number): Promise<OrderInfoDTO | null> {
         return this.ordersService.getOrderByUser(user, orderId);
     }
 
@@ -38,9 +38,15 @@ export class OrdersController {
     @Patch(':orderId')
     async updateOrderAddress(
         @GetUserSession() user: User,
-        @Param('orderId') orderId: number,
+        @Param('orderId', ParseIntPipe) orderId: number,
         @Body() updateOrderDTO: UpdateOrderDTO,
     ): Promise<Order> {
         return this.ordersService.updateOrderAddress(user, orderId, updateOrderDTO);
+    }
+
+    @Patch(':orderId/status')
+    @Roles('ADMIN', 'MANAGER')
+    async updateOrderStatus(@Param('orderId', ParseIntPipe) orderId: number, @Body('status') status: OrderStatusEnum) {
+        return this.ordersService.updateOrderStatus(orderId, status);
     }
 }

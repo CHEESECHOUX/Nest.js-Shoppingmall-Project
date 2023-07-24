@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Order, OrderStatus } from '@src/orders/entity/order.entity';
+import { Order, OrderStatusEnum } from '@src/orders/entity/order.entity';
 import { Payment, PaymentStatusEnum } from '@src/payments/entity/payment.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateOrderDTO, OrderInfoDTO } from '@src/orders/dto/orders.dto';
@@ -94,7 +94,6 @@ export class OrdersService {
             order.phone = phone;
             order.requirement = requirement;
             order.totalAmount = updatedTotalAmount;
-            order.status = status as OrderStatus;
             order.tossOrderId = orderId;
             order.tossPaymentKey = paymentKey;
 
@@ -122,6 +121,7 @@ export class OrdersService {
                     await transactionalEntityManager.save(payment);
 
                     // 주문 업데이트
+                    savedOrder.status = OrderStatusEnum.PENDING;
                     savedOrder.tossPaymentKey = createTossPaymentDTO.paymentKey;
                     savedOrder.tossOrderId = createTossPaymentDTO.orderId;
 
@@ -172,7 +172,7 @@ export class OrdersService {
                 }
 
                 // 주문 상태 취소로 변경
-                order.status = 'CANCELED';
+                order.status = OrderStatusEnum.CANCELED;
 
                 // toss 결제 취소
                 await this.paymentsService.cancelTossPayment(cancelTossPaymentDTO);
@@ -211,5 +211,15 @@ export class OrdersService {
                 throw new Error('주문 및 결제 취소 처리 중 에러가 발생했습니다');
             }
         });
+    }
+
+    async updateOrderStatus(orderId: number, status: OrderStatusEnum): Promise<Order> {
+        const order = await this.ordersRepository.findOne({ where: { id: orderId } });
+        if (!order) {
+            throw new NotFoundException('주문 내역을 찾을 수 없습니다');
+        }
+
+        order.status = status;
+        return this.ordersRepository.save(order);
     }
 }
