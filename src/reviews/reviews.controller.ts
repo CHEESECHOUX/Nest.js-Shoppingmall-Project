@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { ReviewsService } from '@src/reviews/reviews.service';
 import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
 import { User } from '@src/users/entity/user.entity';
@@ -7,7 +7,7 @@ import { CreateReviewDTO } from '@src/reviews/dto/reviews.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { RolesGuard } from '@src/guards/roles.guard';
 
-@Controller('reviews')
+@Controller('products/reviews')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
@@ -15,5 +15,14 @@ export class ReviewsController {
     @Post()
     async createReview(@GetUserSession() user: User, @Body() createReviewDTO: CreateReviewDTO): Promise<Review> {
         return this.reviewsService.createReview(user, createReviewDTO);
+    }
+
+    @Patch(':reviewId')
+    async updateReview(
+        @GetUserSession() user: User,
+        @Param('reviewId', ParseIntPipe) reviewId: number,
+        @Body() createReviewDTO: CreateReviewDTO,
+    ): Promise<Review> {
+        return this.reviewsService.updateReview(user, reviewId, createReviewDTO);
     }
 }

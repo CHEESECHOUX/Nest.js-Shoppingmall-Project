@@ -8,7 +8,7 @@ export class Review {
     id: number;
 
     @Column()
-    review: string;
+    content: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;

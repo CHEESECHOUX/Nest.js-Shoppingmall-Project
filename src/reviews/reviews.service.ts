@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from '@src/reviews/entity/reviews.entity';
 import { Repository } from 'typeorm';
@@ -19,7 +19,7 @@ export class ReviewsService {
     ) {}
 
     async createReview(user: User, createReviewDTO: CreateReviewDTO): Promise<Review> {
-        const { review, productId } = createReviewDTO;
+        const { content, productId } = createReviewDTO;
 
         // 사용자가 주문한 내역
         const userOrders = await this.ordersRepository
@@ -50,13 +50,40 @@ export class ReviewsService {
 
         const product = await this.productsRepository.findOne({ where: { id: productId } });
 
-        const createdReview = new Review();
-        createdReview.review = review;
-        createdReview.product = product;
-        createdReview.user = user;
+        const review = new Review();
+        review.content = content;
+        review.product = product;
+        review.user = user;
 
-        await this.reviewsRepository.save(createdReview);
+        await this.reviewsRepository.save(review);
 
-        return createdReview;
+        return review;
+    }
+
+    async updateReview(user: User, reviewId: number, createReviewDTO: CreateReviewDTO): Promise<Review> {
+        const { content, productId } = createReviewDTO;
+
+        const existingReview = await this.reviewsRepository.findOne({
+            where: { id: reviewId },
+            relations: ['user'],
+        });
+
+        if (!existingReview) {
+            throw new NotFoundException('리뷰 정보를 찾을 수 없습니다');
+        }
+        if (existingReview.user.id !== user.id) {
+            throw new UnauthorizedException('해당 사용자의 리뷰가 아니므로 수정할 수 없습니다');
+        }
+
+        existingReview.content = content;
+
+        const product = await this.productsRepository.findOne({ where: { id: productId } });
+        if (!product) {
+            throw new NotFoundException('상품 정보를 찾을 수 없습니다');
+        }
+
+        await this.reviewsRepository.save(existingReview);
+
+        return existingReview;
     }
 }
