@@ -11,6 +11,7 @@ import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 import { User } from '@src/users/entity/user.entity';
 import { CartItem } from '@src/carts/entity/cart-items.entity';
 import { Product } from '@src/products/entity/product.entity';
+import { OrderProduct } from './entity/order-product.entity';
 
 @Injectable()
 export class OrdersService {
@@ -106,6 +107,13 @@ export class OrdersService {
                 try {
                     // 주문 저장
                     const savedOrder = await transactionalEntityManager.save(order);
+
+                    for (const product of retrievedProducts) {
+                        const orderProduct = new OrderProduct();
+                        orderProduct.order = savedOrder;
+                        orderProduct.product = product;
+                        await transactionalEntityManager.save(orderProduct);
+                    }
 
                     // toss 결제
                     const createTossPaymentDTO: CreateTossPaymentDTO = {

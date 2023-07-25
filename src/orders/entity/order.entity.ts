@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, Generated, ManyToOne, OneToMany, Prim
 import { Payment } from '@src/payments/entity/payment.entity';
 import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 import { Cart } from '@src/carts/entity/carts.entity';
+import { OrderProduct } from '@src/orders/entity/order-product.entity';
 
 export enum OrderStatusEnum {
     PENDING = 'PENDING',
@@ -60,6 +61,9 @@ export class Order {
 
     @OneToMany(() => PaymentCancel, paymentCancel => paymentCancel.order, {})
     paymentCancels: PaymentCancel[];
+
+    @OneToMany(() => OrderProduct, orderProduct => orderProduct.order)
+    orderProducts: OrderProduct[];
 
     @ManyToOne(() => User, user => user.orders)
     user: User;

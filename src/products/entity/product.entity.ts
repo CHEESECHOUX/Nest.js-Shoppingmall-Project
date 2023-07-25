@@ -1,6 +1,7 @@
 import { CartItem } from '@src/carts/entity/cart-items.entity';
 import { Category } from '@src/categories/entity/categories.entity';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { OrderProduct } from '@src/orders/entity/order-product.entity';
 import { Review } from '@src/reviews/entity/reviews.entity';
 import { User } from '@src/users/entity/user.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
@@ -57,4 +58,7 @@ export class Product {
         onUpdate: 'NO ACTION',
     })
     reviews: Review[];
+
+    @OneToMany(() => OrderProduct, orderProduct => orderProduct.product)
+    orderProducts: OrderProduct[];
 }
