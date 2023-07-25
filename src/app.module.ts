@@ -19,6 +19,7 @@ import { CategoriesModule } from '@src/categories/categories.module';
 import { CartsModule } from '@src/carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentsModule } from './payments/payments.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
     imports: [
@@ -85,6 +86,7 @@ import { PaymentsModule } from './payments/payments.module';
         CartsModule,
         OrdersModule,
         PaymentsModule,
+        ReviewsModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],
