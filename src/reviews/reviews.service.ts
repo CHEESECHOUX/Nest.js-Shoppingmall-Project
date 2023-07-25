@@ -18,6 +18,15 @@ export class ReviewsService {
         private ordersRepository: Repository<Order>,
     ) {}
 
+    async getReviewByreviewId(reviewId: number): Promise<Review> {
+        const review = await this.reviewsRepository.findOne({ where: { id: reviewId } });
+        if (!review) {
+            throw new UnauthorizedException('리뷰를 찾을 수 없습니다');
+        }
+
+        return review;
+    }
+
     async createReview(user: User, createReviewDTO: CreateReviewDTO): Promise<Review> {
         const { content, productId } = createReviewDTO;
 
