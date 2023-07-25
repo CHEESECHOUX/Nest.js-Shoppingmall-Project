@@ -22,12 +22,6 @@ export class CreateOrderDTO extends CreateTossPaymentDTO {
     @IsString()
     requirement: string;
 
-    @IsNumber()
-    totalAmount: number;
-
-    @IsString()
-    status: string;
-
     @IsString()
     method: string;
 }

@@ -52,7 +52,7 @@ export class OrdersService {
     }
 
     async createOrder(user: User, createOrderDTO: CreateOrderDTO): Promise<Order> {
-        const { addressee, address, zipcode, phone, requirement, totalAmount, status, method, paymentKey, orderId, amount } = createOrderDTO;
+        const { addressee, address, zipcode, phone, requirement, method, paymentKey, orderId, amount } = createOrderDTO;
 
         try {
             // 장바구니에 담긴 상품 가져오기
@@ -84,6 +84,10 @@ export class OrdersService {
                 }
                 return total + product.price * cartItem.quantity;
             }, 0);
+
+            if (updatedTotalAmount !== amount) {
+                throw new Error('장바구니 총 주문금액과 결제 요청금액이 일치하지 않습니다.');
+            }
 
             // 주문 생성
             const order = new Order();
