@@ -86,4 +86,22 @@ export class ReviewsService {
 
         return existingReview;
     }
+
+    async softDeleteReview(user: User, reviewId: number): Promise<Review> {
+        const review = await this.reviewsRepository.findOne({
+            where: { id: reviewId },
+            relations: ['user'],
+        });
+
+        if (!review) {
+            throw new NotFoundException('리뷰 정보를 찾을 수 없습니다');
+        }
+        if (review.user?.id !== user.id && user.role !== 'ADMIN') {
+            throw new UnauthorizedException('사용자가 작성한 리뷰 or ADMIN 권한이 아니므로 삭제할 수 없습니다');
+        }
+
+        await this.reviewsRepository.update({ id: reviewId }, { isDeleted: true });
+
+        return review;
+    }
 }
