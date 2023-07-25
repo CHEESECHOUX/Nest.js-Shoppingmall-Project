@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ReviewsService } from '@src/reviews/reviews.service';
 import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
 import { User } from '@src/users/entity/user.entity';
@@ -6,14 +6,19 @@ import { Review } from '@src/reviews/entity/reviews.entity';
 import { CreateReviewDTO } from '@src/reviews/dto/reviews.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 
-@Controller('products/reviews')
+@Controller('products')
 @UseGuards(JwtAuthGuard)
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
 
-    @Get(':reviewId')
-    async getReviewByreviewId(@Param('reviewId', ParseIntPipe) reviewId: number): Promise<Review> {
+    @Get('/reviews:reviewId')
+    async getReviewByreviewId(@Param('reviewId') reviewId: number): Promise<Review> {
         return await this.reviewsService.getReviewByreviewId(reviewId);
+    }
+
+    @Get(':productId/reviews')
+    async getReviewByproductId(@Param('productId') productId: number): Promise<Review[]> {
+        return await this.reviewsService.getReviewByproductId(productId);
     }
 
     @Post()
@@ -21,7 +26,7 @@ export class ReviewsController {
         return this.reviewsService.createReview(user, createReviewDTO);
     }
 
-    @Patch(':reviewId')
+    @Patch('/reviews/:reviewId')
     async updateReview(
         @GetUserSession() user: User,
         @Param('reviewId', ParseIntPipe) reviewId: number,
@@ -30,7 +35,7 @@ export class ReviewsController {
         return this.reviewsService.updateReview(user, reviewId, createReviewDTO);
     }
 
-    @Delete(':reviewId')
+    @Delete('/reviews/:reviewId')
     async softDeleteReview(@GetUserSession() user: User, @Param('reviewId', ParseIntPipe) reviewId: number): Promise<Review> {
         return this.reviewsService.softDeleteReview(user, reviewId);
     }

@@ -27,6 +27,23 @@ export class ReviewsService {
         return review;
     }
 
+    async getReviewByproductId(productId: number): Promise<Review[]> {
+        try {
+            const reviews = await this.reviewsRepository
+                .createQueryBuilder('review')
+                .innerJoin('review.product', 'product')
+                .where('product.id = :productId', { productId })
+                .orderBy('review.updatedAt', 'ASC')
+                .take(20)
+                .getMany();
+
+            return reviews;
+        } catch (e) {
+            console.error('상품 리뷰 조회 중 에러 발생 :', e.message);
+            throw new Error('상품의 리뷰를 가져오는데 실패했습니다.');
+        }
+    }
+
     async createReview(user: User, createReviewDTO: CreateReviewDTO): Promise<Review> {
         const { content, productId } = createReviewDTO;
 
