@@ -24,25 +24,25 @@ export class CategoriesController {
     }
 
     @Post()
-    @Roles('ADMIN', 'MANAGER')
+    @Roles('ADMIN')
     async createCategory(@Body() createCategoryDTO: CreateCategoryDTO) {
         return this.categoriesService.createCategory(createCategoryDTO);
     }
 
     @Post('/product')
-    @Roles('ADMIN', 'MANAGER')
+    @Roles('ADMIN')
     async createCategoryWithProduct(@Body() createCategoryWithProductDTO: CreateCategoryWithProductDTO) {
         return this.categoriesService.categoryWithProduct(createCategoryWithProductDTO);
     }
 
     @Patch(':id')
-    @Roles('ADMIN', 'MANAGER')
+    @Roles('ADMIN')
     async updateCategory(@Param('id') id: number, @Body() createCategoryDTO: CreateCategoryDTO) {
         return this.categoriesService.updateCategory(id, createCategoryDTO);
     }
 
     @Delete(':id')
-    @Roles('ADMIN', 'MANAGER')
+    @Roles('ADMIN')
     async softDeleteCategoryWithProduct(@Param('id') id: number): Promise<void> {
         return this.categoriesService.softDeleteByIdWithProduct(id);
     }

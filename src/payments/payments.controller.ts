@@ -18,7 +18,7 @@ export class PaymentsController {
         return this.paymentsService.tossPaymentKey(createTossPaymentDTO);
     }
 
-    @Post('/cancel')
+    @Post('/toss/cancel')
     cancel(@Body() cancelTossPaymentDTO: CancelTossPaymentDTO) {
         return this.paymentsService.cancelTossPayment(cancelTossPaymentDTO);
     }

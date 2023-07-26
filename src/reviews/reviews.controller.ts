@@ -12,13 +12,13 @@ export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
 
     @Get('/reviews:reviewId')
-    async getReviewByreviewId(@Param('reviewId') reviewId: number): Promise<Review> {
-        return await this.reviewsService.getReviewByreviewId(reviewId);
+    async getReviewByReviewId(@Param('reviewId') reviewId: number): Promise<Review> {
+        return await this.reviewsService.getReviewByReviewId(reviewId);
     }
 
     @Get(':productId/reviews')
-    async getReviewByproductId(@Param('productId') productId: number): Promise<Review[]> {
-        return await this.reviewsService.getReviewByproductId(productId);
+    async getReviewByProductId(@Param('productId') productId: number): Promise<Review[]> {
+        return await this.reviewsService.getReviewByProductId(productId);
     }
 
     @Post()

@@ -18,7 +18,7 @@ export class ReviewsService {
         private ordersRepository: Repository<Order>,
     ) {}
 
-    async getReviewByreviewId(reviewId: number): Promise<Review> {
+    async getReviewByReviewId(reviewId: number): Promise<Review> {
         const review = await this.reviewsRepository.findOne({ where: { id: reviewId } });
         if (!review) {
             throw new UnauthorizedException('리뷰를 찾을 수 없습니다');
@@ -27,13 +27,13 @@ export class ReviewsService {
         return review;
     }
 
-    async getReviewByproductId(productId: number): Promise<Review[]> {
+    async getReviewByProductId(productId: number): Promise<Review[]> {
         try {
             const reviews = await this.reviewsRepository
                 .createQueryBuilder('review')
                 .innerJoin('review.product', 'product')
                 .where('product.id = :productId', { productId })
-                .orderBy('review.updatedAt', 'ASC')
+                .orderBy('review.updatedAt', 'DESC')
                 .take(20)
                 .getMany();
 
