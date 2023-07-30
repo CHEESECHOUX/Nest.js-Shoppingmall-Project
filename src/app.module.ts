@@ -17,9 +17,10 @@ import { UploadsModule } from '@src/uploads/uploads.module';
 import { ImageurlsModule } from '@src/imageurls/imageurls.module';
 import { CategoriesModule } from '@src/categories/categories.module';
 import { CartsModule } from '@src/carts/carts.module';
-import { OrdersModule } from './orders/orders.module';
-import { PaymentsModule } from './payments/payments.module';
-import { ReviewsModule } from './reviews/reviews.module';
+import { OrdersModule } from '@src/orders/orders.module';
+import { PaymentsModule } from '@src/payments/payments.module';
+import { ReviewsModule } from '@src/reviews/reviews.module';
+import { RolesModule } from '@src/roles/roles.module';
 
 @Module({
     imports: [
@@ -87,6 +88,7 @@ import { ReviewsModule } from './reviews/reviews.module';
         OrdersModule,
         PaymentsModule,
         ReviewsModule,
+        RolesModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoginLogger, LogFileResetService],
