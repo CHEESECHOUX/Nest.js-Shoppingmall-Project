@@ -14,6 +14,12 @@ export class RolesService {
         private usersRepository: Repository<User>,
     ) {}
 
+    async getAllRoles(): Promise<Role[]> {
+        const roles = await this.rolesRepository.createQueryBuilder('role').orderBy('role.role', 'ASC').take(20).getMany();
+
+        return roles;
+    }
+
     async createRole(user: User, createRoleDTO: CreateRoleDTO): Promise<Role> {
         const { role } = createRoleDTO;
 

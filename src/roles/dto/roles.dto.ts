@@ -4,3 +4,5 @@ export class CreateRoleDTO {
     @IsString()
     role: string;
 }
+
+export class RoleInfoDTO {}

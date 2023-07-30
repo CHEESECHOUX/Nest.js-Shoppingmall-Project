@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { RolesService } from '@src/roles/roles.service';
 import { Role } from '@src/roles/entity/role.entity';
 import { CreateRoleDTO } from '@src/roles/dto/roles.dto';
@@ -12,6 +12,11 @@ import { Roles } from '@src/common/decorators/role.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
+
+    @Get()
+    async getAllRoles(): Promise<Role[]> {
+        return await this.rolesService.getAllRoles();
+    }
 
     @Post()
     @Roles('ADMIN')
