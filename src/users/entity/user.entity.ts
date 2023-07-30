@@ -2,7 +2,7 @@ import { Cart } from '@src/carts/entity/carts.entity';
 import { Order } from '@src/orders/entity/order.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Review } from '@src/reviews/entity/reviews.entity';
-import { Role } from '@src/roles/entity/role.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
 @Entity()
@@ -70,9 +70,9 @@ export class User {
     })
     reviews: Review[];
 
-    @OneToMany(() => Role, role => role.user, {
+    @OneToMany(() => UserRole, userRole => userRole.user, {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION',
     })
-    roles: Role[];
+    userRoles: UserRole[];
 }

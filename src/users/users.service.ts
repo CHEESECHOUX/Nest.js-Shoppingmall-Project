@@ -8,6 +8,8 @@ import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/use
 import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 import { LoginLogger } from '@src/log/login.logger';
 import { Cart } from '@src/carts/entity/carts.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
+import { Role } from '@src/roles/entity/role.entity';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +21,10 @@ export class UsersService {
         private userInfoLogger: LoginLogger,
         @InjectRepository(Cart)
         private cartsRepository: Repository<Cart>,
+        @InjectRepository(Role)
+        private rolesRepository: Repository<Role>,
+        @InjectRepository(UserRole)
+        private userRolesRepository: Repository<UserRole>,
     ) {}
 
     async getUserInfo({ id }: AuthUserType): Promise<UserInfoDTO | null> {
@@ -64,6 +70,14 @@ export class UsersService {
         user.address = address;
 
         await this.usersRepository.save(user);
+
+        const role = await this.rolesRepository.findOne({ where: { role: 'CUSTOMER' } });
+
+        const userRole = new UserRole();
+        userRole.user = user;
+        userRole.role = role;
+
+        await this.userRolesRepository.save(userRole);
 
         return user;
     }

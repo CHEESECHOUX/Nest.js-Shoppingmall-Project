@@ -11,6 +11,8 @@ import { JwtStrategy } from '@src/users/jwt/jwt.strategy';
 import { LoginLogger } from '@src/log/login.logger';
 import { LogFileResetService } from '@src/log/log-file-reset.service';
 import { Cart } from '@src/carts/entity/carts.entity';
+import { Role } from '@src/roles/entity/role.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Module({
     imports: [
@@ -26,7 +28,7 @@ import { Cart } from '@src/carts/entity/carts.entity';
                 },
             }),
         }),
-        TypeOrmModule.forFeature([User, Cart]),
+        TypeOrmModule.forFeature([User, Cart, Role, UserRole]),
     ],
     providers: [UsersService, UsersRepository, JwtStrategy, LoginLogger, LogFileResetService],
     controllers: [UsersController],

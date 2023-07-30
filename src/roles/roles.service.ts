@@ -34,7 +34,7 @@ export class RolesService {
 
         const createdRole = new Role();
         createdRole.role = role;
-        createdRole.user = user;
+        // createdRole.user = user;
 
         await this.rolesRepository.save(createdRole);
 
@@ -59,7 +59,7 @@ export class RolesService {
         }
 
         updatedRole.role = role;
-        updatedRole.user = user;
+        // updatedRole.user = user;
 
         await this.rolesRepository.save(updatedRole);
 
