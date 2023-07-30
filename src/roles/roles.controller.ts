@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { RolesService } from '@src/roles/roles.service';
 import { Role } from '@src/roles/entity/role.entity';
 import { CreateRoleDTO } from '@src/roles/dto/roles.dto';
@@ -17,5 +17,11 @@ export class RolesController {
     @Roles('ADMIN')
     async createRole(@GetUserSession() user: User, @Body() createRoleDTO: CreateRoleDTO): Promise<Role> {
         return this.rolesService.createRole(user, createRoleDTO);
+    }
+
+    @Patch(':id')
+    @Roles('ADMIN')
+    async updateRole(@Param('id') roleId: number, @GetUserSession() user: User, @Body() createRoleDTO: CreateRoleDTO): Promise<Role> {
+        return this.rolesService.updateRole(roleId, user, createRoleDTO);
     }
 }
