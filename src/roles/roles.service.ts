@@ -65,4 +65,17 @@ export class RolesService {
 
         return updatedRole;
     }
+
+    async deleteRole(roleId: number, user: User): Promise<void> {
+        const roleToDelete = await this.rolesRepository.findOne({ where: { id: roleId } });
+        if (!roleToDelete) {
+            throw new NotFoundException('role 정보를 찾을 수 없습니다');
+        }
+
+        if (user.role !== 'ADMIN') {
+            throw new UnauthorizedException('ADMIN 권한만 role을 삭제할 수 있습니다');
+        }
+
+        await this.rolesRepository.delete(roleId);
+    }
 }
