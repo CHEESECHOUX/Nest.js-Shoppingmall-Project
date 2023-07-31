@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/entity/user.entity';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
-import { LoginLogger } from '@src/log/login.logger';
+import { LoggerService } from '@src/logger.service';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { UserRole } from '@src/users/entity/user-role.entity';
 import { Role } from '@src/roles/entity/role.entity';
@@ -17,8 +17,8 @@ export class UsersService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         private jwtService: JwtService,
-        private loginLogger: LoginLogger,
-        private userInfoLogger: LoginLogger,
+        private loginLogger: LoggerService,
+        private userInfoLogger: LoggerService,
         @InjectRepository(Cart)
         private cartsRepository: Repository<Cart>,
         @InjectRepository(Role)

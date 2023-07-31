@@ -10,8 +10,7 @@ import { UsersModule } from '@src/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ScheduleModule } from '@nestjs/schedule';
-import { LogFileResetService } from '@src/log/log-file-reset.service';
-import { LoginLogger } from '@src/log/login.logger';
+import { LoggerService } from '@src/logger.service';
 import { ProductsModule } from '@src/products/products.module';
 import { UploadsModule } from '@src/uploads/uploads.module';
 import { ImageurlsModule } from '@src/imageurls/imageurls.module';
@@ -91,6 +90,6 @@ import { RolesModule } from '@src/roles/roles.module';
         RolesModule,
     ],
     controllers: [AppController],
-    providers: [AppService, LoginLogger, LogFileResetService],
+    providers: [AppService, LoggerService],
 })
 export class AppModule {}

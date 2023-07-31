@@ -8,8 +8,7 @@ import { User } from '@src/users/entity/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from '@src/users/jwt/jwt.strategy';
-import { LoginLogger } from '@src/log/login.logger';
-import { LogFileResetService } from '@src/log/log-file-reset.service';
+import { LoggerService } from '@src/logger.service';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { Role } from '@src/roles/entity/role.entity';
 import { UserRole } from '@src/users/entity/user-role.entity';
@@ -30,7 +29,7 @@ import { UserRole } from '@src/users/entity/user-role.entity';
         }),
         TypeOrmModule.forFeature([User, Cart, Role, UserRole]),
     ],
-    providers: [UsersService, UsersRepository, JwtStrategy, LoginLogger, LogFileResetService],
+    providers: [UsersService, UsersRepository, JwtStrategy, LoggerService],
     controllers: [UsersController],
 })
 export class UsersModule {}

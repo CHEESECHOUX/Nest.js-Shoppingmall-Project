@@ -1,21 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { UserInfoDTO } from '@src/users/dto/users.dto';
 import { Logger, createLogger, format, transports } from 'winston';
-import { LogFileResetService } from '@src/log/log-file-reset.service';
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
 import * as moment from 'moment-timezone';
+import * as fs from 'fs';
 
 @Injectable()
-export class LoginLogger {
+export class LoggerService {
     private loginLogger: Logger;
     private userInfoLogger: Logger;
-    private logFileResetService: LogFileResetService;
     private logFilePath: string;
 
-    constructor(private configService: ConfigService, logFileResetService: LogFileResetService) {
+    constructor(private configService: ConfigService) {
         this.logFilePath = this.configService.get<string>('LOG_FILE_PATH');
 
         if (!this.logFilePath) {
@@ -46,7 +45,6 @@ export class LoginLogger {
             format: format,
             transports: [new transports.File({ filename: userInfoLogFilePath })],
         });
-        this.logFileResetService = logFileResetService;
     }
 
     logLogin(userId: number): void {
@@ -58,19 +56,25 @@ export class LoginLogger {
     }
 
     // 매일 자정 UserInfoLog 데이터 초기화
-    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    @Cron('0 00 00 * * *', { timeZone: 'Asia/Seoul' })
     async resetUserInfoLog(): Promise<void> {
-        const userInfoLogFileName = 'userinfo.log';
-        const userInfoLogFilePath = this.logFilePath.replace(/([^\/]*)$/, userInfoLogFileName);
+        try {
+            const userInfoLogFileName = 'userinfo.log';
+            const userInfoLogFilePath = this.logFilePath.replace(/([^\/]*)$/, userInfoLogFileName);
 
-        const newUserInfoLogger = createLogger({
-            level: 'info',
-            format: format.combine(format.timestamp(), format.json()),
-            transports: [new transports.File({ filename: userInfoLogFilePath })],
-        });
+            if (fs.existsSync(userInfoLogFilePath)) {
+                fs.unlinkSync(userInfoLogFilePath);
+            }
 
-        await this.logFileResetService.resetLogFile();
+            const newUserInfoLogger = createLogger({
+                level: 'info',
+                format: format.combine(format.timestamp(), format.json()),
+                transports: [new transports.File({ filename: userInfoLogFilePath })],
+            });
 
-        this.userInfoLogger = newUserInfoLogger;
+            this.userInfoLogger = newUserInfoLogger;
+        } catch (error) {
+            console.error('userInfoLog 초기화 실패:', error);
+        }
     }
 }
