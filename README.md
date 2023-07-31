@@ -223,7 +223,7 @@
 |나의 회원 정보 가져오기|/users/myinfo|GET|
 |회원가입|/users/signup|POST|
 |로그인|/users/login|POST|
-|내 회원 정보 삭제|/users/:id|Delete|
+|내 회원 정보 삭제|/users/:id|DELETE|
 |권한명 가져오기|/roles|GET|
 |권한명 생성(ADMIN 권한만)|/roles|POST|
 |권한명 수정(ADMIN 권한만)|/roles/:id|PATCH|
