@@ -28,6 +28,6 @@ export class RolesController {
 
     @Delete(':id')
     async deleteRole(@Param('id') roleId: number, @GetUserSession() user: User): Promise<void> {
-        return this.rolesService.deleteRole(roleId, user);
+        return this.rolesService.hardDeleteRole(roleId, user);
     }
 }

@@ -67,7 +67,7 @@ export class RolesService {
         return updatedRole;
     }
 
-    async deleteRole(roleId: number, user: User): Promise<void> {
+    async hardDeleteRole(roleId: number, user: User): Promise<void> {
         const roleToDelete = await this.rolesRepository.findOne({ where: { id: roleId } });
         if (!roleToDelete) {
             throw new NotFoundException('role 정보를 찾을 수 없습니다');

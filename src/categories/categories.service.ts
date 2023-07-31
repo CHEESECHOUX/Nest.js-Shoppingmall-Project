@@ -47,7 +47,7 @@ export class CategoriesService {
         return category;
     }
 
-    async categoryWithProduct(createCategoryWithProductDTO: CreateCategoryWithProductDTO): Promise<Category> {
+    async createCategoryWithProduct(createCategoryWithProductDTO: CreateCategoryWithProductDTO): Promise<Category> {
         const { name, productId } = createCategoryWithProductDTO;
 
         const existingCategory = await this.categoriesRepository.findOne({ where: { name } });
@@ -71,10 +71,10 @@ export class CategoriesService {
         return category;
     }
 
-    async updateCategory(id: number, createCategoryDTO: CreateCategoryDTO): Promise<Category> {
+    async updateCategory(categoryId: number, createCategoryDTO: CreateCategoryDTO): Promise<Category> {
         const { name } = createCategoryDTO;
 
-        const category = await this.categoriesRepository.findOne({ where: { id } });
+        const category = await this.categoriesRepository.findOne({ where: { id: categoryId } });
         if (!category) {
             throw new NotFoundException('카테고리 정보를 찾을 수 없습니다');
         }
@@ -86,15 +86,24 @@ export class CategoriesService {
         return category;
     }
 
-    async softDeleteByIdWithProduct(id: number): Promise<void> {
-        const category = await this.categoriesRepository.findOneOrFail({ where: { id } });
+    async hardDeleteCategory(categoryId: number): Promise<void> {
+        const category = await this.categoriesRepository.findOne({ where: { id: categoryId } });
+        if (!category) {
+            throw new NotFoundException('카테고리 정보를 찾을 수 없습니다');
+        }
+
+        await this.categoriesRepository.delete(categoryId);
+    }
+
+    async softDeleteByIdWithProduct(categoryId: number): Promise<void> {
+        const category = await this.categoriesRepository.findOneOrFail({ where: { id: categoryId } });
 
         category.isDeleted = true;
         await this.categoriesRepository.save(category);
 
         // category와 연결된 product 모두 찾기
         const products = await this.productsRepository.find({
-            where: { categories: { id: id } },
+            where: { categories: { id: categoryId } },
         } as FindManyOptions<Product>);
 
         // 찾은 product들 isDeleted true로 변경
