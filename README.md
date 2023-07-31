@@ -236,6 +236,7 @@
 </details>
 
 # 📡 API
+<<<<<<< HEAD
 
 | 기능                                                | EndPoint                       | 메소드 |
 | :-------------------------------------------------- | :----------------------------- | :----: |
@@ -278,6 +279,48 @@
 | 내가 작성한 리뷰 수정                               | /reviews/:reviewId             | PATCH  |
 | 내가 작성한 리뷰 삭제(ADMIN 권한도 가능)            | /reviews/:reviewId             | DELETE |
 
+=======
+|기능|EndPoint|메소드|
+|:---|:---|:---:|
+|나의 회원 정보 가져오기|/users/myinfo|GET|
+|회원가입|/users/signup|POST|
+|로그인|/users/login|POST|
+|내 회원 정보 삭제|/users/:id|DELETE|
+|권한명 가져오기|/roles|GET|
+|권한명 생성(ADMIN 권한만)|/roles|POST|
+|권한명 수정(ADMIN 권한만)|/roles/:id|PATCH|
+|권한명 삭제(ADMIN 권한만)|/roles/:id|DELETE|
+|카테고리 id로 가져오기|/categories/:id|GET|
+|카테고리 name으로 가져오기|/categories/?name=""|GET|
+|카테고리 생성(ADMIN, MANAGER 권한만)|/categories|POST|
+|카테고리 상품과 같이 생성(ADMIN, MANAGER 권한만)|/categories/product|POST|
+|카테고리 부분 수정(ADMIN, MANAGER 권한만)|/categories/:id|PATCH|
+|카테고리 삭제 시 상품도 삭제(ADMIN, MANAGER 권한만)|/categories/:id|DELETE|
+|상품 id로 가져오기|/products/:id|GET|
+|상품 productName으로 가져오기|/products/?productName=""|GET|
+|상품 카테고리별로 가져오기|/products/category/:categoryId|GET|
+|상품 생성 (ADMIN, MANAGER 권한만)|/products|POST|
+|상품 부분 수정|/products/:id|PATCH|
+|상품 삭제|/products/:id|DELETE|
+|AWS S3 이미지 파일 업로드|/uploads|POST|
+|내 장바구니 가져오기|/carts|GET|
+|내 장바구니 생성|/carts/:userId|POST|
+|내 장바구니 부분 수정|/carts/:userId|PATCH|
+|내 장바구니 삭제|/carts/:userId|DELETE|
+|orderId로 주문 가져오기(ADMIN, MANAGER 권한만)|/orders/:orderId|GET|
+|내 주문 가져오기|/orders/:orderId|GET|
+|주문 생성(토스 결제까지)|/orders|POST|
+|주문 취소(토스 결제 취소까지)|/orders/cancel|POST|
+|내 주문 배송지 수정|/orders/:orderId|PATCH|
+|주문 상태 수정(ADMIN, MANAGER 권한만)|/orders/:orderId/status|PATCH|
+|토스 결제 생성|/payments/toss|POST|
+|토스 결제 취소|/payments/toss/cancel|POST|
+|리뷰 reviewId로 가져오기|/products/reviews:reviewId|GET|
+|리뷰 productId로 가져오기|/products/:productId/reviews|GET|
+|내가 주문한 상품의 리뷰 생성|/reviews|POST|
+|내가 작성한 리뷰 수정|/reviews/:reviewId|PATCH|
+|내가 작성한 리뷰 삭제(ADMIN 권한도 가능)|/reviews/:reviewId|DELETE|
+>>>>>>> 6d5e78b693749cf9b87a72c9fda942315eb7ca88
 <br/>
 
 ## ⚙️ 설치 및 실행 방법
