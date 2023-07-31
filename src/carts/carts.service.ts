@@ -16,8 +16,6 @@ export class CartsService {
         private cartsRepository: Repository<Cart>,
         @InjectRepository(CartItem)
         private cartItemsRepository: Repository<CartItem>,
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
         @InjectRepository(UserRole)
@@ -44,8 +42,8 @@ export class CartsService {
             throw new BadRequestException('상품을 찾을 수 없습니다');
         }
 
-        const existingCart = await this.cartsRepository.findOne({ where: { id: user.id } });
-        if (existingCart) {
+        const existingUserCart = await this.cartsRepository.findOne({ where: { user: { id: user.id } } });
+        if (existingUserCart) {
             throw new BadRequestException('이미 장바구니가 존재합니다. 장바구니는 한 개만 만들 수 있습니다');
         }
 
