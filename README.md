@@ -1,16 +1,15 @@
 # Nest.js-Shoppingmall-Project
 다수의 판매자와 소비자가 온라인상에서 상거래를 할 수 있는 오픈 마켓(C2C) 프로젝트입니다.
 
-- 프로젝트 진행 기간 : 2023.07.10 ~
+- 프로젝트 진행 기간 : 2023.07.10 ~ 2023.07.26
 - 팀원 : 1명
 - 사용 언어 및 프레임워크 : TypeScript, Nest.JS (9.3.0), TypeORM (0.3.17)
 - Database : MySQL (8.0.33), AWS S3
 <br/>
 
 # 🛠 ERD
-<img width="1158" alt="스크린샷 2023-07-26 오후 2 52 35" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/97caf261-cbd5-4923-8f7f-4091e6b9b53a">
-
-- User의 Role은 ADMIN, MANAGER, CUSTOMER 총 세 가지로 구분했습니다. 추후 서비스 확장을 고려해 ENUM이 아닌 VARCHAR로 지정했습니다.
+![ShoppingMall Project](https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/2ce9f40c-d696-4eed-bee7-81b3d6d4391a)
+<br/>
 <br/>
 
 # 🔗 프로젝트 구조
@@ -18,7 +17,13 @@
 <br/>
 
 # 👩🏻‍💻 기능 설명
-## 1. User
+**클릭하시면 기능별 상세 내용을 확인하실 수 있습니다.**
+
+<details>
+<summary>
+<h3 style="font-size: 24px;">1. User</h3>
+</summary>
+<div markdown="1">
 
 - **로컬 회원 가입**<br/>
   - 회원가입 시 기본적으로 CUSTOMER 권한
@@ -37,8 +42,35 @@
 - **회원 탈퇴**
   - 회원 탈퇴 시 장바구니도 softDelete
 <br/>
+</div>
+</details>
 
-## 2. Categoryㅤㅤ
+<details>
+<summary>
+<h3 style="font-size: 24px;">2. Role</h3>
+</summary>
+<div markdown="1">
+
+#### 🔑 생성, 수정, 삭제 : ADMIN 권한만 가능 <br/> 
+#### 🔑 조회 : 모든 회원 로그인 시 가능 <br/>
+<br/>
+
+- **권한 생성**
+    - 동일한 이름의 role(권한명) 생성 불가
+      
+- **권한 조회**
+- **권한 수정**
+     - 동일한 이름의 role(권한명)수정 불가
+- **권한 삭제**
+<br/>
+</div>
+</details>
+
+<details>
+<summary>
+<h3 style="font-size: 24px;">3. Category</h3>
+</summary>
+<div markdown="1">
 
 #### 🔑 생성, 수정, 삭제 : ADMIN 권한만 가능 <br/> 
 #### 🔑 조회 : 모든 회원 로그인 시 가능 <br/>
@@ -55,8 +87,15 @@
 - **카테고리 삭제**
   - 카테고리 삭제 시, 카테고리와 연결된 상품도 softDelete
 <br/>
+</div>
+</details>
 
-## 3. Productㅤ
+
+<details>
+<summary>
+<h3 style="font-size: 24px;">4. Product</h3>
+</summary>
+<div markdown="1">
 
 #### 🔑 생성, 수정, 삭제 : ADMIN, MANAGER 권한 가능 
 #### 🔑 조회 : 모든 회원 로그인 시 가능
@@ -77,16 +116,29 @@
 - **상품 삭제**
   - 상품 삭제 시, 상품과 연결된 이미지도 softDelete
 <br/>
+</div>
+</details>
 
-## 4. ImageUrl (Upload)
+<details>
+<summary>
+<h3 style="font-size: 24px;">5. ImageUrl (Upload)</h3>
+</summary>
+<div markdown="1">
+
 #### 🔑 생성 : ADMIN, MANAGER 권한 가능 
 <br/>
 
 - **상품 이미지 업로드**
   - 상품 이미지는 AWS S3에 저장 & imageUrl은 데이터베이스에 저장 
 <br/>
+</div>
+</details>
 
-## 5. Cartㅤ
+<details>
+<summary>
+<h3 style="font-size: 24px;">6. Cart</h3>
+</summary>
+<div markdown="1">
 
 #### 🔑 수정, 삭제 : ADMIN 권한 & 해당 회원  가능
 #### 🔑 조회, 생성 : 해당 회원 가능
@@ -103,8 +155,14 @@
   - 장바구니 상품의 총 수량이 0이 되면 softDelete
 - **장바구니 삭제**
 <br/>
+</div>
+</details>
 
-## 6. Order
+<details>
+<summary>
+<h3 style="font-size: 24px;">7. Order</h3>
+</summary>
+<div markdown="1">
 
 #### 🔑 생성 : 장바구니에 상품을 담은 회원(주문 생성), 주문한 내역이 있는 회원(주문 취소) 가능
 #### 🔑 조회 : ADMIN, MANAGER 권한(모든 주문 조회), 해당 회원(내 주문 조회) 가능
@@ -130,8 +188,14 @@
 - **주문 취소**
   - 주문 취소 시, 토스 페이먼츠 결제 취소까지 완료
 <br/>
+</div>
+</details>
 
-## 7. Review
+<details>
+<summary>
+<h3 style="font-size: 24px;">8. Review</h3>
+</summary>
+<div markdown="1">
 
 #### 🔑 생성 : 해당 상품을 구매했다면 모든 회원 가능
 #### 🔑 조회 : 모든 회원 가능
@@ -149,6 +213,8 @@
     
 - **리뷰 삭제**
 <br/>
+</div>
+</details>
 
 # 📡 API
 |기능|EndPoint|메소드|
