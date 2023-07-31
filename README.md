@@ -55,13 +55,14 @@
 #### 🔑 조회 : 모든 회원 로그인 시 가능 <br/>
 <br/>
 
-- **권한 생성**
+- **권한명 생성**
     - 동일한 이름의 role(권한명) 생성 불가
       
-- **권한 조회**
-- **권한 수정**
+- **권한명 조회**
+    - 모든 권한명 조회 : 오름차순으로 20개 조회
+- **권한명 수정**
      - 동일한 이름의 role(권한명)수정 불가
-- **권한 삭제**
+- **권한명 삭제**
 <br/>
 </div>
 </details>
@@ -223,6 +224,10 @@
 |회원가입|/users/signup|POST|
 |로그인|/users/login|POST|
 |내 회원 정보 삭제|/users/:id|Delete|
+|권한명 가져오기|/roles|GET|
+|권한명 생성(ADMIN 권한만)|/roles|POST|
+|권한명 수정(ADMIN 권한만)|/roles/:id|PATCH|
+|권한명 삭제(ADMIN 권한만)|/roles/:id|DELETE|
 |카테고리 id로 가져오기|/categories/:id|GET|
 |카테고리 name으로 가져오기|/categories/?name=""|GET|
 |카테고리 생성(ADMIN, MANAGER 권한만)|/categories|POST|
