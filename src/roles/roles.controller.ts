@@ -27,7 +27,7 @@ export class RolesController {
     }
 
     @Delete(':id')
-    async deleteRole(@Param('id') roleId: number, @GetUserSession() user: User): Promise<void> {
+    async hardDeleteRole(@Param('id') roleId: number, @GetUserSession() user: User): Promise<void> {
         return this.rolesService.hardDeleteRole(roleId, user);
     }
 }

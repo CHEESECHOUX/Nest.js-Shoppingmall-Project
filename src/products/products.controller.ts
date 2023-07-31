@@ -58,4 +58,10 @@ export class ProductsController {
     async softDeleteProduct(@Param('id') productId: number): Promise<void> {
         return this.productsService.softDeleteById(productId);
     }
+
+    @Roles('ADMIN', 'MANAGER')
+    @Delete('/images/:id')
+    async hardDeleteImagesByProductId(@Param('id') productId: number): Promise<void> {
+        return this.productsService.hardDeleteImagesByProductId(productId);
+    }
 }

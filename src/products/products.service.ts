@@ -110,4 +110,8 @@ export class ProductsService {
             .where('product = :productId', { productId })
             .execute();
     }
+
+    async hardDeleteImagesByProductId(productId: number): Promise<void> {
+        await this.imageUrlsRepository.createQueryBuilder().delete().from(ImageUrl).where('product = :productId', { productId }).execute();
+    }
 }
