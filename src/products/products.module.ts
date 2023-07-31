@@ -7,10 +7,12 @@ import { ProductsRepository } from '@src/products/products.repository';
 import { UploadsService } from '@src/uploads/uploads.service';
 import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
 import { Cart } from '@src/carts/entity/carts.entity';
+import { JwtService } from '@nestjs/jwt';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Product, ImageUrl, Cart])],
-    providers: [ProductsService, ProductsRepository, UploadsService],
+    imports: [TypeOrmModule.forFeature([Product, ImageUrl, Cart, UserRole])],
+    providers: [ProductsService, ProductsRepository, UploadsService, JwtService],
     controllers: [ProductsController],
 })
 export class ProductsModule {}

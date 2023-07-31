@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
 import { CartsService } from '@src/carts/carts.service';
 import { CartInfoDTO, CreateCartDTO, UpdateCartDTO } from '@src/carts/dto/carts.dto';
 import { Cart } from '@src/carts/entity/carts.entity';
@@ -11,7 +11,7 @@ import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 export class CartsController {
     constructor(private readonly cartsService: CartsService) {}
 
-    @Get('')
+    @Get()
     async getCartByUser(@GetUserSession() user: User): Promise<Cart | null> {
         return this.cartsService.getCartByUser(user);
     }
