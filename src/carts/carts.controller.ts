@@ -16,20 +16,20 @@ export class CartsController {
         return this.cartsService.getCartByUser(user);
     }
 
-    @Post(':userId')
-    async createCart(@Param('userId') userId: number, @Body() createCartDTO: CreateCartDTO): Promise<Cart> {
-        const cartItem = await this.cartsService.createCart(userId, createCartDTO);
+    @Post()
+    async createCart(@GetUserSession() user: User, @Body() createCartDTO: CreateCartDTO): Promise<Cart> {
+        const cartItem = await this.cartsService.createCart(user, createCartDTO);
         return cartItem;
     }
 
-    @Patch(':userId')
-    async updateCart(@Param('userId') userId: number, @Body() updateCartDTO: UpdateCartDTO): Promise<Cart> {
-        const cartItem = await this.cartsService.updateCart(userId, updateCartDTO);
+    @Patch()
+    async updateCart(@GetUserSession() user: User, @Body() updateCartDTO: UpdateCartDTO): Promise<Cart> {
+        const cartItem = await this.cartsService.updateCart(user, updateCartDTO);
         return cartItem;
     }
 
-    @Delete(':userId')
-    async softDeleteCart(@Param('userId') userId: number, @Body() cartInfoDTO: CartInfoDTO): Promise<void> {
-        return this.cartsService.softDeleteCart(userId, cartInfoDTO);
+    @Delete()
+    async softDeleteCart(@GetUserSession() user: User, @Body() cartInfoDTO: CartInfoDTO): Promise<void> {
+        return this.cartsService.softDeleteCart(user, cartInfoDTO);
     }
 }

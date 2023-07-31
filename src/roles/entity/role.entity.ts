@@ -9,6 +9,9 @@ export class Role {
     @Column()
     role: string;
 
-    @OneToMany(() => UserRole, userRole => userRole.role, { eager: true })
+    @OneToMany(() => UserRole, userRole => userRole.role, {
+        onDelete: 'CASCADE',
+        onUpdate: 'NO ACTION',
+    })
     userRoles: UserRole[];
 }

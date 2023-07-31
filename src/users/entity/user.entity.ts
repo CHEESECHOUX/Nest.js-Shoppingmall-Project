@@ -2,8 +2,8 @@ import { Cart } from '@src/carts/entity/carts.entity';
 import { Order } from '@src/orders/entity/order.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Review } from '@src/reviews/entity/reviews.entity';
-import { UserRole } from '@src/users/entity/user-role.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Entity()
 export class User {
@@ -33,9 +33,6 @@ export class User {
 
     @Column({ nullable: true })
     address: string;
-
-    @Column({ default: 'CUSTOMER', comment: 'ADMIN, MANAGER, CUSTOMER' })
-    role: string;
 
     @CreateDateColumn({ type: 'datetime' })
     createdAt: Date;

@@ -7,6 +7,7 @@ import { Product } from '@src/products/entity/product.entity';
 import { Repository } from 'typeorm';
 import { CartInfoDTO } from '@src/carts/dto/carts.dto';
 import { CartItem } from '@src/carts/entity/cart-items.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Injectable()
 export class CartsService {
@@ -19,6 +20,8 @@ export class CartsService {
         private usersRepository: Repository<User>,
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
+        @InjectRepository(UserRole)
+        private userRolesRepository: Repository<UserRole>,
     ) {}
 
     async getCartByUser(user: User): Promise<Cart | null> {
@@ -35,18 +38,17 @@ export class CartsService {
         return cart;
     }
 
-    async createCart(userId: number, createCartDTO: CreateCartDTO): Promise<Cart> {
+    async createCart(user: User, createCartDTO: CreateCartDTO): Promise<Cart> {
         const { cartItems } = createCartDTO;
         if (!cartItems || cartItems.length === 0) {
             throw new BadRequestException('상품을 찾을 수 없습니다');
         }
 
-        const existingCart = await this.cartsRepository.findOne({ where: { id: userId } });
+        const existingCart = await this.cartsRepository.findOne({ where: { id: user.id } });
         if (existingCart) {
             throw new BadRequestException('이미 장바구니가 존재합니다. 장바구니는 한 개만 만들 수 있습니다');
         }
 
-        const user = await this.usersRepository.findOne({ where: { id: userId } });
         const productIds = cartItems.map(product => product.productId);
 
         const foundProducts = await this.productsRepository
@@ -87,21 +89,20 @@ export class CartsService {
         return savedCart;
     }
 
-    async updateCart(userId: number, updateCartDTO: UpdateCartDTO): Promise<Cart> {
+    async updateCart(user: User, updateCartDTO: UpdateCartDTO): Promise<Cart> {
         const { cartItems, cartId } = updateCartDTO;
-
-        const user = await this.usersRepository.findOne({ where: { id: userId } });
 
         const cart = await this.cartsRepository.findOne({
             where: { id: cartId },
             relations: ['user'],
         });
-
         if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cart.user?.id !== userId && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 수정할 수 없습니다');
+        const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        const isUserCartOwner = cart.user?.id === user.id;
+        if (!isUserAdmin && isUserCartOwner) {
+            throw new UnauthorizedException('사용자의 장바구니 or ADMIN 권한만 장바구니를 수정할 수 있습니다');
         }
 
         const productId = cartItems.map(product => product.productId);
@@ -140,10 +141,8 @@ export class CartsService {
         return savedCart;
     }
 
-    async softDeleteCart(userId: number, cartInfoDTO: CartInfoDTO): Promise<void> {
+    async softDeleteCart(user: User, cartInfoDTO: CartInfoDTO): Promise<void> {
         const { cartId } = cartInfoDTO;
-
-        const user = await this.usersRepository.findOne({ where: { id: userId } });
 
         const cart = await this.cartsRepository.findOne({
             where: { id: cartId },
@@ -153,8 +152,12 @@ export class CartsService {
         if (!cart) {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
-        if (cart.user?.id !== user.id && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('해당 사용자의 장바구니 or ADMIN 권한이 아니므로 삭제할 수 없습니다');
+
+        const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        const isUserCartOwner = cart.user?.id === user.id;
+
+        if (!isUserAdmin && !isUserCartOwner) {
+            throw new UnauthorizedException('사용자의 장바구니 or ADMIN 권한만 장바구니를 삭제할 수 있습니다');
         }
 
         await this.cartsRepository.update({ id: cartId }, { isDeleted: true });

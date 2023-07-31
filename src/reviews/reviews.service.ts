@@ -6,6 +6,7 @@ import { CreateReviewDTO } from '@src/reviews/dto/reviews.dto';
 import { User } from '@src/users/entity/user.entity';
 import { Product } from '@src/products/entity/product.entity';
 import { Order } from '@src/orders/entity/order.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -16,6 +17,8 @@ export class ReviewsService {
         private productsRepository: Repository<Product>,
         @InjectRepository(Order)
         private ordersRepository: Repository<Order>,
+        @InjectRepository(UserRole)
+        private userRolesRepository: Repository<UserRole>,
     ) {}
 
     async getReviewByReviewId(reviewId: number): Promise<Review> {
@@ -122,8 +125,12 @@ export class ReviewsService {
         if (!review) {
             throw new NotFoundException('리뷰 정보를 찾을 수 없습니다');
         }
-        if (review.user?.id !== user.id && user.role !== 'ADMIN') {
-            throw new UnauthorizedException('사용자가 작성한 리뷰 or ADMIN 권한이 아니므로 삭제할 수 없습니다');
+
+        const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        const isReviewAuthor = review.user?.id === user.id;
+
+        if (!isUserAdmin && !isReviewAuthor) {
+            throw new UnauthorizedException('사용자가 작성한 리뷰 or ADMIN 권한만 리뷰를 삭제할 수 있습니다');
         }
 
         await this.reviewsRepository.update({ id: reviewId }, { isDeleted: true });

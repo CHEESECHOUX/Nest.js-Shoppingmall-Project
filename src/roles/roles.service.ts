@@ -4,14 +4,15 @@ import { Role } from '@src/roles/entity/role.entity';
 import { Repository } from 'typeorm';
 import { CreateRoleDTO } from '@src/roles/dto/roles.dto';
 import { User } from '@src/users/entity/user.entity';
+import { UserRole } from '@src/users/entity/user-role.entity';
 
 @Injectable()
 export class RolesService {
     constructor(
         @InjectRepository(Role)
         private rolesRepository: Repository<Role>,
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
+        @InjectRepository(UserRole)
+        private userRolesRepostory: Repository<UserRole>,
     ) {}
 
     async getAllRoles(): Promise<Role[]> {
@@ -28,13 +29,13 @@ export class RolesService {
             throw new ConflictException('이미 동일한 role이 존재합니다');
         }
 
-        if (user.role !== 'ADMIN') {
+        const isUserAdmin = await this.userRolesRepostory.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        if (!isUserAdmin) {
             throw new UnauthorizedException('ADMIN 권한만 role을 생성할 수 있습니다');
         }
 
         const createdRole = new Role();
         createdRole.role = role;
-        // createdRole.user = user;
 
         await this.rolesRepository.save(createdRole);
 
@@ -54,12 +55,12 @@ export class RolesService {
             throw new ConflictException('이미 동일한 role이 존재합니다');
         }
 
-        if (user.role !== 'ADMIN') {
+        const isUserAdmin = await this.userRolesRepostory.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        if (!isUserAdmin) {
             throw new UnauthorizedException('ADMIN 권한만 role을 수정할 수 있습니다');
         }
 
         updatedRole.role = role;
-        // updatedRole.user = user;
 
         await this.rolesRepository.save(updatedRole);
 
@@ -72,8 +73,9 @@ export class RolesService {
             throw new NotFoundException('role 정보를 찾을 수 없습니다');
         }
 
-        if (user.role !== 'ADMIN') {
-            throw new UnauthorizedException('ADMIN 권한만 role을 삭제할 수 있습니다');
+        const isUserAdmin = await this.userRolesRepostory.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
+        if (!isUserAdmin) {
+            throw new UnauthorizedException('ADMIN 권한만 role을 생성할 수 있습니다');
         }
 
         await this.rolesRepository.delete(roleId);
