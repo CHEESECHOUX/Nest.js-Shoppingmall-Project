@@ -6,7 +6,7 @@
 -   팀원 : 1명
 -   사용 언어 및 프레임워크 : TypeScript, Nest.JS (9.3.0), TypeORM (0.3.17)
 -   Database : MySQL (8.0.33), AWS S3
-    <br/>
+<br/>
 
 # 🛠 ERD
 
@@ -15,13 +15,13 @@
 <br/>
 
 # 🔗 프로젝트 구조
+<img width="235" alt="스크린샷 2023-08-01 오전 10 33 48" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/e9d61518-aa8e-43fb-a7d8-b7a4833f699d">
 
-<img width="205" alt="스크린샷 2023-07-30 오후 5 26 16" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/f3c3c5bc-7f1b-4f6c-8939-a86fda9d90b3">
 <br/>
 
 # 👩🏻‍💻 기능 설명
 
-**클릭하시면 기능별 상세 내용을 확인하실 수 있습니다.**
+**삼각형을 클릭하시면 기능별 상세 내용을 확인하실 수 있습니다.**
 
 <details>
 <summary>
@@ -236,50 +236,22 @@
 </details>
 
 # 📡 API
-<<<<<<< HEAD
+### [API Documentation](https://documenter.getpostman.com/view/20782433/2s9XxvRthE)
+<details>
+<summary>상품(AWS S3 이미지 함께) 생성, 수정 터미널 curl 명령어 캡처본</summary>
+<div markdown="1">
+    
+- 생성
+<img width="1415" alt="스크린샷 2023-08-01 오전 11 16 30" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/aba234f3-4463-4fb4-8752-aa0e474046ce">
 
-| 기능                                                | EndPoint                       | 메소드 |
-| :-------------------------------------------------- | :----------------------------- | :----: |
-| 나의 회원 정보 가져오기                             | /users/myinfo                  |  GET   |
-| 회원가입                                            | /users/signup                  |  POST  |
-| 로그인                                              | /users/login                   |  POST  |
-| 내 회원 정보 삭제                                   | /users/:id                     | DELETE |
-| 권한명 가져오기                                     | /roles                         |  GET   |
-| 권한명 생성(ADMIN 권한만)                           | /roles                         |  POST  |
-| 권한명 수정(ADMIN 권한만)                           | /roles/:id                     | PATCH  |
-| 권한명 삭제(ADMIN 권한만)                           | /roles/:id                     | DELETE |
-| 카테고리 id로 가져오기                              | /categories/:id                |  GET   |
-| 카테고리 name으로 가져오기                          | /categories/?name=""           |  GET   |
-| 카테고리 생성(ADMIN, MANAGER 권한만)                | /categories                    |  POST  |
-| 카테고리 상품과 같이 생성(ADMIN, MANAGER 권한만)    | /categories/product            |  POST  |
-| 카테고리 부분 수정(ADMIN, MANAGER 권한만)           | /categories/:id                | PATCH  |
-| 카테고리 삭제 시 상품도 삭제(ADMIN, MANAGER 권한만) | /categories/:id                | DELETE |
-| 상품 id로 가져오기                                  | /products/:id                  |  GET   |
-| 상품 productName으로 가져오기                       | /products/?productName=""      |  GET   |
-| 상품 카테고리별로 가져오기                          | /products/category/:categoryId |  GET   |
-| 상품 생성 (ADMIN, MANAGER 권한만)                   | /products                      |  POST  |
-| 상품 부분 수정                                      | /products/:id                  | PATCH  |
-| 상품 삭제                                           | /products/:id                  | DELETE |
-| AWS S3 이미지 파일 업로드                           | /uploads                       |  POST  |
-| 내 장바구니 가져오기                                | /carts                         |  GET   |
-| 내 장바구니 생성                                    | /carts/:userId                 |  POST  |
-| 내 장바구니 부분 수정                               | /carts/:userId                 | PATCH  |
-| 내 장바구니 삭제                                    | /carts/:userId                 | DELETE |
-| orderId로 주문 가져오기(ADMIN, MANAGER 권한만)      | /orders/:orderId               |  GET   |
-| 내 주문 가져오기                                    | /orders/:orderId               |  GET   |
-| 주문 생성(토스 결제까지)                            | /orders                        |  POST  |
-| 주문 취소(토스 결제 취소까지)                       | /orders/cancel                 |  POST  |
-| 내 주문 배송지 수정                                 | /orders/:orderId               | PATCH  |
-| 주문 상태 수정(ADMIN, MANAGER 권한만)               | /orders/:orderId/status        | PATCH  |
-| 토스 결제 생성                                      | /payments/toss                 |  POST  |
-| 토스 결제 취소                                      | /payments/toss/cancel          |  POST  |
-| 리뷰 reviewId로 가져오기                            | /products/reviews:reviewId     |  GET   |
-| 리뷰 productId로 가져오기                           | /products/:productId/reviews   |  GET   |
-| 내가 주문한 상품의 리뷰 생성                        | /reviews                       |  POST  |
-| 내가 작성한 리뷰 수정                               | /reviews/:reviewId             | PATCH  |
-| 내가 작성한 리뷰 삭제(ADMIN 권한도 가능)            | /reviews/:reviewId             | DELETE |
+- 수정
+<img width="1420" alt="스크린샷 2023-08-01 오전 10 57 56" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/f9c37166-f385-4a0f-82aa-20abf3ea3ebe">
 
-=======
+<br/>
+</div>
+</details>
+<br/>
+
 |기능|EndPoint|메소드|
 |:---|:---|:---:|
 |나의 회원 정보 가져오기|/users/myinfo|GET|
@@ -292,22 +264,22 @@
 |권한명 삭제(ADMIN 권한만)|/roles/:id|DELETE|
 |카테고리 id로 가져오기|/categories/:id|GET|
 |카테고리 name으로 가져오기|/categories/?name=""|GET|
-|카테고리 생성(ADMIN, MANAGER 권한만)|/categories|POST|
-|카테고리 상품과 같이 생성(ADMIN, MANAGER 권한만)|/categories/product|POST|
-|카테고리 부분 수정(ADMIN, MANAGER 권한만)|/categories/:id|PATCH|
-|카테고리 삭제 시 상품도 삭제(ADMIN, MANAGER 권한만)|/categories/:id|DELETE|
+|카테고리 생성(ADMIN 권한만)|/categories|POST|
+|카테고리 상품과 같이 생성(ADMIN 권한만)|/categories/product|POST|
+|카테고리 부분 수정(ADMIN 권한만)|/categories/:id|PATCH|
+|카테고리 삭제 시 상품도 삭제(ADMIN 권한만)|/categories/:id|DELETE|
 |상품 id로 가져오기|/products/:id|GET|
 |상품 productName으로 가져오기|/products/?productName=""|GET|
 |상품 카테고리별로 가져오기|/products/category/:categoryId|GET|
 |상품 생성 (ADMIN, MANAGER 권한만)|/products|POST|
-|상품 부분 수정|/products/:id|PATCH|
-|상품 삭제|/products/:id|DELETE|
-|AWS S3 이미지 파일 업로드|/uploads|POST|
+|상품 부분 수정 (ADMIN, MANAGER 권한만)|/products/:id|PATCH|
+|상품 삭제 (ADMIN, MANAGER 권한만)|/products/:id|DELETE|
+|AWS S3 이미지 파일 업로드 (ADMIN, MANAGER 권한만)|/uploads|POST|
 |내 장바구니 가져오기|/carts|GET|
 |내 장바구니 생성|/carts/:userId|POST|
-|내 장바구니 부분 수정|/carts/:userId|PATCH|
-|내 장바구니 삭제|/carts/:userId|DELETE|
-|orderId로 주문 가져오기(ADMIN, MANAGER 권한만)|/orders/:orderId|GET|
+|내 장바구니 부분 수정 (ADMIN 권한도 가능)|/carts/:userId|PATCH|
+|내 장바구니 삭제 (ADMIN 권한도 가능)|/carts/:userId|DELETE|
+|orderId로 주문 가져오기 (ADMIN, MANAGER 권한만)|/orders/:orderId|GET|
 |내 주문 가져오기|/orders/:orderId|GET|
 |주문 생성(토스 결제까지)|/orders|POST|
 |주문 취소(토스 결제 취소까지)|/orders/cancel|POST|
@@ -320,7 +292,6 @@
 |내가 주문한 상품의 리뷰 생성|/reviews|POST|
 |내가 작성한 리뷰 수정|/reviews/:reviewId|PATCH|
 |내가 작성한 리뷰 삭제(ADMIN 권한도 가능)|/reviews/:reviewId|DELETE|
->>>>>>> 6d5e78b693749cf9b87a72c9fda942315eb7ca88
 <br/>
 
 ## ⚙️ 설치 및 실행 방법
@@ -351,8 +322,6 @@ JWT_SECRET=MYSECRETKEY
 JWT_EXP=1h
 
 APP_NAME=nest-shoppingmall
-LOG_FILE_PATH=/Users/jisoochoi/project/logs/login.log (로그인시 로그가 저장될 PATH)
-GETUSERINFO_LOG_FILE_PATH=/Users/jisoochoi/project/logs/userinfo.log (user정보 조회시 로그가 저장될 PATH)
 
 AWS_ACCESS_KEY=AWS계정의 ACCESS KEY
 AWS_SECRET_KEY=AWS계정의 SECRET KEY
@@ -422,6 +391,9 @@ git clone https://github.com/CHEESECHOUX/nest.js-shoppingmall-project.git
 
     11. 토스페이먼츠 결제
         $ npm i --save @nestjs/axios
+
+    12. winston timezone 서울 시간으로 설정
+        $ npm i --save moment-timezone
 
 <br/>
 </div>
