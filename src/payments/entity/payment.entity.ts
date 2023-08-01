@@ -10,10 +10,13 @@ export class Payment {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column()
+    tossOrderId: string;
+
     @Column({ comment: '결제수단' })
     method: string;
 
-    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0, comment: '결제 취소 금액' })
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0, comment: '결제 금액' })
     amount: number;
 
     @Column()

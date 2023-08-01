@@ -1,41 +1,32 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateTossPaymentDTO {
-    @IsNotEmpty()
     @IsString()
     paymentKey: string;
 
-    @IsNotEmpty()
     @IsString()
     orderId: string;
 
-    @IsNotEmpty()
     @IsNumber()
     amount: number;
 }
 
 export class CancelTossPaymentDTO {
-    @IsNotEmpty()
     @IsString()
     paymentKey: string;
 
-    @IsNotEmpty()
     @IsString()
     orderId: string;
 
-    @IsNotEmpty()
     @IsString()
     method: string;
 
-    @IsNotEmpty()
     @IsString()
     cancelReason: string;
 
-    @IsNotEmpty()
     @IsNumber()
     cancelAmount: number;
 
-    @IsNotEmpty()
     @IsString()
     bank: string;
 
@@ -47,7 +38,6 @@ export class CancelTossPaymentDTO {
     @IsString()
     holderName: string;
 
-    @IsNotEmpty()
     @IsNumber()
     refundableAmount: number;
 }

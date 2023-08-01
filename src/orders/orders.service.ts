@@ -101,6 +101,7 @@ export class OrdersService {
 
                     // 결제 저장
                     const payment = new Payment();
+                    payment.tossOrderId = orderId;
                     payment.method = method;
                     payment.amount = createTossPaymentDTO.amount;
                     payment.status = PaymentStatusEnum.COMPLETED;
