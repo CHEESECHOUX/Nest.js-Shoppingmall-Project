@@ -75,10 +75,10 @@ export class ProductsService {
         return createdProduct;
     }
 
-    async updateProductWithImage(id: number, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
+    async updateProductWithImage(productId: number, createProductDTO: CreateProductDTO, imageFile: Express.Multer.File): Promise<Product> {
         const { productName, brandName, description, price } = createProductDTO;
 
-        const product = await this.productsRepository.findOne({ where: { id } });
+        const product = await this.productsRepository.findOne({ where: { id: productId } });
         if (!product) {
             throw new NotFoundException('상품 정보를 찾을 수 없습니다');
         }

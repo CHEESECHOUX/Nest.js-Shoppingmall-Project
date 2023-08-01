@@ -49,7 +49,7 @@ export class CategoriesController {
 
     @Delete('/with-product/:id')
     @Roles('ADMIN')
-    async softDeleteCategoryWithProduct(@Param('id') id: number): Promise<void> {
-        return this.categoriesService.softDeleteByIdWithProduct(id);
+    async softDeleteCategoryWithProduct(@Param('id') categoryId: number): Promise<void> {
+        return this.categoriesService.softDeleteByIdWithProduct(categoryId);
     }
 }

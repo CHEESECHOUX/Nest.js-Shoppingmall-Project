@@ -11,7 +11,7 @@ import { PaymentCancel } from '@src/payments/entity/payment-cancel.entity';
 import { User } from '@src/users/entity/user.entity';
 import { CartItem } from '@src/carts/entity/cart-items.entity';
 import { Product } from '@src/products/entity/product.entity';
-import { OrderProduct } from './entity/order-product.entity';
+import { OrderProduct } from '@src/orders/entity/order-product.entity';
 
 @Injectable()
 export class OrdersService {

@@ -20,7 +20,7 @@ export class OrdersController {
         return this.ordersService.getOrderById(orderId);
     }
 
-    @Get('/:orderId')
+    @Get('/my/:orderId')
     async getOrderByUser(@GetUserSession() user: User, @Param('orderId', ParseIntPipe) orderId: number): Promise<OrderInfoDTO | null> {
         return this.ordersService.getOrderByUser(user, orderId);
     }
@@ -31,7 +31,7 @@ export class OrdersController {
     }
 
     @Post('/cancel')
-    async cancelOrder(cancelTossPaymentDTO: CancelTossPaymentDTO): Promise<Order> {
+    async cancelOrder(@Body() cancelTossPaymentDTO: CancelTossPaymentDTO): Promise<Order> {
         return this.ordersService.cancelOrder(cancelTossPaymentDTO);
     }
 

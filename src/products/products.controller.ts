@@ -46,11 +46,11 @@ export class ProductsController {
     @UseInterceptors(FileInterceptor('file'))
     @Patch(':id')
     async updateProductWithImage(
-        @Param('id') id: number,
+        @Param('id') productId: number,
         @UploadedFile() imageFile: Express.Multer.File,
         @Body() createProductDTO: CreateProductDTO,
     ): Promise<Product> {
-        return this.productsService.updateProductWithImage(id, createProductDTO, imageFile);
+        return this.productsService.updateProductWithImage(productId, createProductDTO, imageFile);
     }
 
     @Roles('ADMIN', 'MANAGER')

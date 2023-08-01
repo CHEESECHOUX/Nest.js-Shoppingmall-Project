@@ -101,13 +101,13 @@ export class UsersService {
         return { accessToken };
     }
 
-    async updateUser(id: number, createUserDTO: CreateUserDTO): Promise<User> {
+    async updateUser(userId: number, createUserDTO: CreateUserDTO): Promise<User> {
         const { loginId, password, name, phone, email, zipcode, address } = createUserDTO;
 
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const updateUser = await this.usersRepository.findOne({ where: { id } });
+        const updateUser = await this.usersRepository.findOne({ where: { id: userId } });
 
         if (!updateUser) {
             throw new NotFoundException('사용자 정보를 찾을 수 없습니다');
@@ -126,10 +126,10 @@ export class UsersService {
         return updateUser;
     }
 
-    async softDeleteParamId(id: number): Promise<void> {
-        await this.usersRepository.update(id, { isDeleted: true });
+    async softDeleteParamId(userId: number): Promise<void> {
+        await this.usersRepository.update(userId, { isDeleted: true });
 
-        await this.cartsRepository.createQueryBuilder().update(Cart).set({ isDeleted: true }).where('user = :id', { id }).execute();
+        await this.cartsRepository.createQueryBuilder().update(Cart).set({ isDeleted: true }).where('user = :id', { id: userId }).execute();
     }
 
     async softDeletePayloadId(payload: any): Promise<any> {

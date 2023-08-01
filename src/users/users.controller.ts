@@ -26,19 +26,19 @@ export class UsersController {
         return this.usersService.login(logInDTO);
     }
 
-    @Patch(':id')
+    @Patch(':userId')
     @UseGuards(JwtAuthGuard)
-    async updateUser(@Param('id') id: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
-        return this.usersService.updateUser(id, createUserDTO);
+    async updateUser(@Param('id') userId: number, @Body() createUserDTO: CreateUserDTO): Promise<User> {
+        return this.usersService.updateUser(userId, createUserDTO);
     }
 
-    @Delete(':id')
+    @Delete(':userId')
     @UseGuards(JwtAuthGuard)
-    async softDeleteParam(@Param('id') id: number): Promise<void> {
-        return this.usersService.softDeleteParamId(id);
+    async softDeleteParam(@Param('id') userId: number): Promise<void> {
+        return this.usersService.softDeleteParamId(userId);
     }
 
-    @Delete('')
+    @Delete()
     @UseGuards(JwtAuthGuard)
     async softDeletePayload(@Request() req) {
         return this.usersService.softDeletePayloadId(req.user);
