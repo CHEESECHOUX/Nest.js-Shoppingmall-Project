@@ -117,12 +117,11 @@ export class CartsService {
             return total + product.price * productItem.quantity;
         }, 0);
 
-        const updatedCart = new Cart();
-        updatedCart.user = user;
-        updatedCart.totalQuantity = totalQuantity;
-        updatedCart.totalAmount = totalAmount;
+        cart.user = user;
+        cart.totalQuantity = totalQuantity;
+        cart.totalAmount = totalAmount;
 
-        const savedCart = await this.cartsRepository.save(updatedCart);
+        const savedCart = await this.cartsRepository.save(cart);
 
         const updatedCartItem = cartItems.map(cartItemDTO => {
             const foundProduct = foundProducts.find(product => product.id === cartItemDTO.productId);
