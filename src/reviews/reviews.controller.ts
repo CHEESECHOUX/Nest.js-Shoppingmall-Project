@@ -6,7 +6,7 @@ import { Review } from '@src/reviews/entity/reviews.entity';
 import { CreateReviewDTO } from '@src/reviews/dto/reviews.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 
-@Controller('')
+@Controller('/products')
 @UseGuards(JwtAuthGuard)
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
@@ -16,7 +16,7 @@ export class ReviewsController {
         return await this.reviewsService.getReviewByReviewId(reviewId);
     }
 
-    @Get('/products/:productId/reviews')
+    @Get('/:productId/reviews')
     async getReviewByProductId(@Param('productId') productId: number): Promise<Review[]> {
         return await this.reviewsService.getReviewByProductId(productId);
     }

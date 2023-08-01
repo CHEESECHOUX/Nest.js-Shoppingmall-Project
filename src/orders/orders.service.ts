@@ -32,7 +32,7 @@ export class OrdersService {
     async getOrderById(orderId: number): Promise<OrderInfoDTO> {
         const order = await this.ordersRepository.findOne({ where: { id: orderId } });
         if (!order) {
-            throw new UnauthorizedException('id에 해당하는 주문 내역을 찾을 수 없습니다');
+            throw new NotFoundException('id에 해당하는 주문 내역을 찾을 수 없습니다');
         }
 
         return order;
@@ -46,9 +46,6 @@ export class OrdersService {
         if (!order) {
             throw new NotFoundException('주문 내역을 찾을 수 없습니다');
         }
-        if (order.user.id !== user.id) {
-            throw new UnauthorizedException('사용자의 주문 내역이 아닙니다');
-        }
         return order;
     }
 
@@ -57,34 +54,13 @@ export class OrdersService {
 
         try {
             // 장바구니에 담긴 상품 가져오기
-            const cartItems = await this.cartItemsRepository
-                .createQueryBuilder('cartItem')
-                .innerJoinAndSelect('cartItem.cart', 'cart')
-                .innerJoinAndSelect('cartItem.product', 'product')
-                .where('cart.user.id = :userId', { userId: user.id })
-                .getMany();
+            const cartItems = await this.getCartItemsByUser(user);
 
             // 장바구니에 담긴 상품들의 ID 배열 추출
-            const productId = cartItems.map(cartItem => cartItem.product.id);
-
-            // 상품 ID 배열을 기반으로 데이터베이스에서 해당 상품들 가져오기
-            const retrievedProducts = await this.productsRepository
-                .createQueryBuilder('product')
-                .where('product.id IN (:...productId)', { productId: productId })
-                .getMany();
-
-            if (retrievedProducts.length !== productId.length) {
-                throw new NotFoundException('상품정보를 DB에서 가져오지 못했습니다');
-            }
+            const retrievedProducts = await this.getProductsByCartItem(cartItems);
 
             // 장바구니에 담긴 상품 가격을 기반으로 주문 총 금액 업데이트
-            const updatedTotalAmount = cartItems.reduce((total, cartItem) => {
-                const product = retrievedProducts.find(p => p.id === cartItem.product.id);
-                if (!product) {
-                    throw new NotFoundException(`상품 ID ${cartItem.product.id}에 해당하는 상품을 찾을 수 없습니다`);
-                }
-                return total + product.price * cartItem.quantity;
-            }, 0);
+            const updatedTotalAmount = this.calculateTotalAmount(cartItems, retrievedProducts);
 
             if (updatedTotalAmount !== amount) {
                 throw new Error('장바구니 총 주문금액과 결제 요청금액이 일치하지 않습니다.');
@@ -167,9 +143,7 @@ export class OrdersService {
         }
 
         order.address = address;
-        const updatedOrder = await this.ordersRepository.save(order);
-
-        return updatedOrder;
+        return this.ordersRepository.save(order);
     }
 
     async cancelOrder(cancelTossPaymentDTO: CancelTossPaymentDTO): Promise<Order> {
@@ -233,5 +207,29 @@ export class OrdersService {
 
         order.status = status;
         return this.ordersRepository.save(order);
+    }
+
+    private async getCartItemsByUser(user: User): Promise<CartItem[]> {
+        return this.cartItemsRepository
+            .createQueryBuilder('cartItem')
+            .innerJoinAndSelect('cartItem.cart', 'cart')
+            .innerJoinAndSelect('cartItem.product', 'product')
+            .where('cart.user.id = :userId', { userId: user.id })
+            .getMany();
+    }
+
+    private async getProductsByCartItem(cartItems: CartItem[]): Promise<Product[]> {
+        const productIds = cartItems.map(cartItem => cartItem.product.id);
+        return this.productsRepository.createQueryBuilder('product').where('product.id IN (:...productIds)', { productIds }).getMany();
+    }
+
+    private calculateTotalAmount(cartItems: CartItem[], products: Product[]): number {
+        return cartItems.reduce((total, cartItem) => {
+            const product = products.find(p => p.id === cartItem.product.id);
+            if (!product) {
+                throw new NotFoundException(`상품 ID ${cartItem.product.id}에 해당하는 상품을 찾을 수 없습니다`);
+            }
+            return total + product.price * cartItem.quantity;
+        }, 0);
     }
 }
