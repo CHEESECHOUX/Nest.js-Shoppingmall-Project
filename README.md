@@ -9,8 +9,7 @@
 <br/>
 
 # 🛠 ERD
-
-![ShoppingMall Project](https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/2ce9f40c-d696-4eed-bee7-81b3d6d4391a)
+![ERD - 7](https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/3d811c69-f89b-4bf1-92fa-b65da8fafc7f)
 <br/>
 <br/>
 
@@ -238,7 +237,7 @@
 # 📡 API
 ### [API Documentation](https://documenter.getpostman.com/view/20782433/2s9XxvRthE)
 <details>
-<summary>상품(AWS S3 이미지 함께) 생성, 수정 터미널 curl 명령어 캡처본</summary>
+<summary>상품(& AWS S3 이미지) 생성, 수정 캡처본 (터미널 curl 명령어)</summary>
 <div markdown="1">
     
 - 생성
@@ -260,41 +259,67 @@
 |내 회원 정보 삭제|/users/:id|DELETE|
 |권한명 가져오기|/roles|GET|
 |권한명 생성(ADMIN 권한만)|/roles|POST|
-|권한명 수정(ADMIN 권한만)|/roles/:id|PATCH|
-|권한명 삭제(ADMIN 권한만)|/roles/:id|DELETE|
+|권한명 수정, 삭제(ADMIN 권한만)|/roles/:id|PATCH, DELETE|
 |카테고리 id로 가져오기|/categories/:id|GET|
 |카테고리 name으로 가져오기|/categories/?name=""|GET|
 |카테고리 생성(ADMIN 권한만)|/categories|POST|
 |카테고리 상품과 같이 생성(ADMIN 권한만)|/categories/product|POST|
-|카테고리 부분 수정(ADMIN 권한만)|/categories/:id|PATCH|
-|카테고리 삭제 시 상품도 삭제(ADMIN 권한만)|/categories/:id|DELETE|
+|카테고리 부분 수정, 카테고리 삭제 시 상품도 삭제(ADMIN 권한만)|/categories/:id|PATCH, DELETE|
 |상품 id로 가져오기|/products/:id|GET|
 |상품 productName으로 가져오기|/products/?productName=""|GET|
 |상품 카테고리별로 가져오기|/products/category/:categoryId|GET|
 |상품 생성 (ADMIN, MANAGER 권한만)|/products|POST|
-|상품 부분 수정 (ADMIN, MANAGER 권한만)|/products/:id|PATCH|
-|상품 삭제 (ADMIN, MANAGER 권한만)|/products/:id|DELETE|
+|상품 부분 수정, 삭제(ADMIN, MANAGER 권한만)|/products/:id|PATCH, DELETE|
 |AWS S3 이미지 파일 업로드 (ADMIN, MANAGER 권한만)|/uploads|POST|
 |내 장바구니 가져오기|/carts|GET|
 |내 장바구니 생성|/carts/:userId|POST|
-|내 장바구니 부분 수정 (ADMIN 권한도 가능)|/carts/:userId|PATCH|
-|내 장바구니 삭제 (ADMIN 권한도 가능)|/carts/:userId|DELETE|
+|내 장바구니 부분 수정, 삭제(ADMIN 권한도 가능)|/carts/:userId|PATCH, DELETE|
 |orderId로 주문 가져오기 (ADMIN, MANAGER 권한만)|/orders/:orderId|GET|
-|내 주문 가져오기|/orders/:orderId|GET|
+|내 주문 가져오기, 내 주문 배송지 수정|/orders/:orderId|GET, PATCH|
 |주문 생성(토스 결제까지)|/orders|POST|
 |주문 취소(토스 결제 취소까지)|/orders/cancel|POST|
-|내 주문 배송지 수정|/orders/:orderId|PATCH|
 |주문 상태 수정(ADMIN, MANAGER 권한만)|/orders/:orderId/status|PATCH|
 |토스 결제 생성|/payments/toss|POST|
 |토스 결제 취소|/payments/toss/cancel|POST|
 |리뷰 reviewId로 가져오기|/products/reviews:reviewId|GET|
 |리뷰 productId로 가져오기|/products/:productId/reviews|GET|
 |내가 주문한 상품의 리뷰 생성|/reviews|POST|
-|내가 작성한 리뷰 수정|/reviews/:reviewId|PATCH|
-|내가 작성한 리뷰 삭제(ADMIN 권한도 가능)|/reviews/:reviewId|DELETE|
+|내가 작성한 리뷰 수정|/products/reviews/:reviewId|PATCH|
+|내가 작성한 리뷰 삭제(ADMIN 권한도 가능)|/products/reviews/:reviewId|DELETE|
 <br/>
 
-## ⚙️ 설치 및 실행 방법
+# 🙌🏻 기술적 도전
+#### 1. GetUserSession
+- JWT로 로그인 구현 후, 모든 요청은 인증된 사용자만 접근 가능
+- request안에 있는 사용자의 정보에 접근해, 해당 사용자가 라우터에 접근 권한이 있는지 확인<br/>
+     - ex) 해당 사용자의 장바구니, 해당 사용자의 주문 배송지 수정
+
+#### 2. RolesGuard, @Roles
+- ADMIN, MANAGER, CUSTOMER 권한 중 RolesGuard가 각 라우트마다 허용되는 권한을 가진 사용자만 액세스 할 수 있도록 제어
+
+#### 3. LoggerService
+- 로그인 로그(login.log), 사용자 정보조회 로그(userinfo.log)를 각각 파일에 기록
+- 사용자 정보조회 로그는 서울 시간 기준으로 매일 자정에 초기화
+
+#### 4. Uploads
+- AWS S3를 이용해 상품 이미지 관리 (등록, 수정, 삭제)
+
+#### 5. Payments
+- 토스 페이먼츠 결제 기능 구현
+<br/>
+
+# 💡 트러블 슈팅
+#### 1. 테이블 반정규화
+주문 요청시 장바구니에 저장되어있는 **장바구니 총 금액과 주문 총 금액(현재 상품 가격 기준)이 같은지 비교**하려면, **장바구니에 담긴 각 상품의 수량이 필요**했습니다.
+Cart와 Product의 중간 테이블인 **CartItem 테이블을 반정규화**해 각 상품 수량 필드 값을 추가했습니다.
+CartItem에 있는 각 상품(productId)과 각 상품 수량(quantity)의 정보로 장바구니에 담긴 상품의 현재 가격을 기준으로 주문 총 금액을 업데이트 후, 주문을 생성하도록 구현 했습니다.
+
+#### 2. Soft Delete & Hard Delete
+처음에는 데이터 보존 및 데이터 복구 가능성, 관계 데이터의 안정성 유지 때문에 모든 데이터를 soft delete 처리했습니다. 그러나 **모든 데이터를 soft delete 처리하게 될 경우 서비스 확장시 일부 쿼리의 성능 저하 가능성**이 있기 때문에 **데이터 보존 및 추적이 필요한 데이터만 soft delete 처리**, 그 외 **다른 데이터들은 hard delete 처리** 했습니다.
+<br/>
+<br/>
+
+# ⚙️ 설치 및 실행 방법
 
 **1. Project Clone**
 
