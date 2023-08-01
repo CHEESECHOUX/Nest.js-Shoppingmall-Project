@@ -6,7 +6,7 @@ import { CancelTossPaymentDTO } from '@src/payments/dto/payment.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { RolesGuard } from '@src/guards/roles.guard';
 import { Roles } from '@src/common/decorators/role.decorator';
-import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
+import { GetUserRequest } from '@src/common/decorators/get-user-request.decorator';
 import { User } from '@src/users/entity/user.entity';
 
 @Controller('orders')
@@ -21,12 +21,12 @@ export class OrdersController {
     }
 
     @Get('/my/:orderId')
-    async getOrderByUser(@GetUserSession() user: User, @Param('orderId', ParseIntPipe) orderId: number): Promise<OrderInfoDTO | null> {
+    async getOrderByUser(@GetUserRequest() user: User, @Param('orderId', ParseIntPipe) orderId: number): Promise<OrderInfoDTO | null> {
         return this.ordersService.getOrderByUser(user, orderId);
     }
 
     @Post()
-    async createOrder(@GetUserSession() user: User, @Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
+    async createOrder(@GetUserRequest() user: User, @Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
         return this.ordersService.createOrder(user, createOrderDTO);
     }
 
@@ -37,7 +37,7 @@ export class OrdersController {
 
     @Patch(':orderId')
     async updateOrderAddress(
-        @GetUserSession() user: User,
+        @GetUserRequest() user: User,
         @Param('orderId', ParseIntPipe) orderId: number,
         @Body() updateOrderDTO: UpdateOrderDTO,
     ): Promise<Order> {

@@ -4,7 +4,7 @@ import { Product } from '@src/products/entity/product.entity';
 import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { User } from '@src/users/entity/user.entity';
-import { GetUserSession } from '@src/common/decorators/get-user-session.decorator';
+import { GetUserRequest } from '@src/common/decorators/get-user-request.decorator';
 import { RolesGuard } from '@src/guards/roles.guard';
 import { Roles } from '@src/common/decorators/role.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -35,7 +35,7 @@ export class ProductsController {
     @Roles('ADMIN', 'MANAGER')
     @UseInterceptors(FileInterceptor('file'))
     async createProductWithImage(
-        @GetUserSession() user: User,
+        @GetUserRequest() user: User,
         @UploadedFile() imageFile: Express.Multer.File,
         @Body() createProductDTO: CreateProductDTO,
     ): Promise<Product> {
