@@ -4,7 +4,6 @@ import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/use
 import { User } from '@src/users/entity/user.entity';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
 import { GetUserJWT, AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
-import { GetUserRequest } from '@src/common/decorators/get-user-request.decorator';
 
 @Controller('/users')
 export class UsersController {
@@ -12,7 +11,7 @@ export class UsersController {
 
     @Get('/myinfo')
     @UseGuards(JwtAuthGuard)
-    async getUserInfo(@GetUserRequest() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
+    async getUserInfo(@GetUserJWT() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
         const userInfo = await this.usersService.getUserInfo(authUserType);
         return userInfo;
     }

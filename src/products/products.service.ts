@@ -5,15 +5,15 @@ import { ILike, Repository } from 'typeorm';
 import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto';
 import { User } from '@src/users/entity/user.entity';
 import { UploadsService } from '@src/uploads/uploads.service';
-import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
-        @InjectRepository(ImageUrl)
-        private imageUrlsRepository: Repository<ImageUrl>,
+        @InjectRepository(Imageurl)
+        private imageurlsRepository: Repository<Imageurl>,
         private uploadsService: UploadsService,
     ) {}
 
@@ -66,11 +66,11 @@ export class ProductsService {
 
         const uploadedImageUrl = await this.uploadsService.uploadFile(imageFile, createdProduct.id);
 
-        const imageUrl = new ImageUrl();
+        const imageUrl = new Imageurl();
         imageUrl.imageUrl = uploadedImageUrl;
         imageUrl.product = createdProduct;
 
-        await this.imageUrlsRepository.save(imageUrl);
+        await this.imageurlsRepository.save(imageUrl);
 
         return createdProduct;
     }
@@ -91,11 +91,11 @@ export class ProductsService {
 
         const uploadedImageUrl = await this.uploadsService.uploadFile(imageFile, updatedProduct.id);
 
-        const imageUrl = new ImageUrl();
+        const imageUrl = new Imageurl();
         imageUrl.imageUrl = uploadedImageUrl;
         imageUrl.product = updatedProduct;
 
-        await this.imageUrlsRepository.save(imageUrl);
+        await this.imageurlsRepository.save(imageUrl);
 
         return updatedProduct;
     }
@@ -103,15 +103,15 @@ export class ProductsService {
     async softDeleteById(productId: number): Promise<void> {
         await this.productsRepository.update({ id: productId }, { isDeleted: true });
 
-        await this.imageUrlsRepository
+        await this.imageurlsRepository
             .createQueryBuilder()
-            .update(ImageUrl)
+            .update(Imageurl)
             .set({ isDeleted: true })
             .where('product = :productId', { productId })
             .execute();
     }
 
     async hardDeleteImagesByProductId(productId: number): Promise<void> {
-        await this.imageUrlsRepository.createQueryBuilder().delete().from(ImageUrl).where('product = :productId', { productId }).execute();
+        await this.imageurlsRepository.createQueryBuilder().delete().from(Imageurl).where('product = :productId', { productId }).execute();
     }
 }

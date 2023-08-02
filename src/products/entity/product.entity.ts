@@ -1,6 +1,6 @@
 import { CartItem } from '@src/carts/entity/cart-items.entity';
 import { Category } from '@src/categories/entity/categories.entity';
-import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 import { OrderProduct } from '@src/orders/entity/order-product.entity';
 import { Review } from '@src/reviews/entity/reviews.entity';
 import { User } from '@src/users/entity/user.entity';
@@ -35,11 +35,11 @@ export class Product {
     @ManyToOne(() => User, user => user.products)
     user: User;
 
-    @OneToMany(() => ImageUrl, imageurl => imageurl.product, {
+    @OneToMany(() => Imageurl, imageurl => imageurl.product, {
         onDelete: 'NO ACTION',
         onUpdate: 'NO ACTION',
     })
-    imageUrls: ImageUrl[];
+    imageurls: Imageurl[];
 
     @OneToMany(() => Category, category => category.product, {
         onDelete: 'NO ACTION',

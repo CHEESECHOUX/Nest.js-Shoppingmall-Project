@@ -21,7 +21,7 @@ export class PaymentCancel {
     @Column({ nullable: true, comment: '가상계좌 거래 입금 후 취소 건에만 필요' })
     accountNumber: string | null;
 
-    @Column({ nullable: true, comment: '입금자명 | 카드에 쓰여 있는 영문 이름' })
+    @Column({ nullable: true, comment: '입금자명' })
     holderName: string | null;
 
     @Column()

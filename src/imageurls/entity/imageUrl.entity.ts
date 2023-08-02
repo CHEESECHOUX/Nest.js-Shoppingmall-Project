@@ -2,7 +2,7 @@ import { Product } from '@src/products/entity/product.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class ImageUrl {
+export class Imageurl {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -18,6 +18,6 @@ export class ImageUrl {
     @Column({ default: false })
     isDeleted: boolean;
 
-    @ManyToOne(() => Product, product => product.imageUrls)
+    @ManyToOne(() => Product, product => product.imageurls)
     product: Product;
 }

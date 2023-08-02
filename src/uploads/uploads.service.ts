@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 import { Product } from '@src/products/entity/product.entity';
 
 const BUCKET_NAME = 'cheesechoux-bucket';
@@ -10,8 +10,8 @@ const BUCKET_NAME = 'cheesechoux-bucket';
 @Injectable()
 export class UploadsService {
     constructor(
-        @InjectRepository(ImageUrl)
-        private readonly imageUrlsRepository: Repository<ImageUrl>,
+        @InjectRepository(Imageurl)
+        private readonly imageUrlsRepository: Repository<Imageurl>,
         @InjectRepository(Product)
         private readonly productsRepository: Repository<Product>,
     ) {}
@@ -44,7 +44,7 @@ export class UploadsService {
                 throw new Error(`이미지 파일에 맞는 상품 ID: ${productId} 찾을 수 없습니다`);
             }
 
-            const uploadedFile = new ImageUrl();
+            const uploadedFile = new Imageurl();
             uploadedFile.imageUrl = fileUrl;
             uploadedFile.product = product;
             await this.imageUrlsRepository.save(uploadedFile);

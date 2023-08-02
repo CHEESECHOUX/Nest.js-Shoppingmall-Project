@@ -14,8 +14,8 @@ export class LoggerService {
     private userInfoLogger: Logger;
     private logFilePath: string;
 
-    constructor(private configService: ConfigService) {
-        this.logFilePath = this.configService.get<string>('LOG_FILE_PATH');
+    constructor() {
+        this.logFilePath = process.env.LOG_FILE_PATH;
 
         if (!this.logFilePath) {
             throw new Error('LOG_FILE_PATH 환경 변수가 설정되지 않았습니다');

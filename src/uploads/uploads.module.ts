@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { UploadsController } from '@src/uploads/uploads.controller';
 import { UploadsService } from '@src/uploads/uploads.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ImageUrl } from '@src/imageurls/entity/imageurl.entity';
+import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 import { ProductsRepository } from '@src/products/products.repository';
 import { Product } from '@src/products/entity/product.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ImageUrl, Product])],
+    imports: [TypeOrmModule.forFeature([Imageurl, Product])],
     controllers: [UploadsController],
     providers: [UploadsService, ProductsRepository],
 })
