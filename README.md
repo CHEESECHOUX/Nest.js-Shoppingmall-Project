@@ -10,12 +10,15 @@
 <br/>
 
 # 🛠 ERD
-![ShoppingMall Project](https://github.com/CHEESECHOUX/Nest.JS-Shoppingmall-Project/assets/89918678/62830cd9-093f-4426-b72c-351ee727d090)
+![ShoppingMall Project](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/9220aeec-cbc7-4615-8bb6-bbef2a736dd5)
+
 <br/>
 <br/>
 
 # 🔗 프로젝트 구조
-<img width="191" alt="스크린샷 2023-08-02 오후 8 23 34" src="https://github.com/CHEESECHOUX/Nest.JS-Shoppingmall-Project/assets/89918678/f4267b55-e1bf-435b-98fc-0927b0aed780">
+<img width="191" alt="프로젝트 구조" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/b3981f11-5202-465f-9314-fb948f502582">
+
+
 
 <br/>
 
@@ -242,10 +245,10 @@
 <div markdown="1">
     
 - 생성
-<img width="1415" alt="스크린샷 2023-08-01 오전 11 16 30" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/aba234f3-4463-4fb4-8752-aa0e474046ce">
+<img width="1440" alt="상품 이미지랑 POST" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/70b8a4d9-e0fa-42c7-8318-f2d4815d38e1">
 
 - 수정
-<img width="1420" alt="스크린샷 2023-08-01 오전 10 57 56" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/f9c37166-f385-4a0f-82aa-20abf3ea3ebe">
+<img width="1205" alt="상품 이미지랑 PATCH" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/b44dbd00-2a73-4359-9216-fdb79a01721b">
 
 <br/>
 </div>
@@ -323,14 +326,13 @@ CartItem에 있는 각 상품(productId)과 각 상품 수량(quantity)의 정�
 
 # 🖋 블로그 정리
 
-#### [curl 명령어를 이용해 file, DTO 동시요청 보내기](https://velog.io/@cheesechoux/Nest.js-%EC%83%81%ED%92%88-create-%ED%95%A0-%EB%95%8C-%EC%83%81%ED%92%88-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4json-%EA%B0%99%EC%9D%B4-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0)
-#### []()
+#### [- curl 명령어를 이용해 file, DTO 동시요청 보내기](https://velog.io/@cheesechoux/Nest.js-%EC%83%81%ED%92%88-create-%ED%95%A0-%EB%95%8C-%EC%83%81%ED%92%88-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4json-%EA%B0%99%EC%9D%B4-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0)
 
-#### [토스 페이먼츠로 첫 결제 구현해보기](https://velog.io/@cheesechoux/Nest.js-%ED%86%A0%EC%8A%A4-%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84)
+#### [- 토스 페이먼츠로 첫 결제 구현해보기](https://velog.io/@cheesechoux/Nest.js-%ED%86%A0%EC%8A%A4-%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84)
 
-#### [Docker build -  npm run build 에러](https://velog.io/@cheesechoux/Docker-Cannot-find-module-srcimageurlsentityimageurl.entity)
+#### [- Docker build -  npm run build 에러](https://velog.io/@cheesechoux/Docker-Cannot-find-module-srcimageurlsentityimageurl.entity)
 
-#### [Docker container run - 환경 변수(.env)가 설정되지 않았습니다.](https://velog.io/@cheesechoux/Docker-docker-container-run-%ED%99%98%EA%B2%BD-%EB%B3%80%EC%88%98%EA%B0%80-%EC%84%A4%EC%A0%95%EB%90%98%EC%A7%80-%EC%95%8A%EC%95%98%EC%8A%B5%EB%8B%88%EB%8B%A4)
+#### [- Docker container run - 환경 변수(.env)가 설정되지 않았습니다.](https://velog.io/@cheesechoux/Docker-docker-container-run-%ED%99%98%EA%B2%BD-%EB%B3%80%EC%88%98%EA%B0%80-%EC%84%A4%EC%A0%95%EB%90%98%EC%A7%80-%EC%95%8A%EC%95%98%EC%8A%B5%EB%8B%88%EB%8B%A4)
 <br/>
 
 # ⚙️ 설치 및 실행 방법
