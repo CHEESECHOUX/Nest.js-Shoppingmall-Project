@@ -12,6 +12,9 @@ import { LoggerService } from '@src/logger.service';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { Role } from '@src/roles/entity/role.entity';
 import { UserRole } from '@src/users/entity/user-role.entity';
+import { RedisModule, RedisService } from '@liaoliaots/nestjs-redis';
+import { RedisConfigService } from '@src/config/redis-config.service';
+import { CacheService } from '@src/cache/cache.service';
 
 @Module({
     imports: [
@@ -19,7 +22,7 @@ import { UserRole } from '@src/users/entity/user-role.entity';
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
-            inject: [ConfigService],
+            inject: [ConfigService, RedisService],
             useFactory: async (config: ConfigService) => ({
                 secret: config.get('JWT_SECRET'),
                 signOptions: {
@@ -27,9 +30,12 @@ import { UserRole } from '@src/users/entity/user-role.entity';
                 },
             }),
         }),
+        RedisModule.forRootAsync({
+            useClass: RedisConfigService,
+        }),
         TypeOrmModule.forFeature([User, Cart, Role, UserRole]),
     ],
-    providers: [UsersService, UsersRepository, JwtStrategy, LoggerService],
+    providers: [UsersService, UsersRepository, JwtStrategy, LoggerService, CacheService],
     controllers: [UsersController],
 })
 export class UsersModule {}

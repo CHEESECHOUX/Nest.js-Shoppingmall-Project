@@ -20,6 +20,9 @@ import { OrdersModule } from '@src/orders/orders.module';
 import { PaymentsModule } from '@src/payments/payments.module';
 import { ReviewsModule } from '@src/reviews/reviews.module';
 import { RolesModule } from '@src/roles/roles.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { RedisConfigService } from '@src/config/redis-config.service';
+import { CacheModule } from '@src/cache/cache.module';
 
 @Module({
     imports: [
@@ -46,6 +49,11 @@ import { RolesModule } from '@src/roles/roles.module';
                 logging: false,
                 namingStrategy: new SnakeNamingStrategy(),
             }),
+        }),
+        RedisModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useClass: RedisConfigService,
         }),
         WinstonModule.forRoot({
             transports: [
@@ -88,6 +96,7 @@ import { RolesModule } from '@src/roles/roles.module';
         PaymentsModule,
         ReviewsModule,
         RolesModule,
+        CacheModule,
     ],
     controllers: [AppController],
     providers: [AppService, LoggerService],

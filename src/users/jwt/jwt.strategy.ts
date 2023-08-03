@@ -2,12 +2,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UsersService } from '@src/users/users.service';
+import { RedisService } from '@liaoliaots/nestjs-redis';
+import { CacheService } from '@src/cache/cache.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    private readonly cachedUsers: Map<number, any> = new Map();
-
-    constructor(private readonly usersService: UsersService) {
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly redisService: RedisService,
+        private readonly cacheService: CacheService,
+    ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -23,8 +27,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const { id } = payload;
 
         // 캐시에 있는 경우, 캐시된 사용자 정보를 반환
-        const cachedUser = this.cachedUsers.get(id);
+        const cachedUser = await this.cacheService.get(`user:${id}`);
         if (cachedUser) {
+            console.log('캐시에서 사용자 정보를 가져왔습니다');
             return cachedUser;
         }
 
@@ -34,8 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다');
         }
 
-        // 나중에 사용할 수 있도록 캐시에 사용자 정보 저장
-        this.cachedUsers.set(id, user);
+        await this.cacheService.set(`user:${id}`, JSON.stringify(user), 3600); // 캐시 만료 시간 : 1시간
 
         return user;
     }
