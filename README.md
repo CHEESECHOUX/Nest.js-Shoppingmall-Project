@@ -5,18 +5,19 @@
 -   프로젝트 진행 기간 : 2023.07.10 ~ 
 -   팀원 : 1명
 -   Language & Framework : TypeScript, Nest.JS (9.3.0), TypeORM (0.3.17)
--   Database : AWS RDS(MySQL), S3
+-   Database : AWS RDS(MySQL), S3 / Redis
 - 	Docker
 <br/>
 
 # 🛠 ERD
-![ShoppingMall Project](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/9220aeec-cbc7-4615-8bb6-bbef2a736dd5)
+![ShoppingMall Project (1)](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/81e27263-0864-4fe0-a2c3-392f9dd6e90c)
+
 
 <br/>
 <br/>
 
 # 🔗 프로젝트 구조
-<img width="191" alt="프로젝트 구조" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/b3981f11-5202-465f-9314-fb948f502582">
+<img width="188" alt="스크린샷 2023-08-03 오후 9 33 41" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/137289be-0c55-4a63-844d-8b9318aa8bf5">
 
 
 
@@ -314,25 +315,38 @@
 <br/>
 
 # 💡 트러블 슈팅
-#### 1. 테이블 반정규화
+### 1. 사용자 조회 요청 한 번에, userinfo.log(winston) 파일에 로그는 두 번 찍히는 현상
+winston을 사용하여 로그인 요청과 사용자 정보 조회 요청에 대한 로그를 기록하는 코드를 작성했었습니다. 하지만 사용자 정보 조회 시 로그가 두 번 찍히는 현상이 발생했습니다. 이 문제를 원인은 사용자 조회 라우트에 허용되는 사용자만 액세스 할 수 있도록 작성한 코드에 있었습니다.
+
+**사용자 인증을 위한 JwtAuthGuard)** 코드에서 첫 번째 호출이, **인증된 사용자의 정보(user id)추출을 위한 @GetUserJWT** 데코레이터에서 두 번째 호출이 일어나고 있었습니다. 
+
+**서로 다른 역할이어도 두 요청 모두 사용자 관련 호출이므로, 중복을 최소화하기 위해 캐싱을 도입**했습니다. **Redis를 활용**해 사용자 정보를 한 번 가져온 후, 해당 정보를 메모리에 저장하고 재사용하도록 코드를 다시 구현했습니다. 캐시는 **만료 시간(1시간)을 설정**해, 캐시된 정보를 일정 시간 동안 유지하도록 했습니다. 이렇게 구현함으로써 **사용자 정보를 빠르게 제공하면서도 데이터베이스 요청 횟수를 줄여, 더 효율적인 서비스를 제공**할 수 있게 되었습니다.
+<br/>
+
+### 2. 테이블 반정규화
 주문 요청시 장바구니에 저장되어있는 **장바구니 총 금액과 주문 총 금액(현재 상품 가격 기준)이 같은지 비교**하려면, **장바구니에 담긴 각 상품의 수량이 필요**했습니다.
 Cart와 Product의 중간 테이블인 **CartItem 테이블을 반정규화**해 각 상품 수량 필드 값을 추가했습니다.
 CartItem에 있는 각 상품(productId)과 각 상품 수량(quantity)의 정보로 장바구니에 담긴 상품의 현재 가격을 기준으로 주문 총 금액을 업데이트 후, 주문을 생성하도록 구현 했습니다.
+<br/>
 
-#### 2. Soft Delete & Hard Delete
+### 3. Soft Delete & Hard Delete
 처음에는 데이터 보존 및 데이터 복구 가능성, 관계 데이터의 안정성 유지 때문에 모든 데이터를 soft delete 처리했습니다. 그러나 **모든 데이터를 soft delete 처리하게 될 경우 서비스 확장시 일부 쿼리의 성능 저하 가능성**이 있기 때문에 **데이터 보존 및 추적이 필요한 데이터만 soft delete 처리**, 그 외 **다른 데이터들은 hard delete 처리** 했습니다.
 <br/>
 <br/>
 
 # 🖋 블로그 정리
+#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 1](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%88%EB%82%98%EC%9A%94)
 
-#### [- curl 명령어를 이용해 file, DTO 동시요청 보내기](https://velog.io/@cheesechoux/Nest.js-%EC%83%81%ED%92%88-create-%ED%95%A0-%EB%95%8C-%EC%83%81%ED%92%88-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4json-%EA%B0%99%EC%9D%B4-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0)
-
-#### [- 토스 페이먼츠로 첫 결제 구현해보기](https://velog.io/@cheesechoux/Nest.js-%ED%86%A0%EC%8A%A4-%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84)
+#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 2](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%90%EA%B9%8C%EC%9A%94-2)
 
 #### [- Docker build -  npm run build 에러](https://velog.io/@cheesechoux/Docker-Cannot-find-module-srcimageurlsentityimageurl.entity)
 
 #### [- Docker container run - 환경 변수(.env)가 설정되지 않았습니다.](https://velog.io/@cheesechoux/Docker-docker-container-run-%ED%99%98%EA%B2%BD-%EB%B3%80%EC%88%98%EA%B0%80-%EC%84%A4%EC%A0%95%EB%90%98%EC%A7%80-%EC%95%8A%EC%95%98%EC%8A%B5%EB%8B%88%EB%8B%A4)
+
+#### [- 토스 페이먼츠로 첫 결제 구현해보기](https://velog.io/@cheesechoux/Nest.js-%ED%86%A0%EC%8A%A4-%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84)
+
+#### [- curl 명령어를 이용해 file, DTO 동시요청 보내기](https://velog.io/@cheesechoux/Nest.js-%EC%83%81%ED%92%88-create-%ED%95%A0-%EB%95%8C-%EC%83%81%ED%92%88-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4json-%EA%B0%99%EC%9D%B4-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0)
+
 <br/>
 
 # ⚙️ 설치 및 실행 방법
@@ -369,6 +383,26 @@ AWS_ACCESS_KEY=AWS계정의 ACCESS KEY
 AWS_SECRET_KEY=AWS계정의 SECRET KEY
 
 TOSS_TEST_SECRET_KEY=토스 페이먼츠 계정의 SECRET KEY
+```
+
+- redis-config.service.ts
+```
+import { Injectable } from '@nestjs/common';
+import { RedisModuleOptions, RedisOptionsFactory } from '@liaoliaots/nestjs-redis';
+
+@Injectable()
+export class RedisConfigService implements RedisOptionsFactory {
+    createRedisOptions(): RedisModuleOptions {
+        return {
+            readyLog: true,
+            config: {
+                host: 'localhost',
+                port: 6379,
+            },
+        };
+    }
+}
+
 ```
 
 <br/>
