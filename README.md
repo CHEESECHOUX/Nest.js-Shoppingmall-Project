@@ -379,13 +379,29 @@ TOSS_TEST_SECRET_KEY=토스 페이먼츠 계정의 SECRET KEY
 git clone https://github.com/CHEESECHOUX/nest.js-shoppingmall-project.git
 ```
 
-**2. Project Setup**
+**2. Project Setup**<br/>
+
+Docker Compose 명령어
+```
+docker-compose up -d
+```
+
+<details>
+<summary>Docker 이미지 빌드 & 해당 이미지로 컨테이너 실행 명령어</summary>
+<div markdown="2">
 
 ```
 docker build . -t nest-shoppingmall
 ```
 ```
 docker container run -d -p 3000:3000 --env-file ./src/config/.development.env nest-shoppingmall
+```
+<br/>
+</div>
+</details>
+
+```
+npm install
 ```
 
 <details>
@@ -447,10 +463,6 @@ docker container run -d -p 3000:3000 --env-file ./src/config/.development.env ne
 <br/>
 </div>
 </details>
-
-```
-npm install
-```
 
 **3. Project Start For Development**
 
