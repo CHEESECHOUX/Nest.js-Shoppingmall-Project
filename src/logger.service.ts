@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { UserInfoDTO } from '@src/users/dto/users.dto';
 import { Logger, createLogger, format, transports } from 'winston';

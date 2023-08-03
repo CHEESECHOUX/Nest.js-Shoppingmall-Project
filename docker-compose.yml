@@ -1,0 +1,10 @@
+version: '3'
+services:
+    nest-shoppingmall:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '3000:3000'
+        env_file:
+            - ./src/config/.development.env
