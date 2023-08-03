@@ -12,8 +12,7 @@ export class UsersController {
     @Get('/myinfo')
     @UseGuards(JwtAuthGuard)
     async getUserInfo(@GetUserJWT() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
-        const userInfo = await this.usersService.getUserInfo(authUserType);
-        return userInfo;
+        return await this.usersService.getUserInfo(authUserType);
     }
 
     @Post('/signup')

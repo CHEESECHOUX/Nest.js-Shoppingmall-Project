@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { UserInfoDTO } from '@src/users/dto/users.dto';
 import { Logger, createLogger, format, transports } from 'winston';
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
 import * as moment from 'moment-timezone';
 import * as fs from 'fs';
+import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 
 @Injectable()
 export class LoggerService {
@@ -47,11 +47,11 @@ export class LoggerService {
     }
 
     logLogin(userId: number): void {
-        this.loginLogger.info(`사용자 id ${userId} 로그인 했습니다`);
+        this.loginLogger.info(`로그인 : 사용자 id ${userId}`);
     }
 
-    logUserInfo(userInfo: UserInfoDTO): void {
-        this.userInfoLogger.info(`사용자 정보 조회: ${JSON.stringify(userInfo)}`);
+    logUserInfo(authUserType: AuthUserType): void {
+        this.userInfoLogger.info(`사용자 정보 조회 : id ${authUserType.id}`);
     }
 
     // 매일 자정 UserInfoLog 데이터 초기화
