@@ -2,19 +2,23 @@
 
 다수의 판매자와 소비자가 온라인상에서 상거래를 할 수 있는 오픈 마켓(C2C) 프로젝트입니다.
 
--   프로젝트 진행 기간 : 2023.07.10 ~ 2023.07.26
+-   프로젝트 진행 기간 : 2023.07.10 ~ 
 -   팀원 : 1명
--   사용 언어 및 프레임워크 : TypeScript, Nest.JS (9.3.0), TypeORM (0.3.17)
--   Database : MySQL (8.0.33), AWS S3
+-   Language & Framework : TypeScript, Nest.JS (9.3.0), TypeORM (0.3.17)
+-   Database : AWS RDS(MySQL), S3
+- 	Docker
 <br/>
 
 # 🛠 ERD
-![ERD - 7](https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/3d811c69-f89b-4bf1-92fa-b65da8fafc7f)
+![ShoppingMall Project](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/9220aeec-cbc7-4615-8bb6-bbef2a736dd5)
+
 <br/>
 <br/>
 
 # 🔗 프로젝트 구조
-<img width="235" alt="스크린샷 2023-08-01 오전 10 33 48" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/e9d61518-aa8e-43fb-a7d8-b7a4833f699d">
+<img width="191" alt="프로젝트 구조" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/b3981f11-5202-465f-9314-fb948f502582">
+
+
 
 <br/>
 
@@ -241,10 +245,10 @@
 <div markdown="1">
     
 - 생성
-<img width="1415" alt="스크린샷 2023-08-01 오전 11 16 30" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/aba234f3-4463-4fb4-8752-aa0e474046ce">
+<img width="1440" alt="상품 이미지랑 POST" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/70b8a4d9-e0fa-42c7-8318-f2d4815d38e1">
 
 - 수정
-<img width="1420" alt="스크린샷 2023-08-01 오전 10 57 56" src="https://github.com/CHEESECHOUX/nest.js-shoppingmall-project/assets/89918678/f9c37166-f385-4a0f-82aa-20abf3ea3ebe">
+<img width="1205" alt="상품 이미지랑 PATCH" src="https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/b44dbd00-2a73-4359-9216-fdb79a01721b">
 
 <br/>
 </div>
@@ -292,20 +296,21 @@
 #### 1. GetUserSession
 - JWT로 로그인 구현 후, 모든 요청은 인증된 사용자만 접근 가능
 - request안에 있는 사용자의 정보에 접근해, 해당 사용자가 라우터에 접근 권한이 있는지 확인<br/>
-     - ex) 해당 사용자의 장바구니, 해당 사용자의 주문 배송지 수정
+  ex) 해당 사용자의 장바구니, 해당 사용자의 주문 배송지 수정
 
 #### 2. RolesGuard, @Roles
 - ADMIN, MANAGER, CUSTOMER 권한 중 RolesGuard가 각 라우트마다 허용되는 권한을 가진 사용자만 액세스 할 수 있도록 제어
 
 #### 3. LoggerService
 - 로그인 로그(login.log), 사용자 정보조회 로그(userinfo.log)를 각각 파일에 기록
-- 사용자 정보조회 로그는 서울 시간 기준으로 매일 자정에 초기화
+- 사용자 정보조회 로그 파일은 서울 시간 기준으로 매일 자정에 초기화
 
 #### 4. Uploads
 - AWS S3를 이용해 상품 이미지 관리 (등록, 수정, 삭제)
 
 #### 5. Payments
 - 토스 페이먼츠 결제 기능 구현
+- 주문시 결제까지 트랜잭션 처리
 <br/>
 
 # 💡 트러블 슈팅
@@ -317,6 +322,17 @@ CartItem에 있는 각 상품(productId)과 각 상품 수량(quantity)의 정�
 #### 2. Soft Delete & Hard Delete
 처음에는 데이터 보존 및 데이터 복구 가능성, 관계 데이터의 안정성 유지 때문에 모든 데이터를 soft delete 처리했습니다. 그러나 **모든 데이터를 soft delete 처리하게 될 경우 서비스 확장시 일부 쿼리의 성능 저하 가능성**이 있기 때문에 **데이터 보존 및 추적이 필요한 데이터만 soft delete 처리**, 그 외 **다른 데이터들은 hard delete 처리** 했습니다.
 <br/>
+<br/>
+
+# 🖋 블로그 정리
+
+#### [- curl 명령어를 이용해 file, DTO 동시요청 보내기](https://velog.io/@cheesechoux/Nest.js-%EC%83%81%ED%92%88-create-%ED%95%A0-%EB%95%8C-%EC%83%81%ED%92%88-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4json-%EA%B0%99%EC%9D%B4-%EC%9A%94%EC%B2%AD-%EB%B3%B4%EB%82%B4%EA%B8%B0)
+
+#### [- 토스 페이먼츠로 첫 결제 구현해보기](https://velog.io/@cheesechoux/Nest.js-%ED%86%A0%EC%8A%A4-%ED%8E%98%EC%9D%B4%EB%A8%BC%EC%B8%A0-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84)
+
+#### [- Docker build -  npm run build 에러](https://velog.io/@cheesechoux/Docker-Cannot-find-module-srcimageurlsentityimageurl.entity)
+
+#### [- Docker container run - 환경 변수(.env)가 설정되지 않았습니다.](https://velog.io/@cheesechoux/Docker-docker-container-run-%ED%99%98%EA%B2%BD-%EB%B3%80%EC%88%98%EA%B0%80-%EC%84%A4%EC%A0%95%EB%90%98%EC%A7%80-%EC%95%8A%EC%95%98%EC%8A%B5%EB%8B%88%EB%8B%A4)
 <br/>
 
 # ⚙️ 설치 및 실행 방법
@@ -347,6 +363,7 @@ JWT_SECRET=MYSECRETKEY
 JWT_EXP=1h
 
 APP_NAME=nest-shoppingmall
+LOG_FILE_PATH=/Users/jisoochoi/project/logs/
 
 AWS_ACCESS_KEY=AWS계정의 ACCESS KEY
 AWS_SECRET_KEY=AWS계정의 SECRET KEY
@@ -363,6 +380,13 @@ git clone https://github.com/CHEESECHOUX/nest.js-shoppingmall-project.git
 ```
 
 **2. Project Setup**
+
+```
+docker build . -t nest-shoppingmall
+```
+```
+docker container run -d -p 3000:3000 --env-file ./src/config/.development.env nest-shoppingmall
+```
 
 <details>
 <summary>설치한 패키지 목록</summary>
