@@ -5,7 +5,6 @@ import * as winston from 'winston';
 import { utilities } from 'nest-winston';
 import * as moment from 'moment-timezone';
 import * as fs from 'fs';
-import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 
 @Injectable()
 export class LoggerService {
@@ -50,8 +49,8 @@ export class LoggerService {
         this.loginLogger.info(`로그인 : 사용자 id ${userId}`);
     }
 
-    logUserInfo(authUserType: AuthUserType): void {
-        this.userInfoLogger.info(`사용자 정보 조회 : id ${authUserType.id}`);
+    logUserInfo(userId: number): void {
+        this.userInfoLogger.info(`사용자 정보 조회 : id ${userId}`);
     }
 
     // 매일 자정 UserInfoLog 데이터 초기화

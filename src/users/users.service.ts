@@ -5,7 +5,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from '@src/users/entity/user.entity';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
-import { AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 import { LoggerService } from '@src/logger.service';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { UserRole } from '@src/users/entity/user-role.entity';
@@ -27,13 +26,14 @@ export class UsersService {
         private userRolesRepository: Repository<UserRole>,
     ) {}
 
-    async getUserInfo({ id }: AuthUserType): Promise<UserInfoDTO | null> {
-        const userInfo = await this.usersRepository.findOne({ where: { id } });
+    async getUserInfo(req): Promise<UserInfoDTO | null> {
+        const userId = req.user.id;
+        const userInfo = await this.usersRepository.findOne({ where: { id: userId } });
         if (!userInfo) {
             throw new UnauthorizedException('사용자를 찾을 수 없습니다');
         }
 
-        await this.userInfoLogger.logUserInfo(userInfo);
+        await this.userInfoLogger.logUserInfo(userInfo.id);
 
         return userInfo;
     }

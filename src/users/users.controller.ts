@@ -1,9 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from '@src/users/users.service';
 import { CreateUserDTO, LogInDTO, LogInResponseDTO, UserInfoDTO } from '@src/users/dto/users.dto';
 import { User } from '@src/users/entity/user.entity';
 import { JwtAuthGuard } from '@src/users/jwt/jwt.guard';
-import { GetUserJWT, AuthUserType } from '@src/common/decorators/get-user-jwt.decorator';
 
 @Controller('/users')
 export class UsersController {
@@ -11,8 +10,8 @@ export class UsersController {
 
     @Get('/myinfo')
     @UseGuards(JwtAuthGuard)
-    async getUserInfo(@GetUserJWT() authUserType: AuthUserType): Promise<UserInfoDTO | null> {
-        return await this.usersService.getUserInfo(authUserType);
+    async getUserInfo(@Req() req): Promise<UserInfoDTO | null> {
+        return await this.usersService.getUserInfo(req);
     }
 
     @Post('/signup')
