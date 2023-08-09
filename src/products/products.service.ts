@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '@src/products/entity/product.entity';
 import { ILike, Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { CreateProductDTO, ProductInfoDTO } from '@src/products/dto/products.dto
 import { User } from '@src/users/entity/user.entity';
 import { UploadsService } from '@src/uploads/uploads.service';
 import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
+import { CacheService } from '@src/cache/cache.service';
 
 @Injectable()
 export class ProductsService {
@@ -15,13 +16,24 @@ export class ProductsService {
         @InjectRepository(Imageurl)
         private imageurlsRepository: Repository<Imageurl>,
         private uploadsService: UploadsService,
+        private cacheService: CacheService,
     ) {}
 
     async getProductById(id: number): Promise<ProductInfoDTO | null> {
+        // 캐시에 있는 경우, 캐시된 상품 정보를 반환
+        const cachedProduct = await this.cacheService.get(`product:${id}`);
+        if (cachedProduct) {
+            console.log('캐시에서 상품 정보를 가져왔습니다');
+
+            return JSON.parse(cachedProduct) as ProductInfoDTO;
+        }
+
         const productInfo = await this.productsRepository.findOne({ where: { id } });
         if (!productInfo) {
-            throw new UnauthorizedException('상품을 찾을 수 없습니다');
+            throw new NotFoundException('상품을 찾을 수 없습니다');
         }
+
+        await this.cacheService.set(`product:${id}`, JSON.stringify(productInfo), 3600); // 캐시 만료 시간 : 1시간
 
         return productInfo;
     }

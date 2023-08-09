@@ -9,10 +9,19 @@ import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 import { Cart } from '@src/carts/entity/carts.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@src/users/entity/user-role.entity';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { RedisConfigService } from '@src/config/redis-config.service';
+import { LoggerService } from '@src/logger.service';
+import { CacheService } from '@src/cache/cache.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Product, Imageurl, Cart, UserRole])],
-    providers: [ProductsService, ProductsRepository, UploadsService, JwtService],
+    imports: [
+        TypeOrmModule.forFeature([Product, Imageurl, Cart, UserRole]),
+        RedisModule.forRootAsync({
+            useClass: RedisConfigService,
+        }),
+    ],
+    providers: [ProductsService, ProductsRepository, UploadsService, JwtService, LoggerService, CacheService],
     controllers: [ProductsController],
 })
 export class ProductsModule {}
