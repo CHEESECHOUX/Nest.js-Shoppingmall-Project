@@ -55,6 +55,14 @@ export class ProductsService {
     }
 
     async getProductsByCategory(categoryId: number): Promise<Product[]> {
+        const cachedProducts = await this.cacheService.get(`category:${categoryId}`);
+
+        if (cachedProducts) {
+            console.log('캐시에서 상품 정보를 가져왔습니다');
+
+            return JSON.parse(cachedProducts);
+        }
+
         const products = await this.productsRepository
             .createQueryBuilder('product')
             .innerJoin('product.categories', 'category')
@@ -62,6 +70,8 @@ export class ProductsService {
             .orderBy('product.productName', 'ASC')
             .take(20)
             .getMany();
+
+        await this.cacheService.set(`category:${categoryId}`, JSON.stringify(products), 3600);
 
         return products;
     }
