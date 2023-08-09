@@ -10,7 +10,6 @@ import { Roles } from '@src/common/decorators/role.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/products')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
@@ -33,6 +32,7 @@ export class ProductsController {
 
     @Post()
     @Roles('ADMIN', 'MANAGER')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @UseInterceptors(FileInterceptor('file'))
     async createProductWithImage(
         @GetUserRequest() user: User,
@@ -42,9 +42,10 @@ export class ProductsController {
         return this.productsService.createProductWithImage(user, createProductDTO, imageFile);
     }
 
-    @Roles('ADMIN', 'MANAGER')
-    @UseInterceptors(FileInterceptor('file'))
     @Patch(':id')
+    @Roles('ADMIN', 'MANAGER')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseInterceptors(FileInterceptor('file'))
     async updateProductWithImage(
         @Param('id') productId: number,
         @UploadedFile() imageFile: Express.Multer.File,
@@ -53,14 +54,16 @@ export class ProductsController {
         return this.productsService.updateProductWithImage(productId, createProductDTO, imageFile);
     }
 
-    @Roles('ADMIN', 'MANAGER')
     @Delete(':id')
+    @Roles('ADMIN', 'MANAGER')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     async softDeleteProduct(@Param('id') productId: number): Promise<void> {
         return this.productsService.softDeleteById(productId);
     }
 
-    @Roles('ADMIN', 'MANAGER')
     @Delete('/images/:id')
+    @Roles('ADMIN', 'MANAGER')
+    @UseGuards(JwtAuthGuard, RolesGuard)
     async hardDeleteImagesByProductId(@Param('id') productId: number): Promise<void> {
         return this.productsService.hardDeleteImagesByProductId(productId);
     }

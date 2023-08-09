@@ -119,6 +119,23 @@ export class ProductsService {
         product.price = price;
         const updatedProduct = await this.productsRepository.save(product);
 
+        // 상품 정보 업데이트 시 해당 상품 캐시 삭제
+        await this.cacheService.del(`product:${productId}`);
+        await this.cacheService.del(`product:${productName}`);
+
+        // 상품 정보 업데이트 시 해당 상품의 카테고리 캐시 삭제
+        const categoryOfProduct = await this.productsRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.categories', 'category')
+            .where('product.id = :id', { id: productId })
+            .getOne();
+
+        if (categoryOfProduct && categoryOfProduct.categories) {
+            for (const category of categoryOfProduct.categories) {
+                await this.cacheService.del(`category:${category.id}`);
+            }
+        }
+
         const uploadedImageUrl = await this.uploadsService.uploadFile(imageFile, updatedProduct.id);
 
         const imageUrl = new Imageurl();
