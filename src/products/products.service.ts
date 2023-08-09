@@ -20,7 +20,6 @@ export class ProductsService {
     ) {}
 
     async getProductById(id: number): Promise<ProductInfoDTO | null> {
-        // 캐시에 있는 경우, 캐시된 상품 정보를 반환
         const cachedProduct = await this.cacheService.get(`product:${id}`);
         if (cachedProduct) {
             console.log('캐시에서 상품 정보를 가져왔습니다');
@@ -39,9 +38,18 @@ export class ProductsService {
     }
 
     async getProductsByName(productName: string): Promise<Product[]> {
+        const cachedProduct = await this.cacheService.get(`product:${productName}`);
+        if (cachedProduct) {
+            console.log('캐시에서 상품 정보를 가져왔습니다');
+
+            return JSON.parse(cachedProduct);
+        }
+
         const products = await this.productsRepository.find({
             where: { productName: ILike(`%${productName}%`) },
         });
+
+        await this.cacheService.set(`product:${productName}`, JSON.stringify(products), 3600);
 
         return products;
     }
