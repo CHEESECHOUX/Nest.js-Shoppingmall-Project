@@ -294,27 +294,37 @@
 <br/>
 
 # 🙌🏻 기술적 도전
-#### 1. GetUserSession
+### 1. GetUserRequest
 - JWT로 로그인 구현 후, 모든 요청은 인증된 사용자만 접근 가능
 - request안에 있는 사용자의 정보에 접근해, 해당 사용자가 라우터에 접근 권한이 있는지 확인<br/>
   ex) 해당 사용자의 장바구니, 해당 사용자의 주문 배송지 수정
 
-#### 2. RolesGuard, @Roles
+### 2. RolesGuard, @Roles
 - ADMIN, MANAGER, CUSTOMER 권한 중 RolesGuard가 각 라우트마다 허용되는 권한을 가진 사용자만 액세스 할 수 있도록 제어
 
-#### 3. LoggerService
-- 로그인 로그(login.log), 사용자 정보조회 로그(userinfo.log)를 각각 파일에 기록
-- 사용자 정보조회 로그 파일은 서울 시간 기준으로 매일 자정에 초기화
+### 3. LoggerService
+- **winston을 활용**하여 로그인 로그(login.log), 사용자 정보조회 로그(userinfo.log)를 각각 **파일에 기록**
+- 사용자 정보조회 로그 파일은 서울 시간 기준으로 **매일 자정에 초기화**
 
-#### 4. Uploads
-- AWS S3를 이용해 상품 이미지 관리 (등록, 수정, 삭제)
+### 4. Uploads
+- **AWS S3**를 활용하여 S3버킷과 객체의 고유한 URL로 유연하게 상품 이미지 관리
 
-#### 5. Payments
-- 토스 페이먼츠 결제 기능 구현
-- 주문시 결제까지 트랜잭션 처리
+### 5. Payments
+- **토스 페이먼츠 결제 기능** 구현
+- 주문 생성 시, reduce 메서드를 사용해 **장바구니에 담긴 각 상품 가격 업데이트**(상품 가격 변동 고려)
+- 장바구니의 상품 총 가격과 결제 금액 비교
+- 데이터베이스의 일관성을 보장하기 위해, **주문 시 결제까지 트랜잭션 처리**
 
-#### 6. Cache
-- Redis를 활용해 사용자 정보 캐싱 (만료시간 : 1시간)
+### 6. Cache
+#### **Redis를 통해 상품 정보 캐싱**
+
+Redis를 이용한 상품 정보 캐싱을 통해 **데이터 접근의 효율성을 향상**시켰습니다. 이로 인해 데이터베이스의 서버 부하를 줄이고 인프라 비용을 절감하며 사용자에게 더 빠른 서비스 경험을 제공할 수 있게 되었습니다.<br/>
+
+그러나 캐싱의 특성상 최신 데이터와 싱크가 항상 맞지 않는 다는 문제점이 있습니다.
+
+- 데이터의 신선도를 유지하기 위해 **1시간 만료시간 설정**<br/>
+- **상품 정보 업데이트 시 해당 상품의 캐시 및 연관된 카테고리 캐시를 삭제**하는 로직을 도입하여 사용자에게 항상 최신 정보를 제공하도록 구현 했습니다.
+<br/>
 <br/>
 
 # 💡 트러블 슈팅
@@ -377,11 +387,11 @@ LOG_DIR=src/logs/
 -   src/config/.development.env
 
 ```
-DB_HOST=127.0.0.1
+DB_HOST=AWS RDS(MySQL) 엔드포인트
 DB_PORT=3306
-DB_PASSWORD=MySQL비밀번호
+DB_PASSWORD=AWS RDS(MySQL) Master password
 DB_NAME=shoppingmall
-DB_USERNAME=root
+DB_USERNAME=AWS RDS(MySQL) Master username 
 
 JWT_SECRET=MYSECRETKEY
 JWT_EXP=1h
