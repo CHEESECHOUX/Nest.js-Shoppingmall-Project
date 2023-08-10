@@ -7,32 +7,43 @@ import { User } from '@src/users/entity/user.entity';
 import { UploadsService } from '@src/uploads/uploads.service';
 import { Imageurl } from '@src/imageurls/entity/imageurl.entity';
 import { CacheService } from '@src/cache/cache.service';
+import { LoggerService, LoggerType } from '@src/logger.service';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectRepository(Product)
         private productsRepository: Repository<Product>,
+        private cacheService: CacheService,
+        private productCacheLogger: LoggerService,
         @InjectRepository(Imageurl)
         private imageurlsRepository: Repository<Imageurl>,
         private uploadsService: UploadsService,
-        private cacheService: CacheService,
     ) {}
 
     async getProductById(id: number): Promise<ProductInfoDTO | null> {
+        // 캐시로 상품 정보 조회 후 로그 파일에 기록
         const cachedProduct = await this.cacheService.get(`product:${id}`);
+
         if (cachedProduct) {
-            console.log('캐시에서 상품 정보를 가져왔습니다');
+            await this.productCacheLogger.logProductCache(id);
 
             return JSON.parse(cachedProduct) as ProductInfoDTO;
         }
 
         const productInfo = await this.productsRepository.findOne({ where: { id } });
+
         if (!productInfo) {
             throw new NotFoundException('상품을 찾을 수 없습니다');
         }
 
-        await this.cacheService.set(`product:${id}`, JSON.stringify(productInfo), 3600); // 캐시 만료 시간 : 1시간
+        try {
+            // 캐시에 상품 정보 저장 (만료 시간 : 1시간)
+            await this.cacheService.set(`product:${id}`, JSON.stringify(productInfo), 3600);
+        } catch (error) {
+            // 캐시에 상품 저장이 실패했을 때, 로그 파일에 오류 기록
+            await this.productCacheLogger.logError(LoggerType.ProductCache, `캐시에 상품 정보 저장 오류`, error);
+        }
 
         return productInfo;
     }

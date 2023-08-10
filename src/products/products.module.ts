@@ -12,6 +12,7 @@ import { UserRole } from '@src/users/entity/user-role.entity';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { RedisConfigService } from '@src/config/redis-config.service';
 import { CacheService } from '@src/cache/cache.service';
+import { LoggerService } from '@src/logger.service';
 
 @Module({
     imports: [
@@ -20,7 +21,7 @@ import { CacheService } from '@src/cache/cache.service';
             useClass: RedisConfigService,
         }),
     ],
-    providers: [ProductsService, ProductsRepository, UploadsService, JwtService, CacheService],
+    providers: [ProductsService, ProductsRepository, UploadsService, JwtService, CacheService, LoggerService],
     controllers: [ProductsController],
 })
 export class ProductsModule {}
