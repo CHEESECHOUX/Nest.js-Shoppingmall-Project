@@ -14,8 +14,8 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Get(':id')
-    async getProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductInfoDTO | null> {
-        const productInfo = await this.productsService.getProductById(id);
+    async getProductById(@Param('id', ParseIntPipe) productId: number): Promise<ProductInfoDTO | null> {
+        const productInfo = await this.productsService.getProductById(productId);
         return productInfo;
     }
 

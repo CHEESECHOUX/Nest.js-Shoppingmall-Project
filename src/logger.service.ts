@@ -60,8 +60,13 @@ export class LoggerService {
         this.userInfoLogger.info(`사용자 정보 조회`, { userId });
     }
 
-    logProductCache(productId: number): void {
-        this.productCacheLogger.info('캐시에서 상품 정보 조회 시도', { productId });
+    logProductCache(productId?: number, productName?: string, categoryId?: number): void {
+        const logData: any = {};
+        if (productId) logData.productId = productId;
+        if (productName) logData.productName = productName;
+        if (categoryId) logData.categoryId = categoryId;
+
+        this.productCacheLogger.info('캐시에서 상품 정보 조회 시도', logData);
     }
 
     logError(type: LoggerType, message: string, error: any): void {
