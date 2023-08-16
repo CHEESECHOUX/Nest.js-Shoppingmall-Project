@@ -10,7 +10,7 @@
 <br/>
 
 # 🛠 ERD
-![ShoppingMall Project (1)](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/81e27263-0864-4fe0-a2c3-392f9dd6e90c)
+![스크린샷 2023-08-16 오후 5 21 36](https://github.com/CHEESECHOUX/Nest.js-Shoppingmall-Project/assets/89918678/86117e88-224a-4d5a-9b12-12d5b849a8a3)
 
 
 <br/>
@@ -379,9 +379,14 @@ JWT 토큰에는 이미 사용자의 id 정보도 포함되어 있어 이를 활
 <br/>
 
 # 🖋 블로그 정리
-#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 1](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%88%EB%82%98%EC%9A%94)
 
-#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 2](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%90%EA%B9%8C%EC%9A%94-2)
+#### [- Redis로 상품 정보 캐싱](https://velog.io/@cheesechoux/Nest.js-Redis%EB%A5%BC-%ED%86%B5%ED%95%B4-%EC%83%81%ED%92%88-%EC%A0%95%EB%B3%B4-%EC%BA%90%EC%8B%B1)
+
+#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 3(해결)](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C...-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%90%EA%B9%8C%EC%9A%94-3)
+
+#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 2(과정)](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%90%EA%B9%8C%EC%9A%94-2)
+
+#### [- 왜? 요청 한 번에 로그 두 번이 찍힐까요? - 1(과정)](https://velog.io/@cheesechoux/Nest.js-%EC%99%9C..-%ED%98%B8%EC%B6%9C-%ED%95%9C-%EB%B2%88%EC%97%90-%EB%A1%9C%EA%B7%B8-%EB%91%90-%EB%B2%88%EC%9D%B4-%EC%B0%8D%ED%9E%88%EB%82%98%EC%9A%94)
 
 #### [- Docker build -  npm run build 에러](https://velog.io/@cheesechoux/Docker-Cannot-find-module-srcimageurlsentityimageurl.entity)
 
