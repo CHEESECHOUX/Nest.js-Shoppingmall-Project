@@ -1,0 +1,26 @@
+{
+    "config": {
+        "target": "http://localhost:3000",
+        "phases": [{ "duration": 10, "arrivalRate": 500 }],
+        "defaults": {
+            "headers": {
+                "User-Agent": "Artillery"
+            }
+        }
+    },
+    "scenarios": [
+        {
+            "name": "getProductById",
+            "flow": [
+                {
+                    "get": {
+                        "url": "/products/5",
+                        "headers": {
+                            "Authorization": ""
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -98,7 +98,7 @@ export class CartsService {
             throw new NotFoundException('장바구니 정보를 찾을 수 없습니다');
         }
         const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
-        const isUserCartOwner = cart.user?.id === user.id;
+        const isUserCartOwner = cart.user.id === user.id;
         if (!isUserAdmin && isUserCartOwner) {
             throw new UnauthorizedException('사용자의 장바구니 or ADMIN 권한만 장바구니를 수정할 수 있습니다');
         }
@@ -151,7 +151,7 @@ export class CartsService {
         }
 
         const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
-        const isUserCartOwner = cart.user?.id === user.id;
+        const isUserCartOwner = cart.user.id === user.id;
 
         if (!isUserAdmin && !isUserCartOwner) {
             throw new UnauthorizedException('사용자의 장바구니 or ADMIN 권한만 장바구니를 삭제할 수 있습니다');

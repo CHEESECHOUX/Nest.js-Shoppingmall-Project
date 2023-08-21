@@ -15,7 +15,7 @@ export class HttpLoggingInterceptor implements NestInterceptor {
                 this.logger.log(
                     JSON.stringify({
                         request: { method, originalUrl, query, params, body },
-                        response: { statusCode: httpContext.getResponse()?.statusCode, data },
+                        response: { statusCode: httpContext.getResponse().statusCode, data },
                     }),
                 ),
             ),

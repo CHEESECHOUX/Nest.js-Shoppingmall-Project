@@ -15,7 +15,7 @@ export class CacheService {
     }
 
     async set(key: string, value: string, expire?: number): Promise<'OK'> {
-        return this.redisClient.set(key, value, 'EX', expire ?? 10);
+        return this.redisClient.set(key, value, 'EX', expire ?? 3600);
     }
 
     async del(key: string): Promise<number> {

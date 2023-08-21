@@ -127,7 +127,7 @@ export class ReviewsService {
         }
 
         const isUserAdmin = await this.userRolesRepository.findOne({ where: { user: { id: user.id }, role: { role: 'ADMIN' } } });
-        const isReviewAuthor = review.user?.id === user.id;
+        const isReviewAuthor = review.user.id === user.id;
 
         if (!isUserAdmin && !isReviewAuthor) {
             throw new UnauthorizedException('사용자가 작성한 리뷰 or ADMIN 권한만 리뷰를 삭제할 수 있습니다');
