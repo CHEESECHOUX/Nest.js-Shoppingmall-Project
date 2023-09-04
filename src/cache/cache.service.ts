@@ -10,15 +10,15 @@ export class CacheService {
         this.redisClient = redisService.getClient();
     }
 
-    async get(key: string): Promise<string> {
+    get(key: string): Promise<string> {
         return this.redisClient.get(key);
     }
 
-    async set(key: string, value: string, expire?: number): Promise<'OK'> {
+    set(key: string, value: string, expire?: number): Promise<'OK'> {
         return this.redisClient.set(key, value, 'EX', expire ?? 3600);
     }
 
-    async del(key: string): Promise<number> {
+    del(key: string): Promise<number> {
         return this.redisClient.del(key);
     }
 }
